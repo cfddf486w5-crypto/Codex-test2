@@ -13,6 +13,15 @@
   </div>
 </section>
 <section class="card">
+  <h3>Programme de formation LIA</h3>
+  <div class="muted">40 prompts de formation guidée + entraînement continu autonome.</div>
+  <div class="row">
+    <button id="loadLiaPrompts">Charger 40 prompts</button>
+    <button id="openLiaGuide" class="ghost">Ouvrir le guide</button>
+  </div>
+  <div id="liaTrainingStatus" class="muted">Formation continue inactive.</div>
+</section>
+<section class="card">
   <h3>Import / Export</h3>
   <input id="fileInput" type="file" accept=".csv,.json,.xlsx,.xls" multiple />
   <div class="row">
@@ -48,6 +57,10 @@
   <div class="row">
     <button id="runTraining" class="primary">Mini entraînement</button>
     <button id="resetLearning" class="warn">Reset apprentissage</button>
+  </div>
+  <div class="row">
+    <button id="startContinuousTraining" class="primary">Formation continue</button>
+    <button id="stopContinuousTraining" class="warn">Stop</button>
   </div>
   <button id="exportModel">Export modèle IA</button>
   <div id="matrixOutput" class="log"></div>
