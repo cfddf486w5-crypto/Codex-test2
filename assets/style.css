@@ -117,3 +117,14 @@ textarea { min-height: 110px; resize: vertical; }
   white-space: pre-wrap;
   font-size: 0.85rem;
 }
+
+.zone-stack .log {
+  min-height: 140px;
+}
+
+@media (max-width: 380px) {
+  .bottom-nav button {
+    font-size: 0.76rem;
+    padding-inline: 4px;
+  }
+}

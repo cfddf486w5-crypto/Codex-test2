@@ -1,45 +1,15 @@
 <section class="card">
-  <h2>AI Center</h2>
-  <label for="aiPrompt">Demande à ton IA</label>
-  <label for="promptPreset">Prompts entrepôt pré-enregistrés</label>
-  <div class="row">
-    <select id="promptPreset"></select>
-    <button id="usePromptPreset">Utiliser le prompt</button>
-  </div>
-  <textarea id="aiPrompt" placeholder="Ex: Optimise la consolidation zone A aujourd'hui"></textarea>
-  <div class="row">
-    <button id="runAi" class="primary">Analyser</button>
-    <button id="retrainBtn">Réentraîner</button>
-  </div>
+  <h2>Page principale IA (Offline iPhone)</h2>
+  <p class="muted">3 zones superposées: activité IA, réponses IA, et zone de prompt avec actions.</p>
 </section>
-<section class="card">
-  <h3>Programme de formation LIA</h3>
-  <div class="muted">40 prompts de formation guidée + entraînement continu autonome.</div>
-  <div class="row">
-    <button id="loadLiaPrompts">Charger 40 prompts</button>
-    <button id="openLiaGuide" class="ghost">Ouvrir le guide</button>
-  </div>
-  <div id="liaTrainingStatus" class="muted">Formation continue inactive.</div>
+
+<section class="card zone-stack">
+  <h3>1) Zone IA · Activité en temps réel</h3>
+  <div id="aiActivity" class="log"></div>
 </section>
-<section class="card">
-  <h3>Import / Export</h3>
-  <input id="fileInput" type="file" accept=".csv,.json,.xlsx,.xls" multiple />
-  <div class="row">
-    <button id="exportBackup">Backup JSON</button>
-    <button id="importBackup">Import backup</button>
-    <button id="loadWarehouseData">Charger bases entrepôt</button>
-  </div>
-  <button id="extractExcel">Analyser Excel et séparer les infos</button>
-  <div class="muted">Les données importées sont séparées dans les tableaux excelRows et excelColumns.</div>
-</section>
-<section class="card">
-  <h3>Base vocale</h3>
-  <input id="voicePrompt" placeholder="Ex: archive la palette" />
-  <button id="runVoiceCommand" class="primary">Exécuter la commande vocale</button>
-  <div class="muted">Chaque commande est sauvegardée dans la base voiceCommands.</div>
-</section>
-<section class="card">
-  <h3>Raisonnement IA</h3>
+
+<section class="card zone-stack">
+  <h3>2) Zone IA · Réponses</h3>
   <div id="aiReasoning" class="log"></div>
   <div id="aiScore" class="muted">Score décision: -</div>
   <div class="row">
@@ -47,21 +17,34 @@
     <button id="correctNegative" class="warn">Corriger: Mauvaise décision</button>
   </div>
 </section>
-<section class="card">
-  <h3>Mode entraînement avancé</h3>
-  <input id="customRule" placeholder="Ajouter règle personnalisée" />
+
+<section class="card zone-stack">
+  <h3>3) Zone Prompt</h3>
+  <label for="promptCategory">Catégorie de prompt</label>
+  <select id="promptCategory">
+    <option value="">Choisir une catégorie</option>
+    <option value="excel">Excel</option>
+    <option value="csv">CSV</option>
+    <option value="pdf">PDF</option>
+    <option value="operations">Opérations DAI</option>
+  </select>
+
+  <label for="promptPreset">Menu de choix de prompt</label>
   <div class="row">
-    <button id="addRule">Ajouter règle</button>
-    <button id="loadDataset">Charger dataset exemple</button>
+    <select id="promptPreset"></select>
+    <button id="usePromptPreset">Utiliser</button>
   </div>
+
+  <label for="aiPrompt">Écrire la demande</label>
+  <textarea id="aiPrompt" placeholder="Ex: Lis un PDF, réponds et renvoie en CSV."></textarea>
+
   <div class="row">
-    <button id="runTraining" class="primary">Mini entraînement</button>
-    <button id="resetLearning" class="warn">Reset apprentissage</button>
+    <button id="runAi" class="primary">Envoyer</button>
+    <button id="cancelPrompt" class="warn">Cancel</button>
   </div>
+
   <div class="row">
-    <button id="startContinuousTraining" class="primary">Formation continue</button>
-    <button id="stopContinuousTraining" class="warn">Stop</button>
+    <button id="retrainBtn">Réentraîner</button>
+    <button data-route="prompt" class="ghost">Créer / Gérer des prompts</button>
   </div>
-  <button id="exportModel">Export modèle IA</button>
-  <div id="matrixOutput" class="log"></div>
 </section>

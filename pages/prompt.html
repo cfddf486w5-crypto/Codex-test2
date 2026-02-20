@@ -1,0 +1,30 @@
+<section class="card">
+  <h2>Page Prompt</h2>
+  <p class="muted">Section haute pour créer de nouveaux prompts tout en gardant les actions existantes.</p>
+</section>
+
+<section class="card">
+  <h3>Créer un nouveau prompt</h3>
+  <input id="newPromptLabel" placeholder="Nom du prompt" />
+  <select id="newPromptCategory">
+    <option value="excel">Excel</option>
+    <option value="csv">CSV</option>
+    <option value="pdf">PDF</option>
+    <option value="operations">Opérations DAI</option>
+  </select>
+  <textarea id="newPromptText" placeholder="Texte du nouveau prompt"></textarea>
+  <button id="createPrompt" class="primary">Créer le prompt</button>
+</section>
+
+<section class="card">
+  <h3>Prompts et formation existants</h3>
+  <div class="row">
+    <select id="promptPreset"></select>
+    <button id="usePromptPreset">Utiliser le prompt</button>
+  </div>
+  <div class="row">
+    <button id="loadLiaPrompts">Charger 40 prompts</button>
+    <button id="openLiaGuide" class="ghost">Ouvrir le guide</button>
+  </div>
+  <div id="liaTrainingStatus" class="muted">Formation continue inactive.</div>
+</section>
