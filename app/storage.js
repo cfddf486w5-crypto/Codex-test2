@@ -1,5 +1,5 @@
 const DB_NAME = 'dlwms_ia_ultimate';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 const STORES = [
   'rules',
   'weights',
@@ -9,6 +9,11 @@ const STORES = [
   'preferences',
   'thresholds',
   'datasets',
+  'requests',
+  'excelRows',
+  'excelColumns',
+  'voiceCommands',
+  'palettes',
 ];
 
 let dbPromise;

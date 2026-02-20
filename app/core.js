@@ -1,6 +1,6 @@
 import { loadRoute } from './router.js';
 import { initDB, exportAllData, importAllData, putRecord, getAll, clearStore, setConfig, getConfig } from './storage.js';
-import { analyzePrompt, parseCsv, getPerformanceSnapshot } from './ai-engine.js';
+import { analyzePrompt, parseCsv, splitRowsByColumns, normalize, getPerformanceSnapshot } from './ai-engine.js';
 import { incrementalTrain, trainingMatrix } from './trainer.js';
 import { trainNeuralLite } from './neural-lite.js';
 
@@ -137,6 +137,7 @@ function bindAiCenter() {
   document.getElementById('runAi').addEventListener('click', async () => {
     const prompt = document.getElementById('aiPrompt').value.trim();
     if (!prompt) return;
+    await putRecord('requests', { channel: 'text', prompt, status: 'received' });
     const moves = [{ distance: 12 }, { distance: 8 }, { distance: 7 }];
     worker.postMessage({ type: 'batch-distance', payload: { moves } });
     worker.onmessage = async ({ data }) => {
@@ -151,11 +152,28 @@ function bindAiCenter() {
   document.getElementById('fileInput').addEventListener('change', async (event) => {
     const files = [...event.target.files];
     for (const file of files) {
-      const content = await file.text();
-      const parsed = file.name.endsWith('.csv') ? parseCsv(content) : JSON.parse(content);
-      await putRecord('datasets', { name: file.name, rows: parsed.length || 0, sample: parsed.slice?.(0, 5) || parsed });
+      const parsed = await parseImportFile(file);
+      const rows = Array.isArray(parsed) ? parsed : [];
+      const byColumn = splitRowsByColumns(rows);
+
+      await putRecord('datasets', { name: file.name, rows: rows.length || 0, sample: rows.slice?.(0, 5) || parsed });
+      if (rows.length) {
+        await putRecord('excelRows', { source: file.name, rows });
+        await putRecord('excelColumns', {
+          source: file.name,
+          columns: Object.entries(byColumn).map(([name, values]) => ({ name, values })),
+        });
+      }
     }
-    reasoningNode.textContent = 'Fichiers importés en base locale.';
+    reasoningNode.textContent = 'Fichiers importés, séparés par colonnes et enregistrés dans de nouveaux tableaux (excelRows / excelColumns).';
+  });
+
+  document.getElementById('extractExcel').addEventListener('click', async () => {
+    const rowsTables = await getAll('excelRows');
+    const columnsTables = await getAll('excelColumns');
+    const rowCount = rowsTables.reduce((sum, table) => sum + ((table.rows || []).length || 0), 0);
+    const columnCount = columnsTables.reduce((sum, table) => sum + ((table.columns || []).length || 0), 0);
+    reasoningNode.textContent = `Analyse Excel terminée: ${rowCount} lignes traitées et ${columnCount} colonnes séparées.`;
   });
 
   document.getElementById('loadWarehouseData').addEventListener('click', async () => {
@@ -226,6 +244,53 @@ function bindAiCenter() {
     await importAllData(json);
     reasoningNode.textContent = 'Backup importé.';
   });
+
+  document.getElementById('runVoiceCommand').addEventListener('click', async () => {
+    const voiceInputNode = document.getElementById('voicePrompt');
+    const command = voiceInputNode.value.trim();
+    if (!command) return;
+
+    const normalizedCommand = normalize(command);
+    const commandId = await putRecord('voiceCommands', {
+      raw: command,
+      normalized: normalizedCommand,
+      status: 'received',
+    });
+
+    if (normalizedCommand.includes('archive la palette')) {
+      await putRecord('palettes', {
+        label: `Palette ${new Date().toLocaleTimeString('fr-FR')}`,
+        status: 'archived',
+        archivedBy: 'voice-command',
+      });
+      await putRecord('voiceCommands', {
+        id: commandId,
+        raw: command,
+        normalized: normalizedCommand,
+        status: 'executed',
+        action: 'archive_palette',
+      });
+      reasoningNode.textContent = 'Commande vocale exécutée: la palette a été archivée.';
+    } else {
+      await putRecord('voiceCommands', {
+        id: commandId,
+        raw: command,
+        normalized: normalizedCommand,
+        status: 'ignored',
+      });
+      reasoningNode.textContent = 'Commande vocale enregistrée en base, mais aucune action correspondante n\'a été trouvée.';
+    }
+  });
+}
+
+async function parseImportFile(file) {
+  const lowerName = file.name.toLowerCase();
+  if (lowerName.endsWith('.json')) return JSON.parse(await file.text());
+  if (lowerName.endsWith('.xlsx')) {
+    const fallbackText = await file.text();
+    return parseCsv(fallbackText);
+  }
+  return parseCsv(await file.text());
 }
 
 function downloadJSON(data, filename) {
