@@ -9,25 +9,53 @@ const nav = document.querySelector('.bottom-nav');
 const worker = new Worker('./app/ai-worker.js', { type: 'module' });
 let deferredPrompt;
 let lastDecisionId;
+let continuousTrainingTimer;
+let continuousTrainingIndex = 0;
 
 const WAREHOUSE_PROMPT_PRESETS = [
-  {
-    label: 'Réception prioritaire',
-    prompt: 'Priorise les quais de réception avec le plus fort retard et propose un plan d\'affectation des équipes sur 2h.',
-  },
-  {
-    label: 'Inventaire cyclique',
-    prompt: 'Détecte les zones de picking à plus forte variance de stock et planifie un inventaire cyclique avant 17h.',
-  },
-  {
-    label: 'Préparation commandes',
-    prompt: 'Optimise les tournées de préparation multi-commandes en minimisant les croisements et les retours à vide.',
-  },
-  {
-    label: 'Anomalies température',
-    prompt: 'Analyse les anomalies de température de la chambre froide et propose des actions correctives immédiates.',
-  },
+  { label: '01 · Lecture simple Excel', prompt: 'Lis le fichier Excel Recettes.xlsx et résume les 10 premières lignes avec les colonnes Date, Produit et Montant.' },
+  { label: '02 · Vérification colonnes', prompt: 'Vérifie que le document Excel Ventes.xlsx contient les colonnes Client, Quantité, Prix unitaire et Total.' },
+  { label: '03 · Nettoyage doublons', prompt: 'Supprime les lignes en doublon dans Inventaire.xlsx en te basant sur la colonne SKU puis donne le nombre supprimé.' },
+  { label: '04 · Valeurs manquantes', prompt: 'Détecte les cellules vides dans RH.xlsx, propose une correction automatique et liste les anomalies.' },
+  { label: '05 · Ecriture commentaire', prompt: 'Écris une colonne Commentaire dans Qualite.xlsx indiquant Conforme ou À contrôler selon la note qualité.' },
+  { label: '06 · Calcul TVA', prompt: 'Calcule la TVA à 20% dans Factures.xlsx et écris le résultat dans la colonne TVA puis TTC.' },
+  { label: '07 · Marge commerciale', prompt: 'Calcule la marge en pourcentage sur chaque ligne de AchatsVentes.xlsx puis classe du plus rentable au moins rentable.' },
+  { label: '08 · Tri priorités', prompt: 'Trie les commandes de Commandes.xlsx par Urgence puis par Date limite et retourne le top 15.' },
+  { label: '09 · Filtre régional', prompt: 'Filtre les données de Prospects.xlsx pour ne garder que la région Île-de-France et exporte un résumé.' },
+  { label: '10 · Consolidation multi-feuilles', prompt: 'Fusionne toutes les feuilles du fichier Stocks_Mensuels.xlsx dans une table unique normalisée.' },
+  { label: '11 · Tableau croisé', prompt: 'Crée un tableau croisé de Ventes2026.xlsx par Commercial et Mois avec Somme CA et Nombre commandes.' },
+  { label: '12 · Prévision simple', prompt: 'Sur BaseDemandes.xlsx, calcule une tendance hebdomadaire et propose une prévision sur 4 semaines.' },
+  { label: '13 · Contrôle incohérences', prompt: 'Repère les lignes où Quantité * Prix unitaire est différent de Total dans Audit.xlsx.' },
+  { label: '14 · Normalisation dates', prompt: 'Convertis toutes les dates de Planning.xlsx au format AAAA-MM-JJ puis valide les erreurs.' },
+  { label: '15 · Mapping colonnes', prompt: 'Associe les colonnes de ImportERP.xlsx vers le schéma cible CodeArticle, Libellé, Stock, Emplacement.' },
+  { label: '16 · Détection fraude', prompt: 'Analyse Remboursements.xlsx et signale les montants anormaux supérieurs à 2 écarts-types.' },
+  { label: '17 · Score client', prompt: 'Crée un score client de 0 à 100 dans CRM.xlsx selon fréquence, panier moyen et retard paiement.' },
+  { label: '18 · Ecriture automatique', prompt: 'Écris dans Relances.xlsx une action recommandée pour chaque client: appeler, emailer ou surveiller.' },
+  { label: '19 · Calcul stock sécurité', prompt: 'Calcule le stock de sécurité dans Approvisionnement.xlsx selon consommation moyenne et délai fournisseur.' },
+  { label: '20 · KPI logistique', prompt: 'Calcule taux de service, taux de rupture et délai moyen dans PerformanceLog.xlsx.' },
+  { label: '21 · Lecture facture PDF->Excel', prompt: 'Lis les données extraites dans FacturesOCR.xlsx et crée un journal comptable prêt à importer.' },
+  { label: '22 · Détection unités', prompt: 'Uniformise les unités kg, g, tonne dans MatièresPremières.xlsx et recalcule les quantités.' },
+  { label: '23 · Contrôle seuils', prompt: 'Marque en rouge logique les lignes où le stock est sous seuil critique dans StockAlerte.xlsx.' },
+  { label: '24 · Classe ABC', prompt: 'Réalise une classification ABC des articles dans RotationStock.xlsx à partir du CA cumulé.' },
+  { label: '25 · Optimisation picking', prompt: 'Propose un ordre de picking optimisé pour OrdresPicking.xlsx en minimisant la distance.' },
+  { label: '26 · Détection retards', prompt: 'Calcule les retards fournisseurs dans Receptions.xlsx et écris un champ Niveau de risque.' },
+  { label: '27 · Réconciliation bases', prompt: 'Compare Donnees_WMS.xlsx et Donnees_ERP.xlsx et liste les écarts de stock par SKU.' },
+  { label: '28 · Formules dynamiques', prompt: 'Insère automatiquement des formules SOMME.SI.ENS dans Budget.xlsx selon centre de coût.' },
+  { label: '29 · Segmenter clients', prompt: 'Segmente Clients.xlsx en Premium, Standard, Dormant selon CA annuel et dernière commande.' },
+  { label: '30 · Export réponse', prompt: 'Lis Q_A_Interne.xlsx, réponds aux questions fréquentes et écris les réponses dans la colonne Réponse IA.' },
+  { label: '31 · Analyse RH', prompt: 'Calcule le taux d’absentéisme mensuel dans Equipes.xlsx et identifie les services les plus exposés.' },
+  { label: '32 · Détection erreurs saisie', prompt: 'Détecte les anomalies de saisie dans SaisieManuelle.xlsx: codes invalides, dates impossibles, montants négatifs.' },
+  { label: '33 · Calcul commissions', prompt: 'Calcule les commissions commerciales dans Commissions.xlsx selon paliers de performance.' },
+  { label: '34 · Fusion clients doublons', prompt: 'Fusionne les clients en doublon dans BaseClients.xlsx via email + téléphone et garde la fiche la plus récente.' },
+  { label: '35 · Réponse automatique', prompt: 'Lis les colonnes Problème et Priorité de Tickets.xlsx puis écris une réponse standard adaptée.' },
+  { label: '36 · Analyse énergétique', prompt: 'Calcule la consommation moyenne par site dans Energie.xlsx et préviens si variation > 15%.' },
+  { label: '37 · Simulation capacité', prompt: 'Simule la capacité d’entrepôt sur Capacité.xlsx et indique les zones saturées à J+7.' },
+  { label: '38 · Planification équipes', prompt: 'Optimise le planning de EquipesLog.xlsx selon charge estimée et contraintes horaires.' },
+  { label: '39 · Contrôle budget', prompt: 'Compare Réel vs Budget dans Finance.xlsx et explique les 5 plus gros écarts.' },
+  { label: '40 · Synthèse finale', prompt: 'Génère un rapport final lisible pour direction à partir de toutes les feuilles Excel, avec actions prioritaires.' },
 ];
+
+const LIA_GUIDE_PATH = './docs/formation-lia.md';
 
 const WAREHOUSE_DATASETS = [
   {
@@ -128,12 +156,28 @@ function bindAiCenter() {
     presetNode.append(option);
   }
 
+  const trainingStatusNode = document.getElementById('liaTrainingStatus');
+
   document.getElementById('usePromptPreset').addEventListener('click', () => {
     if (!presetNode.value) return;
     promptNode.value = presetNode.value;
     reasoningNode.textContent = 'Prompt pré-enregistré injecté dans la zone de saisie.';
   });
 
+  document.getElementById('loadLiaPrompts').addEventListener('click', async () => {
+    await putRecord('datasets', {
+      name: 'lia-training-prompts',
+      rows: WAREHOUSE_PROMPT_PRESETS.length,
+      sample: WAREHOUSE_PROMPT_PRESETS,
+      createdAt: new Date().toISOString(),
+    });
+    promptNode.value = WAREHOUSE_PROMPT_PRESETS[0]?.prompt || '';
+    reasoningNode.textContent = `Programme chargé: ${WAREHOUSE_PROMPT_PRESETS.length} prompts de formation LIA disponibles.`;
+  });
+
+  document.getElementById('openLiaGuide').addEventListener('click', () => {
+    window.open(LIA_GUIDE_PATH, '_blank', 'noopener');
+  });
   document.getElementById('runAi').addEventListener('click', async () => {
     const prompt = document.getElementById('aiPrompt').value.trim();
     if (!prompt) return;
@@ -214,6 +258,28 @@ function bindAiCenter() {
     const weights = trainNeuralLite(sample);
     const matrix = trainingMatrix(Math.max(8, sample.length * 4));
     document.getElementById('matrixOutput').textContent = `Poids: ${JSON.stringify(weights)}\nMatrice: ${JSON.stringify(matrix, null, 2)}`;
+  });
+
+
+  document.getElementById('startContinuousTraining').addEventListener('click', async () => {
+    if (continuousTrainingTimer) return;
+    trainingStatusNode.textContent = 'Formation continue active (1 prompt / 5 secondes).';
+    continuousTrainingTimer = setInterval(async () => {
+      const currentPreset = WAREHOUSE_PROMPT_PRESETS[continuousTrainingIndex % WAREHOUSE_PROMPT_PRESETS.length];
+      continuousTrainingIndex += 1;
+      promptNode.value = currentPreset.prompt;
+      await putRecord('requests', { channel: 'continuous-training', prompt: currentPreset.prompt, status: 'trained' });
+      await incrementalTrain({ success: true, weightDelta: 0.01 });
+      reasoningNode.textContent = `Formation continue en cours... Prompt ${continuousTrainingIndex}/${WAREHOUSE_PROMPT_PRESETS.length}: ${currentPreset.label}`;
+      scoreNode.textContent = `Score décision: entraînement automatique (${continuousTrainingIndex})`;
+    }, 5000);
+  });
+
+  document.getElementById('stopContinuousTraining').addEventListener('click', () => {
+    if (!continuousTrainingTimer) return;
+    clearInterval(continuousTrainingTimer);
+    continuousTrainingTimer = null;
+    trainingStatusNode.textContent = 'Formation continue stoppée.';
   });
 
   document.getElementById('resetLearning').addEventListener('click', async () => {
