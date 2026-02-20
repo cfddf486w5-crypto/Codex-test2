@@ -33,13 +33,36 @@ export function classifyIntent(text = '') {
 export function parseCsv(content) {
   const lines = content.trim().split(/\r?\n/).filter(Boolean);
   if (!lines.length) return [];
-  const headers = lines[0].split(',').map((h) => h.trim());
+  const separator = detectSeparator(lines[0]);
+  const headers = splitRow(lines[0], separator).map((h) => h.trim());
   return lines.slice(1).map((line) => {
-    const cols = line.split(',');
+    const cols = splitRow(line, separator);
     const row = {};
     headers.forEach((h, i) => { row[h] = (cols[i] || '').trim(); });
     return row;
   });
+}
+
+function detectSeparator(headerLine = '') {
+  const candidates = [',', ';', '\t'];
+  const scored = candidates.map((sep) => ({ sep, count: headerLine.split(sep).length }));
+  return scored.sort((a, b) => b.count - a.count)[0].sep;
+}
+
+function splitRow(line = '', separator = ',') {
+  if (separator !== ',') return line.split(separator);
+  return line.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map((chunk) => chunk.replace(/^"|"$/g, ''));
+}
+
+export function splitRowsByColumns(rows = []) {
+  const byColumn = {};
+  rows.forEach((row, rowIndex) => {
+    Object.entries(row).forEach(([columnName, value]) => {
+      if (!byColumn[columnName]) byColumn[columnName] = [];
+      byColumn[columnName].push({ row: rowIndex + 1, value });
+    });
+  });
+  return byColumn;
 }
 
 export async function analyzePrompt(prompt, context = {}) {

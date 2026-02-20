@@ -14,12 +14,20 @@
 </section>
 <section class="card">
   <h3>Import / Export</h3>
-  <input id="fileInput" type="file" accept=".csv,.json" multiple />
+  <input id="fileInput" type="file" accept=".csv,.json,.xlsx,.xls" multiple />
   <div class="row">
     <button id="exportBackup">Backup JSON</button>
     <button id="importBackup">Import backup</button>
     <button id="loadWarehouseData">Charger bases entrepôt</button>
   </div>
+  <button id="extractExcel">Analyser Excel et séparer les infos</button>
+  <div class="muted">Les données importées sont séparées dans les tableaux excelRows et excelColumns.</div>
+</section>
+<section class="card">
+  <h3>Base vocale</h3>
+  <input id="voicePrompt" placeholder="Ex: archive la palette" />
+  <button id="runVoiceCommand" class="primary">Exécuter la commande vocale</button>
+  <div class="muted">Chaque commande est sauvegardée dans la base voiceCommands.</div>
 </section>
 <section class="card">
   <h3>Raisonnement IA</h3>
