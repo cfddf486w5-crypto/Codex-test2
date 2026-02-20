@@ -1,4 +1,60 @@
 <section class="card">
-  <h2>Parametres</h2>
-  <p class="muted">Module prêt pour exploitation offline et extension métier.</p>
+  <h2>Paramètres IA</h2>
+  <p class="muted">Aucun API, mode offline, entrainement local et pilotage des connaissances.</p>
+</section>
+
+<section class="card">
+  <h3>1) Import Excel / CSV / PDF + sauvegardes</h3>
+  <input id="fileInput" type="file" accept=".csv,.json,.xlsx,.xls,.pdf" multiple />
+  <div class="row">
+    <button id="extractExcel">Analyser les imports</button>
+    <button id="loadWarehouseData">Charger bases entrepôt</button>
+  </div>
+  <div class="row">
+    <button id="exportBackup">Backup JSON</button>
+    <button id="importBackup">Import backup</button>
+  </div>
+</section>
+
+<section class="card">
+  <h3>2) Création de règles</h3>
+  <input id="customRule" placeholder="Écrire une nouvelle règle" />
+  <button id="addRule">Ajouter règle</button>
+</section>
+
+<section class="card">
+  <h3>3) Apprentissage (options modifiables)</h3>
+  <div class="row">
+    <button id="loadDataset">Charger dataset exemple</button>
+    <button id="runTraining" class="primary">Mini entraînement</button>
+  </div>
+  <div class="row">
+    <button id="startContinuousTraining" class="primary">Formation continue</button>
+    <button id="stopContinuousTraining" class="warn">Stop</button>
+  </div>
+  <div class="row">
+    <button id="resetLearning" class="warn">Reset apprentissage</button>
+    <button id="exportModel">Export modèle IA</button>
+  </div>
+  <div id="matrixOutput" class="log"></div>
+</section>
+
+<section class="card">
+  <h3>4) Historique d’apprentissage</h3>
+  <div id="learningHistory" class="log"></div>
+</section>
+
+<section class="card">
+  <h3>5, 6, 7) Connaissances & Mémoire</h3>
+  <div class="grid">
+    <div><div class="muted">% Connaissances</div><div id="knowledgePercent" class="kpi">0%</div></div>
+    <div><div class="muted">Quantité connaissances</div><div id="knowledgeQuantity" class="kpi">0</div></div>
+    <div><div class="muted">Niveau mémoire</div><div id="memoryLevel" class="kpi">0%</div></div>
+  </div>
+</section>
+
+<section class="card">
+  <h3>Base vocale (option existante déplacée)</h3>
+  <input id="voicePrompt" placeholder="Ex: archive la palette" />
+  <button id="runVoiceCommand" class="primary">Exécuter la commande vocale</button>
 </section>
