@@ -10,6 +10,58 @@ const worker = new Worker('./app/ai-worker.js', { type: 'module' });
 let deferredPrompt;
 let lastDecisionId;
 
+const WAREHOUSE_PROMPT_PRESETS = [
+  {
+    label: 'Réception prioritaire',
+    prompt: 'Priorise les quais de réception avec le plus fort retard et propose un plan d\'affectation des équipes sur 2h.',
+  },
+  {
+    label: 'Inventaire cyclique',
+    prompt: 'Détecte les zones de picking à plus forte variance de stock et planifie un inventaire cyclique avant 17h.',
+  },
+  {
+    label: 'Préparation commandes',
+    prompt: 'Optimise les tournées de préparation multi-commandes en minimisant les croisements et les retours à vide.',
+  },
+  {
+    label: 'Anomalies température',
+    prompt: 'Analyse les anomalies de température de la chambre froide et propose des actions correctives immédiates.',
+  },
+];
+
+const WAREHOUSE_DATASETS = [
+  {
+    name: 'warehouse-receptions',
+    rows: 4,
+    sample: [
+      { dock: 'D1', supplier: 'NordFrais', etaMin: 18, pallets: 24, priority: 'high' },
+      { dock: 'D3', supplier: 'TransLog', etaMin: 50, pallets: 12, priority: 'medium' },
+      { dock: 'D2', supplier: 'EcoStock', etaMin: 35, pallets: 19, priority: 'high' },
+      { dock: 'D4', supplier: 'PrimeRoute', etaMin: 70, pallets: 9, priority: 'low' },
+    ],
+  },
+  {
+    name: 'warehouse-inventory',
+    rows: 4,
+    sample: [
+      { sku: 'SKU-4512', zone: 'A-03', expected: 120, counted: 109, delta: -11 },
+      { sku: 'SKU-0821', zone: 'B-10', expected: 64, counted: 72, delta: 8 },
+      { sku: 'SKU-7788', zone: 'C-02', expected: 48, counted: 33, delta: -15 },
+      { sku: 'SKU-9031', zone: 'D-07', expected: 200, counted: 198, delta: -2 },
+    ],
+  },
+  {
+    name: 'warehouse-orders',
+    rows: 4,
+    sample: [
+      { orderId: 'CMD-1001', route: ['A-01', 'A-04', 'B-02'], lines: 9, slaMin: 45 },
+      { orderId: 'CMD-1002', route: ['C-03', 'C-01', 'D-06'], lines: 4, slaMin: 30 },
+      { orderId: 'CMD-1003', route: ['B-09', 'A-02', 'B-01'], lines: 7, slaMin: 40 },
+      { orderId: 'CMD-1004', route: ['D-04', 'D-02', 'C-07'], lines: 10, slaMin: 60 },
+    ],
+  },
+];
+
 async function boot() {
   await initDB();
   bindInstall();
@@ -65,6 +117,22 @@ async function hydrateDashboard() {
 function bindAiCenter() {
   const reasoningNode = document.getElementById('aiReasoning');
   const scoreNode = document.getElementById('aiScore');
+  const promptNode = document.getElementById('aiPrompt');
+  const presetNode = document.getElementById('promptPreset');
+
+  presetNode.innerHTML = '<option value="">Sélectionner un prompt métier...</option>';
+  for (const preset of WAREHOUSE_PROMPT_PRESETS) {
+    const option = document.createElement('option');
+    option.value = preset.prompt;
+    option.textContent = preset.label;
+    presetNode.append(option);
+  }
+
+  document.getElementById('usePromptPreset').addEventListener('click', () => {
+    if (!presetNode.value) return;
+    promptNode.value = presetNode.value;
+    reasoningNode.textContent = 'Prompt pré-enregistré injecté dans la zone de saisie.';
+  });
 
   document.getElementById('runAi').addEventListener('click', async () => {
     const prompt = document.getElementById('aiPrompt').value.trim();
@@ -88,6 +156,11 @@ function bindAiCenter() {
       await putRecord('datasets', { name: file.name, rows: parsed.length || 0, sample: parsed.slice?.(0, 5) || parsed });
     }
     reasoningNode.textContent = 'Fichiers importés en base locale.';
+  });
+
+  document.getElementById('loadWarehouseData').addEventListener('click', async () => {
+    for (const dataset of WAREHOUSE_DATASETS) await putRecord('datasets', dataset);
+    reasoningNode.textContent = `Bases de données entrepôt chargées (${WAREHOUSE_DATASETS.length} datasets).`;
   });
 
   document.getElementById('correctPositive').addEventListener('click', () => setFeedback(true));

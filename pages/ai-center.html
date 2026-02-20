@@ -1,6 +1,11 @@
 <section class="card">
   <h2>AI Center</h2>
   <label for="aiPrompt">Demande à ton IA</label>
+  <label for="promptPreset">Prompts entrepôt pré-enregistrés</label>
+  <div class="row">
+    <select id="promptPreset"></select>
+    <button id="usePromptPreset">Utiliser le prompt</button>
+  </div>
   <textarea id="aiPrompt" placeholder="Ex: Optimise la consolidation zone A aujourd'hui"></textarea>
   <div class="row">
     <button id="runAi" class="primary">Analyser</button>
@@ -13,6 +18,7 @@
   <div class="row">
     <button id="exportBackup">Backup JSON</button>
     <button id="importBackup">Import backup</button>
+    <button id="loadWarehouseData">Charger bases entrepôt</button>
   </div>
 </section>
 <section class="card">
