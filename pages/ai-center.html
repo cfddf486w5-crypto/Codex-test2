@@ -1,0 +1,40 @@
+<section class="card">
+  <h2>AI Center</h2>
+  <label for="aiPrompt">Demande à ton IA</label>
+  <textarea id="aiPrompt" placeholder="Ex: Optimise la consolidation zone A aujourd'hui"></textarea>
+  <div class="row">
+    <button id="runAi" class="primary">Analyser</button>
+    <button id="retrainBtn">Réentraîner</button>
+  </div>
+</section>
+<section class="card">
+  <h3>Import / Export</h3>
+  <input id="fileInput" type="file" accept=".csv,.json" multiple />
+  <div class="row">
+    <button id="exportBackup">Backup JSON</button>
+    <button id="importBackup">Import backup</button>
+  </div>
+</section>
+<section class="card">
+  <h3>Raisonnement IA</h3>
+  <div id="aiReasoning" class="log"></div>
+  <div id="aiScore" class="muted">Score décision: -</div>
+  <div class="row">
+    <button id="correctPositive">Corriger: Bonne décision</button>
+    <button id="correctNegative" class="warn">Corriger: Mauvaise décision</button>
+  </div>
+</section>
+<section class="card">
+  <h3>Mode entraînement avancé</h3>
+  <input id="customRule" placeholder="Ajouter règle personnalisée" />
+  <div class="row">
+    <button id="addRule">Ajouter règle</button>
+    <button id="loadDataset">Charger dataset exemple</button>
+  </div>
+  <div class="row">
+    <button id="runTraining" class="primary">Mini entraînement</button>
+    <button id="resetLearning" class="warn">Reset apprentissage</button>
+  </div>
+  <button id="exportModel">Export modèle IA</button>
+  <div id="matrixOutput" class="log"></div>
+</section>
