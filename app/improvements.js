@@ -103,23 +103,27 @@ const CATALOG = [
   ['ops', 'Aucune dépendance ajoutée pour l’audit et l’application.'],
 ];
 
-const TOTAL_TARGET = 1000;
-const CATALOG_1000 = Array.from({ length: TOTAL_TARGET }, (_, index) => {
+const TOTAL_TARGET = 3000;
+const CATALOG_3000 = Array.from({ length: TOTAL_TARGET }, (_, index) => {
   const [category, label] = CATALOG[index % CATALOG.length];
   const wave = Math.floor(index / CATALOG.length) + 1;
   const sequence = String((index % CATALOG.length) + 1).padStart(3, '0');
   return [category, `${label} · vague ${wave} #${sequence}`];
 });
 
-if (CATALOG_1000.length !== TOTAL_TARGET) {
-  throw new Error(`Le catalogue doit contenir ${TOTAL_TARGET} améliorations, reçu ${CATALOG_1000.length}.`);
+if (CATALOG_3000.length !== TOTAL_TARGET) {
+  throw new Error(`Le catalogue doit contenir ${TOTAL_TARGET} améliorations, reçu ${CATALOG_3000.length}.`);
 }
 
-export const IMPROVEMENTS = CATALOG_1000.map(([category, label], index) => ({
+export const IMPROVEMENTS = CATALOG_3000.map(([category, label], index) => ({
   id: `IMP-${String(index + 1).padStart(4, '0')}`,
   category,
   label,
 }));
+
+export function listAllImprovements() {
+  return IMPROVEMENTS.map((item) => ({ ...item }));
+}
 
 export const IMPROVEMENT_PACKS = Object.entries(
   IMPROVEMENTS.reduce((acc, item) => {
@@ -151,9 +155,9 @@ function checkCondition(improvement, context) {
   return Boolean(checks[improvement.category]);
 }
 
-export async function apply1000Improvements() {
+export async function apply3000Improvements() {
   setConfig('priority_mode', 'iphone-offline-github-no-deps');
-  setConfig('improvements_version', '1000-pack-v1');
+  setConfig('improvements_version', '3000-pack-v1');
   setConfig('improvements_enabled', true);
   setConfig('improvements_last_apply_at', Date.now());
   setConfig('improvements_packs', listAllImprovementPacks());
@@ -165,8 +169,9 @@ export async function apply1000Improvements() {
   await auditImprovements();
 }
 
-export const apply300Improvements = apply1000Improvements;
-export const apply100Improvements = apply1000Improvements;
+export const apply1000Improvements = apply3000Improvements;
+export const apply300Improvements = apply3000Improvements;
+export const apply100Improvements = apply3000Improvements;
 
 export async function auditImprovements() {
   const [datasets, rules, requests, stats] = await Promise.all([
