@@ -90,10 +90,28 @@ const AUTOMOTIVE_TRAINING_RULES = [
 async function boot() {
   await initDB();
   bindInstall();
+  bindNetworkBadge();
   bindNav();
   await navigate('ai-center');
   if ('serviceWorker' in navigator) await navigator.serviceWorker.register('./sw.js');
   setConfig('app_name', 'DL.WMS IA Ultimate');
+}
+
+
+function bindNetworkBadge() {
+  const badge = document.getElementById('networkBadge');
+  if (!badge) return;
+
+  const updateBadge = () => {
+    const online = navigator.onLine;
+    badge.textContent = online ? 'En ligne' : 'Mode hors ligne';
+    badge.classList.toggle('is-offline', !online);
+    badge.classList.toggle('is-online', online);
+  };
+
+  updateBadge();
+  window.addEventListener('online', updateBadge);
+  window.addEventListener('offline', updateBadge);
 }
 
 function bindInstall() {
