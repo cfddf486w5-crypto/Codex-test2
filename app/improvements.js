@@ -121,6 +121,20 @@ export const IMPROVEMENTS = CATALOG_1000.map(([category, label], index) => ({
   label,
 }));
 
+export const IMPROVEMENT_PACKS = Object.entries(
+  IMPROVEMENTS.reduce((acc, item) => {
+    acc[item.category] = (acc[item.category] || 0) + 1;
+    return acc;
+  }, {}),
+).map(([category, count]) => ({ category, count }));
+
+export function listAllImprovementPacks() {
+  return IMPROVEMENT_PACKS.map((pack) => ({
+    ...pack,
+    description: `Pack ${pack.category}: ${pack.count} améliorations compatibles offline iPhone sans dépendance.`,
+  }));
+}
+
 function checkCondition(improvement, context) {
   const checks = {
     offline: context.hasServiceWorker,
@@ -142,6 +156,7 @@ export async function apply1000Improvements() {
   setConfig('improvements_version', '1000-pack-v1');
   setConfig('improvements_enabled', true);
   setConfig('improvements_last_apply_at', Date.now());
+  setConfig('improvements_packs', listAllImprovementPacks());
   setConfig('offline_strict_mode', true);
   setConfig('github_static_mode', true);
   setConfig('dependencies_policy', 'none');
