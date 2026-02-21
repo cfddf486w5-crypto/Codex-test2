@@ -31,6 +31,10 @@ const WAREHOUSE_PROMPT_PRESETS = [
   { label: 'Plan de charge quai', category: 'operations', prompt: 'Construit un plan de charge quai par créneau pour lisser les arrivées de conteneurs.' },
   { label: 'Alertes écarts stock', category: 'operations', prompt: 'Signale les écarts stock théorique vs physique et propose un plan de correction.' },
   { label: 'Cannibalisation pièces', category: 'operations', prompt: 'Détecte les risques de cannibalisation inter-sites et recommande des transferts internes.' },
+  { label: 'Diagnostic batterie', category: 'automobile', prompt: 'Analyse la santé batterie 12V et propose des actions en cas de chute de tension.' },
+  { label: 'Usure freinage', category: 'automobile', prompt: 'Estime le risque d’usure plaquettes/disques et priorise les interventions atelier.' },
+  { label: 'Plan entretien vidange', category: 'automobile', prompt: 'Prépare un plan d’entretien vidange selon kilométrage, usage et température.' },
+  { label: 'Alerte pneus', category: 'automobile', prompt: 'Détecte anomalies pression/usure pneus et recommande permutation, géométrie ou remplacement.' },
 ];
 
 const WAREHOUSE_DATASETS = [
@@ -52,6 +56,36 @@ const SPARE_PARTS_KNOWLEDGE_BASE = {
     { topic: 'prediction_conteneur', signal: 'avance_navire', action: 'préallouer équipes de réception + créneaux de déchargement' },
   ],
 };
+
+const AUTOMOTIVE_IPHONE_KNOWLEDGE_BASE = {
+  name: 'knowledge-base-automobile-iphone',
+  rows: 10,
+  sample: [
+    { topic: 'diagnostic', key: 'batterie_12v', rule: 'sous 12.2V moteur coupé => batterie faible, contrôler alternateur et démarrage' },
+    { topic: 'diagnostic', key: 'alternateur', rule: 'entre 13.8V et 14.7V moteur tournant => charge correcte' },
+    { topic: 'freinage', key: 'plaquettes', rule: 'épaisseur < 3 mm => remplacement prioritaire sécurité' },
+    { topic: 'pneumatique', key: 'pression', rule: 'pression recommandée constructeur ±0.2 bar pour stabilité et consommation' },
+    { topic: 'entretien', key: 'huile_moteur', rule: 'vidange selon carnet + usage sévère urbain/stop&go' },
+    { topic: 'refroidissement', key: 'liquide', rule: 'surveiller niveau, couleur, et température pour éviter surchauffe' },
+    { topic: 'distribution', key: 'courroie', rule: 'respecter échéance km/temps pour éviter casse moteur' },
+    { topic: 'iphone_ui', key: 'safe_area', rule: 'respect top/bottom safe area iPhone pour actions critiques' },
+    { topic: 'iphone_ui', key: 'touch_target', rule: 'cibles tactiles >= 44px et espacement suffisant' },
+    { topic: 'architecture', key: 'no_dependency', rule: 'aucune dépendance externe: logique 100% locale et offline-first' },
+  ],
+};
+
+const AUTOMOTIVE_TRAINING_RULES = [
+  'Toujours vérifier tension batterie avant diagnostic démarrage.',
+  'Prioriser sécurité freinage et pneumatiques dans les recommandations.',
+  'Associer chaque alerte atelier à un niveau de criticité véhicule.',
+  'Confirmer disponibilité des pièces avant promesse de délai client.',
+  'Favoriser les réponses courtes et actionnables sur mobile iPhone.',
+  'Éviter tout appel cloud: traitement local et stockage local uniquement.',
+  'Prévenir les ruptures atelier avec seuils mini/maxi sur pièces critiques.',
+  'Inclure proposition de maintenance préventive dans chaque réponse.',
+  'Tracer les décisions IA pour correction positive/négative ultérieure.',
+  'Conserver une ergonomie tactile iPhone pour chaque flux opérationnel.',
+];
 
 async function boot() {
   await initDB();
@@ -151,9 +185,19 @@ async function bindSharedActions() {
   document.getElementById('loadLiaPrompts')?.addEventListener('click', async () => {
     await putRecord('datasets', { name: 'lia-training-prompts', rows: WAREHOUSE_PROMPT_PRESETS.length, sample: WAREHOUSE_PROMPT_PRESETS });
     await putRecord('datasets', SPARE_PARTS_KNOWLEDGE_BASE);
+    await putRecord('datasets', AUTOMOTIVE_IPHONE_KNOWLEDGE_BASE);
     const status = document.getElementById('liaTrainingStatus');
-    if (status) status.textContent = `Programme chargé: ${WAREHOUSE_PROMPT_PRESETS.length} prompts + base pièces auto.`;
-    updateAiPanels('Prompts de formation chargés.', 'Base de connaissances IA entrepôt pièces auto prête.');
+    if (status) status.textContent = `Programme chargé: ${WAREHOUSE_PROMPT_PRESETS.length} prompts + base pièces auto + savoir auto iPhone.`;
+    updateAiPanels('Prompts de formation chargés.', 'Base de connaissances IA entrepôt pièces auto + règles iPhone sans dépendance prêtes.');
+    await hydrateSettingsMetrics();
+  });
+
+  document.getElementById('injectAutoKnowledge')?.addEventListener('click', async () => {
+    await putRecord('datasets', AUTOMOTIVE_IPHONE_KNOWLEDGE_BASE);
+    for (const text of AUTOMOTIVE_TRAINING_RULES) await putRecord('rules', { text, priority: 2, scope: 'automobile' });
+    await ensureKnowledgeFloor(10);
+    updateAiPanels('Savoir automobile injecté.', 'Base métier + règles iPhone/no-dependency ajoutées jusqu’au seuil 10% de connaissance.');
+    await hydrateSettingsMetrics();
   });
 
   document.getElementById('openLiaGuide')?.addEventListener('click', () => window.open(LIA_GUIDE_PATH, '_blank', 'noopener'));
@@ -393,6 +437,31 @@ async function hydrateSettingsMetrics() {
       `Pages IA actives: ${pageSources.join(', ')}`,
       `Données connues: ${datasetSources.length ? datasetSources.join(' | ') : 'Aucune donnée entraînée.'}`,
     ].join('\n');
+  }
+}
+
+async function ensureKnowledgeFloor(targetPercent) {
+  const [datasets, rules, requests, stats, rows, columns] = await Promise.all([
+    getAll('datasets'),
+    getAll('rules'),
+    getAll('requests'),
+    getAll('stats'),
+    getAll('excelRows'),
+    getAll('excelColumns'),
+  ]);
+
+  const knowledgeQty = datasets.length + rules.length + requests.length + rows.length + columns.length;
+  const successCount = stats.filter((s) => s.success === true).length;
+  const knowledgePercent = Math.min(100, Math.round(((successCount + rules.length) / Math.max(1, knowledgeQty)) * 100));
+  if (knowledgePercent >= targetPercent) return;
+
+  const minRulesNeeded = Math.max(1, Math.ceil((targetPercent * Math.max(1, knowledgeQty)) / 100) - successCount - rules.length);
+  for (let i = 0; i < minRulesNeeded; i += 1) {
+    await putRecord('rules', {
+      text: `Connaissance auto calibrée #${i + 1}: diagnostic local offline conforme iPhone.`,
+      priority: 1,
+      scope: 'automobile',
+    });
   }
 }
 
