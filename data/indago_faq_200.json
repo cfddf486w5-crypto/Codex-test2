@@ -1,0 +1,1210 @@
+[
+  {
+    "id": 1,
+    "categorie": "Général",
+    "question": "Qu’est-ce qu’Indago WMS et à quoi sert-il?",
+    "reponse": "Un WMS (Warehouse Management System) sert à gérer les réceptions, l’inventaire, la préparation, l’emballage et l’expédition avec traçabilité. Les écrans précis dépendent de votre configuration Indago."
+  },
+  {
+    "id": 2,
+    "categorie": "Général",
+    "question": "Quelle est la différence entre Indago (RF/mobile) et Indago Desktop?",
+    "reponse": "Le RF/mobile sert aux opérations terrain (scan, picking, receiving). Le Desktop sert souvent à la gestion, aux paramètres, aux requêtes, et aux rapports. Les menus visibles varient selon les droits."
+  },
+  {
+    "id": 3,
+    "categorie": "Général",
+    "question": "Pourquoi les mêmes tâches apparaissent différemment selon les utilisateurs?",
+    "reponse": "Les rôles, permissions et profils (RF/desktop) peuvent activer/désactiver des écrans et règles."
+  },
+  {
+    "id": 4,
+    "categorie": "Général",
+    "question": "Quels sont les identifiants typiques dans un WMS (ordre, tote, palette, bin)?",
+    "reponse": "En général: Order/SO (commande), Tote/Container (bac), Pallet/LPN (palette), Bin/Location (emplacement), Item/SKU (produit). Les noms exacts peuvent varier."
+  },
+  {
+    "id": 5,
+    "categorie": "Général",
+    "question": "Qu’est-ce qu’un LPN (License Plate Number) / Pallet ID?",
+    "reponse": "Un identifiant unique d’un contenant logistique (palette, carton, tote) pour suivre ce qu’il contient et ses mouvements."
+  },
+  {
+    "id": 6,
+    "categorie": "Général",
+    "question": "C’est quoi une “allocation” en WMS?",
+    "reponse": "La réservation d’une quantité d’un item dans un bin pour une commande ou une tâche, afin d’éviter le double prélèvement."
+  },
+  {
+    "id": 7,
+    "categorie": "Général",
+    "question": "Quelle est la différence entre “On Hand”, “Allocated”, “Available”?",
+    "reponse": "On Hand = en stock physique; Allocated = réservé; Available = généralement On Hand - Allocated (selon règles)."
+  },
+  {
+    "id": 8,
+    "categorie": "Général",
+    "question": "Pourquoi un item peut être “Available” à 0 même si On Hand > 0?",
+    "reponse": "Parce qu’il est alloué, en quarantaine, bloqué qualité, ou soumis à règles (lot/serial, statut, zone)."
+  },
+  {
+    "id": 9,
+    "categorie": "Général",
+    "question": "Qu’est-ce qu’un cycle count?",
+    "reponse": "Un comptage d’inventaire ciblé et fréquent pour corriger les écarts sans bloquer l’entrepôt."
+  },
+  {
+    "id": 10,
+    "categorie": "Général",
+    "question": "Qu’est-ce qu’un “putaway” (mise en emplacement)?",
+    "reponse": "Le processus qui déplace une réception de zone de staging vers un bin de stockage."
+  },
+  {
+    "id": 11,
+    "categorie": "Général",
+    "question": "Pourquoi standardiser les formats d’ID (palette/tote/bin)?",
+    "reponse": "Pour réduire les erreurs de scan, faciliter la recherche, et permettre des règles automatiques (validation, workflows)."
+  },
+  {
+    "id": 12,
+    "categorie": "Général",
+    "question": "Comment éviter les “zero pick” (bin vide au moment du pick)?",
+    "reponse": "Cycle counts, discipline de mouvements, putaway rapide, règles de validation, et audits ciblés sur bins à risque."
+  },
+  {
+    "id": 13,
+    "categorie": "Général",
+    "question": "Qu’est-ce qu’une “wave” ou un “batch pick”?",
+    "reponse": "Un regroupement de commandes pour optimiser le prélèvement (par zone/allée) et réduire les déplacements."
+  },
+  {
+    "id": 14,
+    "categorie": "Général",
+    "question": "C’est quoi une “tâche” (task) dans Indago?",
+    "reponse": "Une unité de travail (pick, move, putaway, count). Elle a un statut (ouverte/en cours/complétée) et souvent un propriétaire."
+  },
+  {
+    "id": 15,
+    "categorie": "Général",
+    "question": "Comment Indago gère-t-il les statuts (open/in process/complete)?",
+    "reponse": "Chaque document/tâche a un cycle de vie; les transitions peuvent être automatiques ou nécessiter une confirmation selon configuration."
+  },
+  {
+    "id": 16,
+    "categorie": "Général",
+    "question": "Pourquoi les règles diffèrent entre sites (Langelier vs Laval2)?",
+    "reponse": "Les paramètres, layout, types de bins, et processus (clients/transporteurs) peuvent être distincts par site."
+  },
+  {
+    "id": 17,
+    "categorie": "Général",
+    "question": "Quels scans sont “critiques” pour la traçabilité?",
+    "reponse": "Item, bin source, bin destination, quantité, et identifiant du contenant (tote/palette)."
+  },
+  {
+    "id": 18,
+    "categorie": "Général",
+    "question": "Comment réduire les erreurs humaines au scan?",
+    "reponse": "Validation temps réel (référence item/bin), messages clairs, champs auto-focus, et restrictions (formats, listes)."
+  },
+  {
+    "id": 19,
+    "categorie": "Général",
+    "question": "Comment documenter les SOP dans un WMS?",
+    "reponse": "Créer des procédures courtes par écran (receiving/picking/putaway) avec exemples, erreurs fréquentes et actions correctives."
+  },
+  {
+    "id": 20,
+    "categorie": "Général",
+    "question": "Quelles données sont nécessaires pour analyser la performance (KPI)?",
+    "reponse": "Temps par tâche, lignes/heure, erreurs (exceptions), écarts d’inventaire, retards de réception/expédition, et retours."
+  },
+
+  {
+    "id": 21,
+    "categorie": "Navigation & rôles",
+    "question": "Comment savoir quels menus je devrais voir dans Indago?",
+    "reponse": "Cela dépend de ton rôle/profil. Compare avec un utilisateur admin et demande la liste des permissions associées à ton compte."
+  },
+  {
+    "id": 22,
+    "categorie": "Navigation & rôles",
+    "question": "Pourquoi je ne vois pas le menu “Packing” ou “Consolidate”?",
+    "reponse": "Souvent désactivé par permissions ou non utilisé dans votre flux. Demande à l’admin Indago de vérifier le rôle."
+  },
+  {
+    "id": 23,
+    "categorie": "Navigation & rôles",
+    "question": "Comment accéder rapidement à un écran sans naviguer?",
+    "reponse": "Selon version: recherche/quick launch, favoris, ou raccourcis. Sinon, créer une page d’accueil interne avec liens clairs."
+  },
+  {
+    "id": 24,
+    "categorie": "Navigation & rôles",
+    "question": "Comment gérer plusieurs entrepôts/sites dans Indago?",
+    "reponse": "Généralement via un champ “warehouse/site” ou des environnements séparés. La méthode exacte dépend de la configuration."
+  },
+  {
+    "id": 25,
+    "categorie": "Navigation & rôles",
+    "question": "Comment vérifier mon site actif avant de scanner?",
+    "reponse": "Regarde l’entête de l’écran (warehouse/site). Si absent, demande un indicateur visuel obligatoire dans l’UI."
+  },
+  {
+    "id": 26,
+    "categorie": "Navigation & rôles",
+    "question": "Comment limiter certaines actions aux superviseurs?",
+    "reponse": "Par permissions (role-based access) et par règles de validation (ex: override requis)."
+  },
+  {
+    "id": 27,
+    "categorie": "Navigation & rôles",
+    "question": "C’est quoi un “override” et quand l’utiliser?",
+    "reponse": "Une autorisation spéciale pour passer une règle. À utiliser seulement avec trace (raison, user, date)."
+  },
+  {
+    "id": 28,
+    "categorie": "Navigation & rôles",
+    "question": "Comment activer/forcer la saisie d’une raison lors d’un move?",
+    "reponse": "Habituellement via configuration des transactions/motifs. Sinon, capturer la raison dans une app terrain complémentaire."
+  },
+  {
+    "id": 29,
+    "categorie": "Navigation & rôles",
+    "question": "Comment afficher le nom du user dans les transactions?",
+    "reponse": "Vérifie les logs/moves: l’utilisateur est souvent enregistré automatiquement. Sinon, activer l’audit trail."
+  },
+  {
+    "id": 30,
+    "categorie": "Navigation & rôles",
+    "question": "Comment gérer les langues (FR/EN) dans Indago?",
+    "reponse": "Selon la version, il peut y avoir un paramètre de langue par utilisateur ou par appareil. Sinon, documentation interne bilingue."
+  },
+  {
+    "id": 31,
+    "categorie": "Navigation & rôles",
+    "question": "Comment créer un profil RF “terrain” vs “superviseur”?",
+    "reponse": "Deux rôles: terrain avec flux standard, superviseur avec menus admin/rapports et actions d’exception."
+  },
+  {
+    "id": 32,
+    "categorie": "Navigation & rôles",
+    "question": "Comment sécuriser les données (confidentialité)?",
+    "reponse": "Limiter les exports, gérer les permissions, et utiliser des appareils gérés (MDM) si possible."
+  },
+  {
+    "id": 33,
+    "categorie": "Navigation & rôles",
+    "question": "Comment savoir si je suis en mode test ou prod?",
+    "reponse": "Utiliser un bandeau visuel (couleur/texte) et vérifier l’URL/environnement. Ne pas se fier à la mémoire."
+  },
+  {
+    "id": 34,
+    "categorie": "Navigation & rôles",
+    "question": "Comment éviter les erreurs de navigation sur RF?",
+    "reponse": "UI simplifiée: gros boutons, workflow linéaire, retour clair, et validation à chaque étape (item/bin/qty)."
+  },
+  {
+    "id": 35,
+    "categorie": "Navigation & rôles",
+    "question": "Comment ajouter une page d’accueil avec boutons (dashboard)?",
+    "reponse": "Créer une page HTML/PWA interne ou configurer des favoris; l’important est l’ordre des actions terrain."
+  },
+  {
+    "id": 36,
+    "categorie": "Navigation & rôles",
+    "question": "Comment gérer les sessions qui expirent?",
+    "reponse": "Configurer le timeout si possible; sinon, former les users à sauvegarder avant de quitter et relancer rapidement."
+  },
+  {
+    "id": 37,
+    "categorie": "Navigation & rôles",
+    "question": "Pourquoi des champs se réinitialisent après un scan?",
+    "reponse": "Cela peut venir du focus, d’un traitement serveur, ou d’une validation. Solution: auto-focus + messages + anti-double-scan."
+  },
+  {
+    "id": 38,
+    "categorie": "Navigation & rôles",
+    "question": "Comment tracer qui a fait quoi (audit)?",
+    "reponse": "Activer l’audit trail/logs et s’assurer que chaque transaction stocke user + timestamp + source/destination."
+  },
+  {
+    "id": 39,
+    "categorie": "Navigation & rôles",
+    "question": "Comment standardiser les noms de bins/zones?",
+    "reponse": "Définir un format (zone-allée-rack-niveau-bin) et imposer la validation (regex) lors de la création/import."
+  },
+  {
+    "id": 40,
+    "categorie": "Navigation & rôles",
+    "question": "Comment gérer les changements de layout (bins ajoutés/supprimés)?",
+    "reponse": "Process: mise à jour master locations + communication + audit des impacts (picks/moves/putaway)."
+  },
+
+  {
+    "id": 41,
+    "categorie": "Réception",
+    "question": "Quelle est la différence entre Receiving et Putaway?",
+    "reponse": "Receiving enregistre l’arrivée (quantités, documents). Putaway place physiquement les produits dans des bins."
+  },
+  {
+    "id": 42,
+    "categorie": "Réception",
+    "question": "Comment recevoir un conteneur avec plusieurs SKUs?",
+    "reponse": "Scanner/entrer chaque item et qty, puis affecter un contenant (palette/tote) et une zone staging avant putaway."
+  },
+  {
+    "id": 43,
+    "categorie": "Réception",
+    "question": "Comment gérer les backorders ou quantités manquantes à réception?",
+    "reponse": "Enregistrer la quantité reçue réelle, marquer le reste en attente, et générer une exception/rapport pour le suivi fournisseur."
+  },
+  {
+    "id": 44,
+    "categorie": "Réception",
+    "question": "Que faire si le code-barres fournisseur ne match pas l’item interne?",
+    "reponse": "Utiliser une table de correspondance (cross-reference) ou une saisie manuelle contrôlée + correction master data."
+  },
+  {
+    "id": 45,
+    "categorie": "Réception",
+    "question": "Comment recevoir des items sans code-barres?",
+    "reponse": "Créer un mode “entrée manuelle” avec validation sur liste d’items, puis imprimer une étiquette interne."
+  },
+  {
+    "id": 46,
+    "categorie": "Réception",
+    "question": "Comment éviter les doubles réceptions?",
+    "reponse": "Contrôle par document (PO/ASN), statut, et blocage si un numéro a déjà été reçu/clos."
+  },
+  {
+    "id": 47,
+    "categorie": "Réception",
+    "question": "Comment gérer une réception partielle sur plusieurs jours?",
+    "reponse": "Garder le document ouvert, recevoir par lots, et utiliser des statuts (partial/complete) avec traçabilité."
+  },
+  {
+    "id": 48,
+    "categorie": "Réception",
+    "question": "Comment affecter une palette ID à une réception?",
+    "reponse": "Créer/scan un LPN/pallet ID au début, puis rattacher les lignes reçues à ce LPN."
+  },
+  {
+    "id": 49,
+    "categorie": "Réception",
+    "question": "Comment imprimer des étiquettes à la réception?",
+    "reponse": "Selon setup: impression via Desktop/RF, ou via un onglet dédié qui génère QR/Code128 et imprime."
+  },
+  {
+    "id": 50,
+    "categorie": "Réception",
+    "question": "Quel est le meilleur moment pour générer les IDs de palettes?",
+    "reponse": "Au moment où la palette est physiquement créée, idéalement avant de la déplacer, pour tracer tous les mouvements."
+  },
+  {
+    "id": 51,
+    "categorie": "Réception",
+    "question": "Comment recevoir en “staging bin” puis déplacer?",
+    "reponse": "Réception dans une location staging (ex: RECEIVING), puis putaway vers bins de stockage."
+  },
+  {
+    "id": 52,
+    "categorie": "Réception",
+    "question": "Comment gérer la quarantaine/inspection qualité?",
+    "reponse": "Réception vers une zone QA/quarantaine avec statut bloqué, puis libération après inspection."
+  },
+  {
+    "id": 53,
+    "categorie": "Réception",
+    "question": "Comment recevoir des items sérialisés?",
+    "reponse": "Scanner chaque numéro de série, valider l’unicité, puis lier la série à la réception et à la location."
+  },
+  {
+    "id": 54,
+    "categorie": "Réception",
+    "question": "Comment recevoir des items avec lots (lot/batch)?",
+    "reponse": "Saisir le lot, date expiration si applicable, et imposer le lot à l’allocation/picking."
+  },
+  {
+    "id": 55,
+    "categorie": "Réception",
+    "question": "Comment traiter les dommages à réception?",
+    "reponse": "Enregistrer une exception (damage), isoler en zone dédiée, et générer un rapport fournisseur/claim."
+  },
+  {
+    "id": 56,
+    "categorie": "Réception",
+    "question": "Comment recevoir des kits ou items composés?",
+    "reponse": "Selon règles: recevoir composants puis assembler, ou recevoir kit comme SKU. Le process dépend du master data."
+  },
+  {
+    "id": 57,
+    "categorie": "Réception",
+    "question": "Comment gérer les UOM (boîte vs unité) à réception?",
+    "reponse": "Valider l’UOM, convertir si nécessaire, et s’assurer que les conversions sont correctes dans l’item master."
+  },
+  {
+    "id": 58,
+    "categorie": "Réception",
+    "question": "Comment faire une vérification rapide de conformité (count check)?",
+    "reponse": "Échantillonnage: comparer qty reçue vs document, et scanner un pourcentage d’items pour valider."
+  },
+  {
+    "id": 59,
+    "categorie": "Réception",
+    "question": "Comment traiter les substitutions (item remplacé)?",
+    "reponse": "Documenter la substitution, lier l’item substitut au PO/ligne, et créer une règle de compatibilité."
+  },
+  {
+    "id": 60,
+    "categorie": "Réception",
+    "question": "Comment suivre le temps de déchargement/traitement?",
+    "reponse": "Capturer timestamps: début déchargement, fin, début réception système, fin, puis reporter par conteneur."
+  },
+  {
+    "id": 61,
+    "categorie": "Réception",
+    "question": "Comment recevoir si le Wi-Fi est instable?",
+    "reponse": "Offline-first: capturer localement (app) puis synchroniser. Sinon, plan de reprise + zone tampon + checklists papier."
+  },
+  {
+    "id": 62,
+    "categorie": "Réception",
+    "question": "Comment organiser la zone de réception pour éviter le chaos?",
+    "reponse": "Définir zones: staging, QA, putaway ready, exceptions. Étiquettes visibles et règles d’accès."
+  },
+  {
+    "id": 63,
+    "categorie": "Réception",
+    "question": "Comment répartir automatiquement les items vers zones?",
+    "reponse": "Règles de putaway basées sur zone/rotation/dimensions. Sinon, liste de recommandation (moves) générée."
+  },
+  {
+    "id": 64,
+    "categorie": "Réception",
+    "question": "Comment gérer les excédents (overage) à réception?",
+    "reponse": "Enregistrer la qty réelle, isoler l’excédent en zone “hold” et notifier achats/finance."
+  },
+  {
+    "id": 65,
+    "categorie": "Réception",
+    "question": "Comment gérer les manquants (shortage) à réception?",
+    "reponse": "Marquer shortage, lancer un backorder interne, et déclencher un suivi fournisseur."
+  },
+  {
+    "id": 66,
+    "categorie": "Réception",
+    "question": "Comment valider que l’emplacement de putaway est correct?",
+    "reponse": "Forcer scan bin destination + règles (type bin, capacité) + confirmation si exception."
+  },
+  {
+    "id": 67,
+    "categorie": "Réception",
+    "question": "Comment recevoir sans PO (réception “ad hoc”)?",
+    "reponse": "Créer un document ad hoc (si permis) avec justification, ou passer par un flux d’exception superviseur."
+  },
+  {
+    "id": 68,
+    "categorie": "Réception",
+    "question": "Comment lier un conteneur (container#) à un set de palettes?",
+    "reponse": "Stocker container# comme champ sur chaque LPN/palette ou sur les receipts et générer un rapport container→palettes."
+  },
+  {
+    "id": 69,
+    "categorie": "Réception",
+    "question": "Comment gérer le cross-dock (réception directement vers expédition)?",
+    "reponse": "Créer une règle: items alloués aux commandes urgentes passent en staging expédition, avec scan et trace."
+  },
+  {
+    "id": 70,
+    "categorie": "Réception",
+    "question": "Que faire si l’imprimante d’étiquettes ne répond pas?",
+    "reponse": "Check: connexion, file d’attente, driver, test page. Prévoir un fallback: génération d’étiquettes à partir du Desktop."
+  },
+
+  {
+    "id": 71,
+    "categorie": "Inventaire",
+    "question": "Comment vérifier la quantité d’un item dans tout l’entrepôt?",
+    "reponse": "Requête item→bins: lister chaque bin + qtyOH, puis total. Toujours afficher la source (snapshot/moves)."
+  },
+  {
+    "id": 72,
+    "categorie": "Inventaire",
+    "question": "Pourquoi un item apparaît dans plusieurs bins?",
+    "reponse": "Fragmentation due à putaway, retours, picks partiels. Une règle de consolidation peut réduire le nombre de bins."
+  },
+  {
+    "id": 73,
+    "categorie": "Inventaire",
+    "question": "Comment consolider un item dispersé?",
+    "reponse": "Identifier bins sources, choisir un bin cible compatible (type/capacité), générer des moves recommandés, puis exécuter avec scans."
+  },
+  {
+    "id": 74,
+    "categorie": "Inventaire",
+    "question": "Comment gérer les bins vides?",
+    "reponse": "Détecter qtyOH=0 sur snapshot, confirmer physiquement, puis marquer “vide”/libre dans un rapport."
+  },
+  {
+    "id": 75,
+    "categorie": "Inventaire",
+    "question": "Comment définir la capacité d’un bin?",
+    "reponse": "Capacité peut être en unités, volume ou poids. Si Indago ne gère pas la dimension, stocker une capacité logique par type."
+  },
+  {
+    "id": 76,
+    "categorie": "Inventaire",
+    "question": "Comment éviter de dépasser la capacité d’un bin?",
+    "reponse": "Règle: avant move/putaway, calculer qty cible + qty existante ≤ capacité; sinon proposer bin alternatif."
+  },
+  {
+    "id": 77,
+    "categorie": "Inventaire",
+    "question": "Comment traiter les écarts d’inventaire (variance)?",
+    "reponse": "Créer une tâche d’audit, compter physiquement, enregistrer l’ajustement avec raison et approbation si requis."
+  },
+  {
+    "id": 78,
+    "categorie": "Inventaire",
+    "question": "Comment faire un cycle count efficace?",
+    "reponse": "Cibler bins à haut mouvement, items à forte valeur, et bins à historique d’écarts; planifier par zone."
+  },
+  {
+    "id": 79,
+    "categorie": "Inventaire",
+    "question": "Comment empêcher le picking dans une zone temporaire (ex: LAV spot)?",
+    "reponse": "Marquer la zone comme non-pickable ou appliquer un filtre d’allocation. Sinon, règles internes + audits."
+  },
+  {
+    "id": 80,
+    "categorie": "Inventaire",
+    "question": "Comment distinguer stock “Transbec” vs “DAI”?",
+    "reponse": "Séparation par warehouse/site ou par attribut (owner). Éviter le mélange dans les mêmes bins si possible."
+  },
+  {
+    "id": 81,
+    "categorie": "Inventaire",
+    "question": "Comment gérer les retours (remise en stock) sans créer d’écarts?",
+    "reponse": "Workflow: scan item (1=1), rattacher à une remise, confirmer bin, enregistrer move + audit trail."
+  },
+  {
+    "id": 82,
+    "categorie": "Inventaire",
+    "question": "Comment gérer les produits endommagés (scrap)?",
+    "reponse": "Isoler en zone scrap, exiger scan item + scan scrapbox/bin, log user/date/raison."
+  },
+  {
+    "id": 83,
+    "categorie": "Inventaire",
+    "question": "Comment gérer les “rebox” (nouvel emballage)?",
+    "reponse": "Créer une zone/étape rebox et tracer le transfert. Ensuite, remettre en stock avec scan bin."
+  },
+  {
+    "id": 84,
+    "categorie": "Inventaire",
+    "question": "Comment retrouver le dernier mouvement d’un item?",
+    "reponse": "Consulter moves triés par date pour itemId. Si pas de moves, se fier au snapshot d’inventaire le plus récent."
+  },
+  {
+    "id": 85,
+    "categorie": "Inventaire",
+    "question": "Comment analyser les bins “à risque” de zero pick?",
+    "reponse": "Comparer fréquence de picks vs fréquence de counts, détecter bins souvent à 0 malgré allocations."
+  },
+  {
+    "id": 86,
+    "categorie": "Inventaire",
+    "question": "Comment traiter les unités de mesure (UOM) incohérentes?",
+    "reponse": "Valider le master data (conversion). Bloquer réception/pick si UOM invalide, ou forcer une correction."
+  },
+  {
+    "id": 87,
+    "categorie": "Inventaire",
+    "question": "Comment gérer les items sérialisés en inventaire?",
+    "reponse": "Chaque série doit avoir un statut (in stock, allocated, shipped) et une localisation unique."
+  },
+  {
+    "id": 88,
+    "categorie": "Inventaire",
+    "question": "Comment gérer les lots/expiration?",
+    "reponse": "Forcer la sélection du lot à réception et au pick; appliquer FEFO/FIFO selon règles."
+  },
+  {
+    "id": 89,
+    "categorie": "Inventaire",
+    "question": "Comment faire un audit de bins par zone?",
+    "reponse": "Rapport: zone → bins → qty totale → anomalies (négatifs, >capacité, items inconnus)."
+  },
+  {
+    "id": 90,
+    "categorie": "Inventaire",
+    "question": "Que faire si qtyOH est négative?",
+    "reponse": "C’est une anomalie: investiguer transactions, retours/picks non confirmés, ou erreurs d’ajustement."
+  },
+  {
+    "id": 91,
+    "categorie": "Inventaire",
+    "question": "Comment empêcher les ajustements non justifiés?",
+    "reponse": "Rendre l’ajustement superviseur-only et exiger une raison + notes si possible."
+  },
+  {
+    "id": 92,
+    "categorie": "Inventaire",
+    "question": "Comment identifier les items “lents” (slow movers)?",
+    "reponse": "Analyse: mouvements sur période vs stock. Sans module BI, exporter moves et calculer fréquence."
+  },
+  {
+    "id": 93,
+    "categorie": "Inventaire",
+    "question": "Comment identifier les items “chauds” (fast movers)?",
+    "reponse": "Même principe: picks/moves élevés; les placer dans zones accessibles (golden zone)."
+  },
+  {
+    "id": 94,
+    "categorie": "Inventaire",
+    "question": "Comment appliquer une stratégie de slotting?",
+    "reponse": "Règles: ABC, proximité shipping, taille/poids, compatibilités, et capacité. Revoir périodiquement."
+  },
+  {
+    "id": 95,
+    "categorie": "Inventaire",
+    "question": "Comment gérer les items volumineux (mags, pneus)?",
+    "reponse": "Bins dédiés, règles de capacité, et éviter mélange. Ajouter des attributs (volume) si possible."
+  },
+  {
+    "id": 96,
+    "categorie": "Inventaire",
+    "question": "Comment gérer les produits multi-sites (Langelier/Laval2)?",
+    "reponse": "Définir règles de transfert inter-site, synchronisation master data, et rapports de stock par site."
+  },
+  {
+    "id": 97,
+    "categorie": "Inventaire",
+    "question": "Comment éviter les doublons d’items (SKU dupliqué)?",
+    "reponse": "Contrôle master data: unicité itemId, barcodes, descriptions; audits périodiques."
+  },
+  {
+    "id": 98,
+    "categorie": "Inventaire",
+    "question": "Comment valider un barcode scanné?",
+    "reponse": "Comparer en temps réel à une table de référence (barcode→item). Refuser si inconnu."
+  },
+  {
+    "id": 99,
+    "categorie": "Inventaire",
+    "question": "Comment traiter les barcodes multiples pour un item?",
+    "reponse": "Table de correspondance: plusieurs barcodes vers le même itemId, avec priorité et statut actif."
+  },
+  {
+    "id": 100,
+    "categorie": "Inventaire",
+    "question": "Comment gérer l’inventaire en transit entre sites?",
+    "reponse": "Statut “in transit” + LPN/palette ID + destination. Sortir du OH source et entrer en staging destination à réception."
+  },
+  {
+    "id": 101,
+    "categorie": "Inventaire",
+    "question": "Comment gérer les bins “bloqués” (maintenance, sécurité)?",
+    "reponse": "Marquer bin non-utilisable; interdire putaway/pick; déplacer le stock si nécessaire."
+  },
+  {
+    "id": 102,
+    "categorie": "Inventaire",
+    "question": "Comment produire une liste de bins vides utilisables?",
+    "reponse": "Filtrer bins pickable/putaway et qtyOH=0, puis trier par zone/allée pour utilisation rapide."
+  },
+  {
+    "id": 103,
+    "categorie": "Inventaire",
+    "question": "Comment vérifier la cohérence bins↔layout physique?",
+    "reponse": "Audit terrain: scan bin, comparer à la carte/layout, corriger bins manquants/erronés."
+  },
+  {
+    "id": 104,
+    "categorie": "Inventaire",
+    "question": "Comment tracer les corrections de layout?",
+    "reponse": "Log: bin créé/modifié/supprimé, qui, quand, pourquoi. Exportable pour revue."
+  },
+  {
+    "id": 105,
+    "categorie": "Inventaire",
+    "question": "Comment protéger les données d’inventaire dans les exports?",
+    "reponse": "Limiter l’accès aux exports, anonymiser si besoin, et conserver les fichiers sur un stockage contrôlé."
+  },
+
+  {
+    "id": 106,
+    "categorie": "Picking",
+    "question": "Qu’est-ce qu’un pick “single” vs “batch/cluster”?",
+    "reponse": "Single: une commande à la fois. Batch/cluster: plusieurs commandes regroupées pour réduire les déplacements."
+  },
+  {
+    "id": 107,
+    "categorie": "Picking",
+    "question": "Comment lier une tote à une commande?",
+    "reponse": "Attribuer un tote ID au début du pick et l’associer à la commande (SO). Chaque scan/pick alimente cette relation."
+  },
+  {
+    "id": 108,
+    "categorie": "Picking",
+    "question": "Comment gérer une commande répartie sur plusieurs totes?",
+    "reponse": "Autoriser plusieurs totes par SO et suivre statut par tote (incomplète/partielle/complète) avec un écran de consolidation."
+  },
+  {
+    "id": 109,
+    "categorie": "Picking",
+    "question": "Comment éviter de mélanger les commandes dans la même tote?",
+    "reponse": "Règle: une tote ne peut contenir qu’une SO (sauf exception). Valider avant ajout d’item."
+  },
+  {
+    "id": 110,
+    "categorie": "Picking",
+    "question": "Comment gérer les substitutions pendant le picking?",
+    "reponse": "Process d’exception: demander approbation, choisir item substitut autorisé, tracer la décision et la quantité."
+  },
+  {
+    "id": 111,
+    "categorie": "Picking",
+    "question": "Que faire si le bin source est vide au pick?",
+    "reponse": "Créer exception “short pick/zero pick”, déclencher une enquête (cycle count) et proposer bin alternatif si existe."
+  },
+  {
+    "id": 112,
+    "categorie": "Picking",
+    "question": "Comment gérer les picks partiels?",
+    "reponse": "Confirmer qty prélevée, laisser le reste en backorder, et mettre la ligne en statut partial/short."
+  },
+  {
+    "id": 113,
+    "categorie": "Picking",
+    "question": "Comment optimiser les routes de picking?",
+    "reponse": "Ordonner par zone→allée→bin, utiliser waves, et garder les fast movers proches de shipping."
+  },
+  {
+    "id": 114,
+    "categorie": "Picking",
+    "question": "Comment réduire les retours en arrière (backtracking)?",
+    "reponse": "Regrouper par zone, éviter les sauts de zones, et appliquer une logique de parcours (tour complet)."
+  },
+  {
+    "id": 115,
+    "categorie": "Picking",
+    "question": "Comment gérer les items lourds/volumineux dans le pick?",
+    "reponse": "Séparer en wave dédiée, utiliser équipement (chariot), et ordonner pour minimiser manipulations."
+  },
+  {
+    "id": 116,
+    "categorie": "Picking",
+    "question": "Pourquoi le système propose un bin différent de celui attendu?",
+    "reponse": "Règles d’allocation: FEFO/FIFO, lot/serial, pick face, priorités. Vérifier paramètres."
+  },
+  {
+    "id": 117,
+    "categorie": "Picking",
+    "question": "Comment forcer le pick depuis un bin spécifique?",
+    "reponse": "Souvent via override ou réallocation. À faire avec traçabilité et raison."
+  },
+  {
+    "id": 118,
+    "categorie": "Picking",
+    "question": "Comment gérer un pick avec lots/serial?",
+    "reponse": "Scanner le lot/série imposé; refuser si non conforme. En cas d’erreur, corriger l’allocation."
+  },
+  {
+    "id": 119,
+    "categorie": "Picking",
+    "question": "Comment traiter les commandes urgentes (rush)?",
+    "reponse": "Priorité élevée, wave séparée, zone staging dédiée, et indicateur visuel terrain."
+  },
+  {
+    "id": 120,
+    "categorie": "Picking",
+    "question": "Comment valider la bonne quantité au pick?",
+    "reponse": "Scan item + entrée qty + contrôle de tolérance. Pour items sensibles, exiger scan par unité."
+  },
+  {
+    "id": 121,
+    "categorie": "Picking",
+    "question": "Comment gérer les erreurs de scan (mauvais item)?",
+    "reponse": "Message clair, refuser l’ajout, proposer aide (photo/desc), et loguer l’erreur pour formation."
+  },
+  {
+    "id": 122,
+    "categorie": "Picking",
+    "question": "Comment gérer les picks pour magasins/clients différents?",
+    "reponse": "Séparation par route/carrier/zone staging, et étiquettes couleur par destination."
+  },
+  {
+    "id": 123,
+    "categorie": "Picking",
+    "question": "Comment préparer un pick pour consolidation (mags, pneus)?",
+    "reponse": "Créer un flux “build pallet / consolidate” où chaque tote/line est associée à une palette finale."
+  },
+  {
+    "id": 124,
+    "categorie": "Picking",
+    "question": "Comment suivre le statut d’une commande (complete/partial)?",
+    "reponse": "Calculer: toutes les lignes pickées + confirmées = complete; sinon partial/incomplete."
+  },
+  {
+    "id": 125,
+    "categorie": "Picking",
+    "question": "Comment gérer les “totes orphelines” (non liées)?",
+    "reponse": "Rapport: totes sans SO, déplacer vers zone exception, et forcer un rattachement ou une fermeture."
+  },
+  {
+    "id": 126,
+    "categorie": "Picking",
+    "question": "Comment traiter les picks annulés?",
+    "reponse": "Annuler via processus contrôlé, remettre stock en bin (move back), tracer user/raison."
+  },
+  {
+    "id": 127,
+    "categorie": "Picking",
+    "question": "Comment gérer les picks en double (double scan)?",
+    "reponse": "Anti-double-scan: délai, validation de dernière entrée, et verrou sur la ligne déjà confirmée."
+  },
+  {
+    "id": 128,
+    "categorie": "Picking",
+    "question": "Comment gérer les ruptures temporaires?",
+    "reponse": "Backorder, substitution, ou transfert inter-site selon règles. Toujours documenter."
+  },
+  {
+    "id": 129,
+    "categorie": "Picking",
+    "question": "Comment gérer les “kits” au picking?",
+    "reponse": "Soit pick composants séparés puis assembler, soit pick SKU kit. Le process dépend du master data."
+  },
+  {
+    "id": 130,
+    "categorie": "Picking",
+    "question": "Comment améliorer la qualité du pick (erreurs)?",
+    "reponse": "Scan obligatoire, contrôles, formation, audits, et métriques par employé/zone."
+  },
+  {
+    "id": 131,
+    "categorie": "Picking",
+    "question": "Comment gérer la séquence “pick → staging → ship”?",
+    "reponse": "Définir une zone staging par carrier/route, et exiger scan bin staging à la fin du pick."
+  },
+  {
+    "id": 132,
+    "categorie": "Picking",
+    "question": "Comment intégrer une logique de “tote status” dans l’outil?",
+    "reponse": "Stocker: toteId, so, nb lignes, nb complétées, nb short, et timestamp. Afficher un tableau de bord."
+  },
+  {
+    "id": 133,
+    "categorie": "Picking",
+    "question": "Comment mesurer lignes/heure et temps par bin?",
+    "reponse": "Capturer timestamps par scan et par tâche; exporter et agréger en rapports."
+  },
+  {
+    "id": 134,
+    "categorie": "Picking",
+    "question": "Comment traiter les picks depuis une zone “non accessible”?",
+    "reponse": "Bloquer allocations dans zone fermée ou créer un workflow “move to pick face” avant picking."
+  },
+  {
+    "id": 135,
+    "categorie": "Picking",
+    "question": "Comment gérer le picking multi-sites?",
+    "reponse": "Le pick se fait dans le site source; les transferts inter-site doivent être traités comme expéditions internes."
+  },
+
+  {
+    "id": 136,
+    "categorie": "Packing",
+    "question": "À quoi sert le module Packing?",
+    "reponse": "À vérifier, emballer, et confirmer les quantités avant expédition, parfois avec contrôle poids/dimensions."
+  },
+  {
+    "id": 137,
+    "categorie": "Packing",
+    "question": "Que faire si vous n’utilisez pas Packing dans votre flux?",
+    "reponse": "Documenter le flux réel (ex: Build Pallet dans Shipping) et éviter d’activer des écrans inutiles."
+  },
+  {
+    "id": 138,
+    "categorie": "Packing",
+    "question": "Comment vérifier qu’une commande est complète avant emballage?",
+    "reponse": "Comparer lignes pickées vs lignes de commande; contrôler exceptions (short/substitute)."
+  },
+  {
+    "id": 139,
+    "categorie": "Packing",
+    "question": "Comment gérer la consolidation de plusieurs totes en un colis?",
+    "reponse": "Scanne totes → scanne container/box → confirmer contenu. Le détail dépend de vos écrans/config."
+  },
+  {
+    "id": 140,
+    "categorie": "Packing",
+    "question": "Comment gérer les erreurs trouvées au packing?",
+    "reponse": "Créer une exception (missing/extra/damaged), retourner en picking ou inventaire, et tracer l’écart."
+  },
+  {
+    "id": 141,
+    "categorie": "Packing",
+    "question": "Comment imprimer les étiquettes de colis?",
+    "reponse": "Selon setup: via Shipping (carrier), ou via une intégration. Sinon, générer un print pack interne."
+  },
+  {
+    "id": 142,
+    "categorie": "Packing",
+    "question": "Comment gérer les matériaux d’emballage (cartons, fill)?",
+    "reponse": "Soit via inventaire interne (SKU), soit via suivi manuel. Créer un minimum de contrôle."
+  },
+  {
+    "id": 143,
+    "categorie": "Packing",
+    "question": "Comment gérer le contrôle de poids?",
+    "reponse": "Si supporté: comparer poids attendu vs poids réel; sinon, checklists + contrôles par échantillonnage."
+  },
+  {
+    "id": 144,
+    "categorie": "Packing",
+    "question": "Comment réduire les erreurs d’adresse/destination?",
+    "reponse": "Validation sur SO, carrier, et étiquette; double contrôle sur commandes à risque."
+  },
+  {
+    "id": 145,
+    "categorie": "Packing",
+    "question": "Comment gérer un split shipment (expédition en plusieurs colis)?",
+    "reponse": "Créer plusieurs colis sous la même SO, suivre tracking par colis, et gérer le statut partiel."
+  },
+  {
+    "id": 146,
+    "categorie": "Packing",
+    "question": "Comment gérer les “extras” (pièce en trop)?",
+    "reponse": "Isoler, créer une tâche de remise en stock, et investiguer (erreur de pick ou d’inventaire)."
+  },
+  {
+    "id": 147,
+    "categorie": "Packing",
+    "question": "Comment gérer les “shorts” détectés au packing?",
+    "reponse": "Déclencher une recherche en zone staging, puis exception short pick et re-pick si possible."
+  },
+  {
+    "id": 148,
+    "categorie": "Packing",
+    "question": "Comment gérer les retours client (RMA) dans le flux?",
+    "reponse": "Process séparé: réception retour, inspection, rebox/scrap, remise en stock, et ajustements."
+  },
+  {
+    "id": 149,
+    "categorie": "Packing",
+    "question": "Comment documenter les photos/preuves d’emballage?",
+    "reponse": "Si pas de module, utiliser un dossier/outil externe. Indago peut stocker notes mais pas toujours média."
+  },
+  {
+    "id": 150,
+    "categorie": "Packing",
+    "question": "Comment assurer la traçabilité colis→pallet→camion?",
+    "reponse": "Lier IDs (box/LPN) dans le flux d’expédition et conserver logs d’assemblage."
+  },
+
+  {
+    "id": 151,
+    "categorie": "Shipping",
+    "question": "Quelle est la différence entre Shipping et Packing?",
+    "reponse": "Packing prépare/valide le contenu; Shipping confirme l’expédition, le transporteur, et les documents/labels."
+  },
+  {
+    "id": 152,
+    "categorie": "Shipping",
+    "question": "Comment “Build Pallet” fonctionne en général?",
+    "reponse": "On crée une palette (LPN) et on y ajoute des commandes/colis pour expédition, avec scans et validation."
+  },
+  {
+    "id": 153,
+    "categorie": "Shipping",
+    "question": "Comment associer des commandes à une palette d’expédition?",
+    "reponse": "Scan palette ID puis scan SO/colis/tote selon votre flux, en enregistrant la relation."
+  },
+  {
+    "id": 154,
+    "categorie": "Shipping",
+    "question": "Comment gérer plusieurs transporteurs (Loomis, etc.)?",
+    "reponse": "Créer des règles par carrier: staging zone, documents, process d’assemblage (pallet vs parcels)."
+  },
+  {
+    "id": 155,
+    "categorie": "Shipping",
+    "question": "Comment imprimer un manifeste/packing list?",
+    "reponse": "Via rapports Shipping ou exports. Si absent, générer un rapport HTML/CSV depuis vos données."
+  },
+  {
+    "id": 156,
+    "categorie": "Shipping",
+    "question": "Comment gérer le statut “en transit”?",
+    "reponse": "À l’expédition: marquer shipped/in transit; à la réception inter-site: confirmer réception et remettre en stock."
+  },
+  {
+    "id": 157,
+    "categorie": "Shipping",
+    "question": "Comment traiter une annulation après expédition?",
+    "reponse": "Créer un retour (RMA) ou un retour inter-site, et tracer le mouvement inverse (in transit → received)."
+  },
+  {
+    "id": 158,
+    "categorie": "Shipping",
+    "question": "Comment éviter d’expédier une commande incomplète?",
+    "reponse": "Bloquer shipping si statut pick/pack pas complet, ou exiger override superviseur avec raison."
+  },
+  {
+    "id": 159,
+    "categorie": "Shipping",
+    "question": "Comment gérer le “staging” avant chargement?",
+    "reponse": "Définir bins staging par route/carrier et exiger scan bin lors du build pallet."
+  },
+  {
+    "id": 160,
+    "categorie": "Shipping",
+    "question": "Comment gérer le chargement camion?",
+    "reponse": "Scan palette/colis au chargement, vérifier la liste attendue, et clôturer le chargement avec un rapport."
+  },
+  {
+    "id": 161,
+    "categorie": "Shipping",
+    "question": "Comment faire la réconciliation fin de journée (shipped vs physical)?",
+    "reponse": "Comparer listes expédiées vs palettes/colis physiquement en zone shipping; investiguer écarts."
+  },
+  {
+    "id": 162,
+    "categorie": "Shipping",
+    "question": "Comment gérer des expéditions partielles?",
+    "reponse": "Permettre le partial ship, conserver le reste en backorder, et générer tracking partiel."
+  },
+  {
+    "id": 163,
+    "categorie": "Shipping",
+    "question": "Comment gérer les erreurs de destination (mauvais site)?",
+    "reponse": "Process d’exception: retenir en staging, corriger carrier/destination, et tracer le changement."
+  },
+  {
+    "id": 164,
+    "categorie": "Shipping",
+    "question": "Comment gérer l’impression des étiquettes transporteur?",
+    "reponse": "Dépend intégration carrier. Sans intégration, utiliser un outil externe et enregistrer le tracking manuellement."
+  },
+  {
+    "id": 165,
+    "categorie": "Shipping",
+    "question": "Comment suivre les numéros de tracking?",
+    "reponse": "Stocker tracking au niveau colis/palette et lier à SO. Exportable pour service clientèle."
+  },
+  {
+    "id": 166,
+    "categorie": "Shipping",
+    "question": "Comment gérer la facturation transporteur hors Indago?",
+    "reponse": "Si facturation dans un outil externe, documenter l’étape et assurer que shipped status est correct dans Indago."
+  },
+  {
+    "id": 167,
+    "categorie": "Shipping",
+    "question": "Comment gérer la consolidation multi-commandes sur une même palette?",
+    "reponse": "Autoriser plusieurs SO sur palette, mais conserver une liste exacte et des scans obligatoires pour éviter erreurs."
+  },
+  {
+    "id": 168,
+    "categorie": "Shipping",
+    "question": "Comment gérer les palettes “mixées” (plusieurs destinations)?",
+    "reponse": "À éviter. Si nécessaire, marquer clairement et imposer un contrôle au chargement."
+  },
+  {
+    "id": 169,
+    "categorie": "Shipping",
+    "question": "Comment traiter les “missing pallets” en shipping?",
+    "reponse": "Rapport: palettes créées mais non expédiées; recherche en staging; puis exception."
+  },
+  {
+    "id": 170,
+    "categorie": "Shipping",
+    "question": "Comment mesurer performance shipping (pallets/h, erreurs)?",
+    "reponse": "Capturer timestamps: build pallet start/end, chargement, exceptions. Reporter par user/shift."
+  },
+  {
+    "id": 171,
+    "categorie": "Shipping",
+    "question": "Comment gérer les documents douane/international?",
+    "reponse": "Souvent hors WMS; conserver au moins les références et documents associés au shipment."
+  },
+  {
+    "id": 172,
+    "categorie": "Shipping",
+    "question": "Comment gérer la priorisation des expéditions?",
+    "reponse": "Queue par cutoff time, priorité client, route. UI: tri + alertes."
+  },
+  {
+    "id": 173,
+    "categorie": "Shipping",
+    "question": "Comment gérer les retours inter-sites?",
+    "reponse": "Traiter comme shipment interne: palette ID + in transit + réception à destination."
+  },
+  {
+    "id": 174,
+    "categorie": "Shipping",
+    "question": "Comment gérer la fermeture d’une palette d’expédition?",
+    "reponse": "Action “close/complete pallet”: verrouille le contenu, génère document, et empêche modifications sans override."
+  },
+  {
+    "id": 175,
+    "categorie": "Shipping",
+    "question": "Comment éviter les doublons de palettes d’expédition?",
+    "reponse": "Format d’ID unique + validation de non-existence + verrou sur création simultanée."
+  },
+
+  {
+    "id": 176,
+    "categorie": "Rapports & audits",
+    "question": "Quels sont les rapports WMS les plus utiles au quotidien?",
+    "reponse": "Low stock, bins vides, exceptions (short/over), moves par jour, réceptions en retard, commandes partielles."
+  },
+  {
+    "id": 177,
+    "categorie": "Rapports & audits",
+    "question": "Comment créer un rapport “items < 20 après réception”?",
+    "reponse": "Additionner inventaire snapshot + réception prévue/reçue, filtrer total < seuil, puis lister bins et sources."
+  },
+  {
+    "id": 178,
+    "categorie": "Rapports & audits",
+    "question": "Comment créer un rapport de “bins vides” fiable?",
+    "reponse": "Filtrer qtyOH=0 + bin pickable, puis valider par audit terrain si nécessaire."
+  },
+  {
+    "id": 179,
+    "categorie": "Rapports & audits",
+    "question": "Comment créer un rapport de consolidation recommandé?",
+    "reponse": "Détecter items fragmentés (N bins > seuil), choisir bin cible, proposer moves avec contraintes capacité/type."
+  },
+  {
+    "id": 180,
+    "categorie": "Rapports & audits",
+    "question": "Comment tracer les exceptions et leurs causes?",
+    "reponse": "Loguer chaque exception avec type, user, timestamp, et lier à la transaction (pick/receive/move)."
+  },
+  {
+    "id": 181,
+    "categorie": "Rapports & audits",
+    "question": "Comment auditer la discipline de scan?",
+    "reponse": "Comparer transactions avec champs manquants (bin non scanné, qty manuelle) et identifier patterns par user."
+  },
+  {
+    "id": 182,
+    "categorie": "Rapports & audits",
+    "question": "Comment vérifier la qualité des données (master data)?",
+    "reponse": "Rapport: items sans barcode, descriptions vides, bins sans type/capacité, UOM incohérentes."
+  },
+  {
+    "id": 183,
+    "categorie": "Rapports & audits",
+    "question": "Comment mesurer la charge par zone?",
+    "reponse": "Rapport: #picks, #moves, #receipts, temps moyen par zone/allée."
+  },
+  {
+    "id": 184,
+    "categorie": "Rapports & audits",
+    "question": "Comment suivre la congestion en réception?",
+    "reponse": "Rapport: conteneurs en attente, temps en staging, backlog putaway."
+  },
+  {
+    "id": 185,
+    "categorie": "Rapports & audits",
+    "question": "Comment identifier les bins à forte variance?",
+    "reponse": "Comparer écarts d’inventaire (counts vs system) et classer par fréquence/impact."
+  },
+  {
+    "id": 186,
+    "categorie": "Rapports & audits",
+    "question": "Comment produire un rapport pour la direction (exécutif)?",
+    "reponse": "Résumé KPI + top problèmes + actions + gains estimés; inclure graphiques simples et tendances."
+  },
+  {
+    "id": 187,
+    "categorie": "Rapports & audits",
+    "question": "Comment conserver les preuves (audit trail) hors Indago?",
+    "reponse": "Exporter logs (CSV) régulièrement et archiver avec contrôle d’accès."
+  },
+  {
+    "id": 188,
+    "categorie": "Rapports & audits",
+    "question": "Comment automatiser les exports sans API?",
+    "reponse": "Dans une app offline: bouton export; ou planifier côté poste PC avec scripts internes (si autorisé)."
+  },
+  {
+    "id": 189,
+    "categorie": "Rapports & audits",
+    "question": "Comment gérer les rapports multi-sites?",
+    "reponse": "Séparer par site dans les données et fournir un filtre + totals consolidés."
+  },
+  {
+    "id": 190,
+    "categorie": "Rapports & audits",
+    "question": "Comment éviter les mauvaises décisions basées sur un snapshot vieux?",
+    "reponse": "Afficher clairement la date/heure du snapshot et imposer une règle de fraîcheur (ex: <24h)."
+  },
+
+  {
+    "id": 191,
+    "categorie": "Dépannage & appareils",
+    "question": "Pourquoi mon scanner envoie un “Enter” après chaque scan?",
+    "reponse": "C’est un paramètre du scanner (suffix). Ajuster le suffix/prefix ou adapter l’UI pour accepter Enter."
+  },
+  {
+    "id": 192,
+    "categorie": "Dépannage & appareils",
+    "question": "Comment empêcher les doubles scans rapides?",
+    "reponse": "Ajouter un anti-bounce (cooldown 300–800ms) et ignorer la même valeur scannée deux fois de suite."
+  },
+  {
+    "id": 193,
+    "categorie": "Dépannage & appareils",
+    "question": "Pourquoi l’appareil RF perd la connexion?",
+    "reponse": "Wi-Fi, roaming, power saving, ou couverture. Mesurer le signal et ajuster points d’accès."
+  },
+  {
+    "id": 194,
+    "categorie": "Dépannage & appareils",
+    "question": "Que faire si l’impression d’étiquettes est lente?",
+    "reponse": "Vérifier réseau, file d’attente, driver, et réduire la taille des jobs. Prévoir une impression batch."
+  },
+  {
+    "id": 195,
+    "categorie": "Dépannage & appareils",
+    "question": "Comment tester un scan sans perturber le stock?",
+    "reponse": "Utiliser un environnement test ou des transactions “sandbox”. Sinon, limiter à des items de test dédiés."
+  },
+  {
+    "id": 196,
+    "categorie": "Dépannage & appareils",
+    "question": "Comment gérer les erreurs de format (bin scanné incorrect)?",
+    "reponse": "Valider par regex et afficher un message clair + exemple du format attendu."
+  },
+  {
+    "id": 197,
+    "categorie": "Dépannage & appareils",
+    "question": "Comment diagnostiquer une lenteur générale d’Indago?",
+    "reponse": "Vérifier latence réseau, charge serveur, et volumes de requêtes. Corréler avec heures de pointe."
+  },
+  {
+    "id": 198,
+    "categorie": "Dépannage & appareils",
+    "question": "Comment sauvegarder avant un crash mobile?",
+    "reponse": "Offline-first: autosave local à chaque action. Sinon, limiter les écrans longs et valider par étapes."
+  },
+  {
+    "id": 199,
+    "categorie": "Dépannage & appareils",
+    "question": "Que faire si un utilisateur est bloqué (task locked)?",
+    "reponse": "Avoir un workflow superviseur: release/unassign task, et enregistrer la raison."
+  },
+  {
+    "id": 200,
+    "categorie": "Dépannage & appareils",
+    "question": "Comment réduire la charge cognitive sur RF?",
+    "reponse": "1 écran = 1 action, auto-focus, gros boutons, couleurs cohérentes, et instructions courtes."
+  }
+]
