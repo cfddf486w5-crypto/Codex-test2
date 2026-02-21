@@ -70,6 +70,15 @@
     els.netPill.className = "pill " + (online ? "ok" : "bad");
   }
 
+
+  function toast(message){
+    const node = document.createElement("div");
+    node.className = "ui-toast is-visible";
+    node.textContent = message;
+    document.body.appendChild(node);
+    setTimeout(()=>{ node.classList.remove("is-visible"); node.remove(); }, 1800);
+  }
+
   function getFilters(){
     return {
       type: els.fType.value.trim(),
@@ -444,6 +453,21 @@
   }
 
   function setupEvents(){
+    const runQuickSearch = ()=>{
+      const q = els.qQuick.value;
+      const f = getFilters();
+      const hits = SearchEngine.searchKB(KB.items, q, f, 20);
+      renderResults(hits);
+    };
+    const debouncedQuickSearch = ((fn, wait = 120) => { let t; return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), wait); }; })(runQuickSearch, 120);
+
+    els.qInput.addEventListener("focus", ()=> els.qInput.select());
+    els.qInput.addEventListener("keydown", (event)=>{
+      if(event.key === "Enter" && (event.metaKey || event.ctrlKey)){
+        els.btnAnalyze.click();
+      }
+    });
+
     els.btnAnalyze.addEventListener("click", ()=>{
       const q = els.qInput.value;
       const f = getFilters();
@@ -454,12 +478,8 @@
       saveHistory(q, ans.text, ans.sources, ans.meta);
       renderHistory();
     });
-    els.btnQuick.addEventListener("click", ()=>{
-      const q = els.qQuick.value;
-      const f = getFilters();
-      const hits = SearchEngine.searchKB(KB.items, q, f, 20);
-      renderResults(hits);
-    });
+    els.btnQuick.addEventListener("click", runQuickSearch);
+    els.qQuick.addEventListener("input", debouncedQuickSearch);
     els.btnClear.addEventListener("click", ()=>{
       els.qInput.value = "";
       els.answerBox.textContent = "";
@@ -491,7 +511,7 @@
       if(!ans) return;
       saveFavorite({ ts:Date.now(), title:q.slice(0,40)||"Favori", q, ans });
       renderFavorites();
-      alert("Favori ajouté.");
+      toast("Favori ajouté.");
     });
 
     els.btnClearHistory.addEventListener("click", ()=>{
@@ -502,17 +522,17 @@
     els.btnReloadKB.addEventListener("click", async ()=>{
       const info = await loadKB();
       els.kbStatus.textContent = `KB: ${info.source} • ${info.count} items`;
-      alert(`KB rechargée: ${info.source} • ${info.count} items`);
+      toast(`KB rechargée: ${info.count} items`);
     });
     els.btnResetToBundled.addEventListener("click", async ()=>{
       KBStore.clearLocalKB();
       const info = await loadKB();
       els.kbStatus.textContent = `KB: ${info.source} • ${info.count} items`;
-      alert("OK. KB incluse active.");
+      toast("KB incluse active.");
     });
     els.btnClearLocalKB.addEventListener("click", ()=>{
       KBStore.clearLocalKB();
-      alert("KB locale supprimée.");
+      toast("KB locale supprimée.");
     });
 
     els.btnImportExcel.addEventListener("click", importExcelToKB);
@@ -529,7 +549,7 @@
         ans: JSON.stringify(FLOW_STATE, null, 2)
       });
       renderFavorites();
-      alert("Flow favori ajouté.");
+      toast("Flow favori ajouté.");
     });
 
     els.btnExportFav.addEventListener("click", ()=>{
@@ -550,12 +570,12 @@
     els.btnPwaClear.addEventListener("click", async ()=>{
       if("caches" in window){
         await PWA.clearAllCaches();
-        alert("Caches supprimés.");
+        toast("Caches supprimés.");
       }
     });
 
-    window.addEventListener("online", setNetPill);
-    window.addEventListener("offline", setNetPill);
+    window.addEventListener("online", setNetPill, { passive: true });
+    window.addEventListener("offline", setNetPill, { passive: true });
   }
 
   async function init(){
@@ -577,6 +597,7 @@
       `KB chargée (${info.source}) — items: ${info.count}\n\nExemples:\n- P0171\n- MAF sale\n- couple serrage étrier\n- huile transmission ATF`;
 
     setupEvents();
+    els.qInput.focus();
   }
 
   await init();
