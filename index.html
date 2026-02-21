@@ -11,9 +11,14 @@
     <title>DL.WMS IA Ultimate</title>
   </head>
   <body>
+    <a class="skip-link" href="#app">Aller au contenu</a>
     <header class="topbar">
-      <h1>DL.WMS IA Ultimate</h1>
+      <div>
+        <h1>DL.WMS IA Ultimate</h1>
+        <p class="muted topbar-subtitle">Offline · Sans dépendance externe</p>
+      </div>
       <div style="display:flex; gap:8px; align-items:center;">
+        <span id="networkBadge" class="status-badge" aria-live="polite">Connexion…</span>
         <a href="ia_auto.html" class="ghost" style="text-decoration:none;">IA Auto</a>
         <button id="installBtn" class="ghost hidden" aria-label="Installer l'application">Installer</button>
       </div>
