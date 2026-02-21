@@ -53,3 +53,9 @@ Pour chaque conteneur :
 - réentraîner les règles de priorisation,
 - comparer prévisions vs réel hebdomadairement,
 - corriger les seuils par famille de pièces.
+
+
+## 8) Conformité légale et WMS (France/UE)
+Pour compléter les règles opérationnelles, intégrer les contrôles légaux dans le WMS : sécurité au travail, traçabilité lot/série, RGPD, douane/TVA, matières dangereuses et préparation audit.
+
+Référentiel détaillé : `docs/cadre-legal-entreposage-wms.md`.
