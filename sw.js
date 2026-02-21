@@ -1,4 +1,4 @@
-const CACHE = 'dlwms-ia-v1';
+const CACHE = 'dlwms-ia-v2';
 const ASSETS = [
   './',
   './index.html',
@@ -17,6 +17,7 @@ const ASSETS = [
   './app/trainer.js',
   './app/simulator.js',
   './app/ai-worker.js',
+  './app/improvements.js',
   './pages/dashboard.html',
   './pages/ai-center.html',
   './pages/reception.html',
@@ -24,7 +25,9 @@ const ASSETS = [
   './pages/consolidation.html',
   './pages/inventaire.html',
   './pages/layout.html',
-  './pages/parametres.html'
+  './pages/parametres.html',
+  './pages/prompt.html',
+  './pages/monitoring.html'
 ];
 
 self.addEventListener('install', (event) => {
