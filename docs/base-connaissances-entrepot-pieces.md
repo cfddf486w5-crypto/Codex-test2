@@ -59,3 +59,7 @@ Pour chaque conteneur :
 Pour compléter les règles opérationnelles, intégrer les contrôles légaux dans le WMS : sécurité au travail, traçabilité lot/série, RGPD, douane/TVA, matières dangereuses et préparation audit.
 
 Référentiel détaillé : `docs/cadre-legal-entreposage-wms.md`.
+
+## 9) FAQ opérationnelle (200 questions-réponses)
+
+Un référentiel de 200 questions-réponses orienté **grossiste pièces auto / vente au volume** est disponible ici : `docs/faq-200-entrepot-grossiste-pieces.md`.
