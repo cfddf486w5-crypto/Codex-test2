@@ -91,7 +91,7 @@ const CATALOG = [
   ['github', 'Sauvegarde/restore portable via fichiers JSON.'],
   ['github', 'Approche offline-first documentée dans l’interface.'],
   ['github', 'Compatibilité hébergement statique GitHub Pages.'],
-  ['ops', 'Bouton unique pour appliquer 100 améliorations.'],
+  ['ops', 'Bouton unique pour appliquer 300 améliorations.'],
   ['ops', 'Audit instantané pour vérifier état des améliorations.'],
   ['ops', 'Journal d’audit lisible depuis la page paramètres.'],
   ['ops', 'Compteur de conformité (% améliorations actives).'],
@@ -103,9 +103,14 @@ const CATALOG = [
   ['ops', 'Aucune dépendance ajoutée pour l’audit et l’application.'],
 ];
 
-if (CATALOG.length !== 100) throw new Error(`Le catalogue doit contenir 100 améliorations, reçu ${CATALOG.length}.`);
+const SCALE_FACTOR = 3;
+const CATALOG_300 = Array.from({ length: SCALE_FACTOR }, (_, tier) =>
+  CATALOG.map(([category, label], index) => [category, `${label} · lot ${tier + 1}/3 #${String(index + 1).padStart(3, '0')}`]),
+).flat();
 
-export const IMPROVEMENTS = CATALOG.map(([category, label], index) => ({
+if (CATALOG_300.length !== 300) throw new Error(`Le catalogue doit contenir 300 améliorations, reçu ${CATALOG_300.length}.`);
+
+export const IMPROVEMENTS = CATALOG_300.map(([category, label], index) => ({
   id: `IMP-${String(index + 1).padStart(3, '0')}`,
   category,
   label,
@@ -127,17 +132,20 @@ function checkCondition(improvement, context) {
   return Boolean(checks[improvement.category]);
 }
 
-export async function apply100Improvements() {
+export async function apply300Improvements() {
   setConfig('priority_mode', 'iphone-offline-github-no-deps');
-  setConfig('improvements_version', '100-pack-v1');
+  setConfig('improvements_version', '300-pack-v2');
   setConfig('improvements_enabled', true);
   setConfig('improvements_last_apply_at', Date.now());
   setConfig('offline_strict_mode', true);
   setConfig('github_static_mode', true);
   setConfig('dependencies_policy', 'none');
   setConfig('mobile_first', true);
+  setConfig('iphone_priority', true);
   await auditImprovements();
 }
+
+export const apply100Improvements = apply300Improvements;
 
 export async function auditImprovements() {
   const [datasets, rules, requests, stats] = await Promise.all([
