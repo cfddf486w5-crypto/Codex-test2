@@ -3,6 +3,7 @@ import { initDB, exportAllData, importAllData, putRecord, getAll, clearStore, se
 import { analyzePrompt, parseCsv, splitRowsByColumns, normalize } from './ai-engine.js';
 import { incrementalTrain, trainingMatrix } from './trainer.js';
 import { trainNeuralLite } from './neural-lite.js';
+import { apply100Improvements, auditImprovements } from './improvements.js';
 
 const appNode = document.getElementById('app');
 const nav = document.querySelector('.bottom-nav');
@@ -250,6 +251,20 @@ async function bindSharedActions() {
     await hydrateSettingsMetrics();
   });
 
+
+  document.getElementById('apply100Improvements')?.addEventListener('click', async () => {
+    await apply100Improvements();
+    const summary = await auditImprovements();
+    updateAiPanels('Pack 100 améliorations appliqué.', `Conformité: ${summary.score}% (${summary.passed}/${summary.total}).`);
+    await hydrateSettingsMetrics();
+  });
+
+  document.getElementById('verify100Improvements')?.addEventListener('click', async () => {
+    const summary = await auditImprovements();
+    updateAiPanels('Audit des 100 améliorations terminé.', `Score: ${summary.score}% - OK: ${summary.passed} - KO: ${summary.failed}.`);
+    await hydrateSettingsMetrics();
+  });
+
   document.getElementById('runVoiceCommand')?.addEventListener('click', async () => {
     const voiceInputNode = document.getElementById('voicePrompt');
     const command = voiceInputNode.value.trim();
@@ -300,7 +315,10 @@ async function hydrateSettingsMetrics() {
   const knowledgeQuantityNode = document.getElementById('knowledgeQuantity');
   const memoryLevelNode = document.getElementById('memoryLevel');
   const trainingSourcesNode = document.getElementById('trainingSources');
-  if (!learningHistoryNode && !knowledgePercentNode && !knowledgeQuantityNode && !memoryLevelNode && !trainingSourcesNode) return;
+  const improvementsScoreNode = document.getElementById('improvementsScore');
+  const improvementsLastAuditNode = document.getElementById('improvementsLastAudit');
+  const improvementsLogNode = document.getElementById('improvementsLog');
+  if (!learningHistoryNode && !knowledgePercentNode && !knowledgeQuantityNode && !memoryLevelNode && !trainingSourcesNode && !improvementsScoreNode && !improvementsLastAuditNode && !improvementsLogNode) return;
 
   const [datasets, rules, requests, stats, rows, columns] = await Promise.all([
     getAll('datasets'),
@@ -324,6 +342,20 @@ async function hydrateSettingsMetrics() {
     learningHistoryNode.textContent = recent.length
       ? recent.map((e) => `${new Date(e.updatedAt).toLocaleString('fr-FR')} · ${e.type || e.channel || 'event'} · ${e.prompt || e.status || ''}`).join('\n')
       : 'Aucun historique d’apprentissage disponible.';
+  }
+
+
+  const improvementAudit = getConfig('improvements_audit', null);
+  if (improvementsScoreNode) improvementsScoreNode.textContent = improvementAudit ? `${improvementAudit.score}%` : '0%';
+  if (improvementsLastAuditNode) {
+    improvementsLastAuditNode.textContent = improvementAudit?.generatedAt
+      ? new Date(improvementAudit.generatedAt).toLocaleString('fr-FR')
+      : 'Jamais';
+  }
+  if (improvementsLogNode) {
+    improvementsLogNode.textContent = improvementAudit
+      ? improvementAudit.report.map((item) => `${item.ok ? '✅' : '❌'} ${item.id} · ${item.category} · ${item.label}`).join('\n')
+      : 'Aucun audit exécuté. Utiliser le bouton de vérification.';
   }
 
   if (trainingSourcesNode) {
