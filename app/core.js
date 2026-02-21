@@ -71,6 +71,11 @@ async function bindSharedActions() {
   const presetNode = document.getElementById('promptPreset');
   const categoryNode = document.getElementById('promptCategory');
 
+  if (promptNode) {
+    const storedPrompt = localStorage.getItem('selectedPromptPreset');
+    if (storedPrompt && !promptNode.value.trim()) promptNode.value = storedPrompt;
+  }
+
   if (presetNode) {
     presetNode.innerHTML = '<option value="">Sélectionner un prompt...</option>';
     let selected = WAREHOUSE_PROMPT_PRESETS;
@@ -86,9 +91,23 @@ async function bindSharedActions() {
   categoryNode?.addEventListener('change', bindSharedActions, { once: true });
 
   document.getElementById('usePromptPreset')?.addEventListener('click', () => {
-    if (!presetNode?.value || !promptNode) return;
-    promptNode.value = presetNode.value;
-    updateAiPanels('Prompt pré-enregistré injecté.', 'Prompt prêt à être envoyé.');
+    if (!presetNode?.value) return;
+    localStorage.setItem('selectedPromptPreset', presetNode.value);
+    if (promptNode) {
+      promptNode.value = presetNode.value;
+      updateAiPanels('Prompt pré-enregistré injecté.', 'Prompt prêt à être envoyé.');
+      return;
+    }
+    updateAiPanels('Prompt sélectionné.', 'Ouvrez la page principale pour exécuter le prompt.');
+  });
+
+  document.getElementById('sendPromptToMain')?.addEventListener('click', async () => {
+    if (!presetNode?.value) return;
+    localStorage.setItem('selectedPromptPreset', presetNode.value);
+    updateAiPanels('Prompt transféré.', 'Le prompt est prêt sur la page principale.');
+    await navigate('ai-center');
+    const aiPromptNode = document.getElementById('aiPrompt');
+    if (aiPromptNode) aiPromptNode.value = presetNode.value;
   });
 
   document.getElementById('createPrompt')?.addEventListener('click', async () => {
@@ -199,21 +218,9 @@ async function bindSharedActions() {
     updateAiPanels('Micro-réentraînement exécuté.', 'Le modèle a été affiné localement.');
   });
 
-  document.getElementById('fileInput')?.addEventListener('change', async (event) => {
-    const files = [...event.target.files];
-    for (const file of files) {
-      const parsed = await parseImportFile(file);
-      const rows = Array.isArray(parsed) ? parsed : [];
-      const byColumn = splitRowsByColumns(rows);
-      await putRecord('datasets', { name: file.name, rows: rows.length || 0, sample: rows.slice?.(0, 5) || parsed });
-      if (rows.length) {
-        await putRecord('excelRows', { source: file.name, rows });
-        await putRecord('excelColumns', { source: file.name, columns: Object.entries(byColumn).map(([name, values]) => ({ name, values })) });
-      }
-    }
-    updateAiPanels('Fichiers importés.', 'Imports séparés en lignes/colonnes et enregistrés.');
-    await hydrateSettingsMetrics();
-  });
+  bindImportInput('excelInput', 'Excel');
+  bindImportInput('csvInput', 'CSV');
+  bindImportInput('pdfInput', 'PDF');
 
   document.getElementById('extractExcel')?.addEventListener('click', async () => {
     const rowsTables = await getAll('excelRows');
@@ -292,7 +299,8 @@ async function hydrateSettingsMetrics() {
   const knowledgePercentNode = document.getElementById('knowledgePercent');
   const knowledgeQuantityNode = document.getElementById('knowledgeQuantity');
   const memoryLevelNode = document.getElementById('memoryLevel');
-  if (!learningHistoryNode && !knowledgePercentNode && !knowledgeQuantityNode && !memoryLevelNode) return;
+  const trainingSourcesNode = document.getElementById('trainingSources');
+  if (!learningHistoryNode && !knowledgePercentNode && !knowledgeQuantityNode && !memoryLevelNode && !trainingSourcesNode) return;
 
   const [datasets, rules, requests, stats, rows, columns] = await Promise.all([
     getAll('datasets'),
@@ -317,6 +325,33 @@ async function hydrateSettingsMetrics() {
       ? recent.map((e) => `${new Date(e.updatedAt).toLocaleString('fr-FR')} · ${e.type || e.channel || 'event'} · ${e.prompt || e.status || ''}`).join('\n')
       : 'Aucun historique d’apprentissage disponible.';
   }
+
+  if (trainingSourcesNode) {
+    const pageSources = ['ai-center', 'prompt', 'parametres', 'monitoring'];
+    const datasetSources = datasets.slice(-12).map((d) => `${d.name || 'dataset'} (${d.rows || 0} lignes)`);
+    trainingSourcesNode.textContent = [
+      `Pages IA actives: ${pageSources.join(', ')}`,
+      `Données connues: ${datasetSources.length ? datasetSources.join(' | ') : 'Aucune donnée entraînée.'}`,
+    ].join('\n');
+  }
+}
+
+function bindImportInput(inputId, sourceLabel) {
+  document.getElementById(inputId)?.addEventListener('change', async (event) => {
+    const files = [...event.target.files];
+    for (const file of files) {
+      const parsed = await parseImportFile(file);
+      const rows = Array.isArray(parsed) ? parsed : [];
+      const byColumn = splitRowsByColumns(rows);
+      await putRecord('datasets', { name: file.name, rows: rows.length || 0, sample: rows.slice?.(0, 5) || parsed });
+      if (rows.length) {
+        await putRecord('excelRows', { source: file.name, rows });
+        await putRecord('excelColumns', { source: file.name, columns: Object.entries(byColumn).map(([name, values]) => ({ name, values })) });
+      }
+    }
+    updateAiPanels(`Fichiers ${sourceLabel} importés.`, 'Imports séparés en lignes/colonnes et enregistrés.');
+    await hydrateSettingsMetrics();
+  });
 }
 
 async function parseImportFile(file) {
