@@ -1,15 +1,15 @@
 {
-  "meta": { "version":"1.0", "updated":"2026-02-20", "source":"Alexandre KB" },
+  "meta": { "version":"1.1", "updated":"2026-02-20", "source":"Alexandre KB" },
   "items": [
     {
       "id": "dtc_p0171",
       "type": "DTC",
       "title": "P0171 — Mélange trop pauvre (Bank 1)",
-      "tags": ["obd2","fuel trim","vacuum leak","maf"],
+      "tags": ["obd2","fuel trim","vacuum leak","maf","o2"],
       "vehicle": { "make":"*", "model":"*", "yearFrom":0, "yearTo":9999, "engine":"*" },
-      "symptoms": ["Ralenti instable", "Manque de puissance", "Hésitation accélération", "MIL allumé"],
-      "causes": ["Fuite de vacuum / prise d'air", "Capteur MAF sale/incorrect", "Pression carburant faible", "Injecteurs partiellement obstrués", "Fuite échappement avant O2"],
-      "tests": ["Lire STFT/LTFT (si > +10/+15% suspect)", "Inspection visuelle durites/PCV", "Test fumée admission", "Nettoyage MAF + test", "Vérifier pression carburant si possible"],
+      "symptoms": ["Ralenti instable","Hésitation","Manque de puissance","MIL allumé"],
+      "causes": ["Fuite vacuum/prise d’air","MAF sale/incorrect","Pression carburant faible","Injecteurs partiellement obstrués","Fuite échappement avant O2"],
+      "tests": ["Lire STFT/LTFT (si > +10/+15%)","Inspection durites/PCV","Test fumée admission","Nettoyer MAF + re-test","Vérifier pression carburant si possible"],
       "content": "Priorité terrain: confirmer trims + inspecter fuite air. Ne pas remplacer pièces sans test."
     },
     {
@@ -19,22 +19,41 @@
       "tags": ["maf","entretien","air intake"],
       "vehicle": { "make":"*", "model":"*", "yearFrom":0, "yearTo":9999, "engine":"*" },
       "steps": [
-        "Couper moteur, clé OFF. Débrancher connecteur MAF.",
-        "Déposer le capteur (selon modèle: 2 vis).",
-        "Pulvériser nettoyant MAF (pas de contact direct avec fil/élément).",
-        "Laisser sécher complètement (10+ minutes).",
-        "Remonter, rebrancher, démarrer et vérifier trims."
+        "OFF, débrancher connecteur MAF.",
+        "Déposer le capteur (2 vis souvent).",
+        "Pulvériser nettoyant MAF (sans toucher l’élément).",
+        "Sécher complètement (10+ min).",
+        "Remonter, démarrer, vérifier trims."
       ],
-      "content": "Utiliser uniquement un nettoyant MAF. Éviter nettoyant freins."
+      "content": "Utiliser uniquement nettoyant MAF. Éviter nettoyant freins."
     },
     {
-      "id": "torque_generic_caliper_bracket",
-      "type": "TORQUE",
-      "title": "Couple — Support d’étrier (générique)",
-      "tags": ["freins","etrier","caliper bracket","torque"],
+      "id": "dtc_p0420",
+      "type": "DTC",
+      "title": "P0420 — Efficacité catalyseur (Bank 1) faible",
+      "tags": ["obd2","catalyst","o2 sensor","exhaust leak"],
       "vehicle": { "make":"*", "model":"*", "yearFrom":0, "yearTo":9999, "engine":"*" },
-      "specs": { "unit":"Nm", "value": 90, "note":"Valeur générique — confirmer selon manuel spécifique." },
-      "content": "Toujours confirmer selon véhicule. Utiliser frein-filet si recommandé."
+      "symptoms": ["MIL allumé", "Parfois odeur", "Souvent aucun symptôme"],
+      "causes": ["Catalyseur fatigué", "Fuite échappement avant O2", "O2 amont/aval défectueux", "Ratés d’allumage historiques", "Mélange riche prolongé"],
+      "tests": ["Vérifier ratés (misfire) en historique", "Comparer courbes O2 amont/aval", "Vérifier fuite échappement", "Vérifier trims riches/huile brûlée"],
+      "content": "Avant de condamner le catalyseur: vérifier misfires + fuites + O2."
+    },
+    {
+      "id": "torque_generic_wheel_lug",
+      "type": "TORQUE",
+      "title": "Couple — Écrous de roue (générique)",
+      "tags": ["roue","lug","wheel","torque"],
+      "vehicle": { "make":"*", "model":"*", "yearFrom":0, "yearTo":9999, "engine":"*" },
+      "specs": { "unit":"Nm", "value": 110, "note":"Générique. Confirmer selon véhicule." },
+      "content": "Serrer en étoile. Re-vérifier après quelques km si recommandé."
+    },
+    {
+      "id": "fluid_coolant_mix",
+      "type": "FLUID",
+      "title": "Référence — Coolant / Antigel (générique)",
+      "tags": ["coolant","antigel","refroidissement"],
+      "vehicle": { "make":"*", "model":"*", "yearFrom":0, "yearTo":9999, "engine":"*" },
+      "content": "Toujours respecter le type (OAT/HOAT/IAT). Mélange courant 50/50 si concentré (selon specs)."
     }
   ]
 }
