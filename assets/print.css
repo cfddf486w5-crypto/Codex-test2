@@ -1,0 +1,5 @@
+body{background:#fff;color:#000}
+.topbar,.tabs,.row,.dropzone,.btn{display:none !important}
+.card{border:1px solid #ddd}
+.answer{border:1px solid #ddd;background:#fff;color:#000}
+.muted{color:#333}

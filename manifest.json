@@ -1,7 +1,7 @@
 {
   "name": "DL.WMS IA Ultimate",
   "short_name": "DL.WMS IA",
-  "description": "PWA WMS IA 100% offline pour logistique intelligente.",
+  "description": "PWA WMS + module IA Automobile, 100% offline et client-side.",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0b1020",

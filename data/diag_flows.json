@@ -1,0 +1,51 @@
+{
+  "meta": { "version":"1.0", "updated":"2026-02-20" },
+  "flows": [
+    {
+      "id": "flow_p0171",
+      "title": "DTC P0171 — Mélange trop pauvre (Bank 1)",
+      "desc": "Collecte symptômes → trims → hypothèses → tests",
+      "start": "q1",
+      "nodes": {
+        "q1": {
+          "type": "question",
+          "text": "Symptômes principaux?",
+          "options": [
+            {"label":"Ralenti instable", "next":"q2", "tags":["idle"]},
+            {"label":"Perte puissance", "next":"q2", "tags":["power"]},
+            {"label":"Hésitation", "next":"q2", "tags":["hesitation"]},
+            {"label":"Autre", "next":"q2", "tags":["other"]}
+          ]
+        },
+        "q2": {
+          "type": "question",
+          "text": "STFT/LTFT (approx)?",
+          "options": [
+            {"label":"+0 à +5%", "next":"end_low"},
+            {"label":"+6 à +15%", "next":"mid"},
+            {"label":">+15%", "next":"high"},
+            {"label":"Inconnu", "next":"mid"}
+          ]
+        },
+        "mid": {
+          "type": "result",
+          "title": "Piste probable: prise d’air / MAF",
+          "content": "Priorité: inspection vacuum/PCV + test fumée si possible; nettoyer MAF; vérifier O2 avant cat.",
+          "kbHints": ["dtc_p0171","proc_clean_maf"]
+        },
+        "high": {
+          "type": "result",
+          "title": "Piste forte: fuite air / pression carburant",
+          "content": "Faire test fumée + vérifier pression carburant; inspecter durites, collecteur, joints.",
+          "kbHints": ["dtc_p0171","proc_clean_maf"]
+        },
+        "end_low": {
+          "type": "result",
+          "title": "Trims OK → vérifier conditions",
+          "content": "Reproduire conditions; vérifier freeze frame; s’assurer que P0171 est actif/confirmé.",
+          "kbHints": ["dtc_p0171"]
+        }
+      }
+    }
+  ]
+}
