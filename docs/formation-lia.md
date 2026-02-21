@@ -38,3 +38,10 @@ Après plusieurs heures de formation continue, LIA doit être capable de :
 - expliquer ses calculs,
 - répondre de manière fiable et actionnable,
 - améliorer sa qualité via le feedback utilisateur.
+
+
+## Module métier recommandé — Pièces de rechange automobile
+- Charger les prompts enrichis depuis la page Prompt (**Charger 40 prompts**).
+- Utiliser la base `knowledge-base-spare-parts` pour suivre les statuts: disponible, réservé, en transit, bloqué qualité.
+- Ouvrir le référentiel détaillé : `docs/base-connaissances-entrepot-pieces.md`.
+- Ajouter un contrôle quotidien des ETA conteneurs pour anticiper la charge quai et les ruptures atelier.

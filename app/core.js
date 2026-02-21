@@ -19,12 +19,39 @@ const WAREHOUSE_PROMPT_PRESETS = [
   { label: 'Validation CSV', category: 'csv', prompt: 'Contrôle la structure du CSV et signale les anomalies.' },
   { label: 'Extraction PDF', category: 'pdf', prompt: 'Lis le PDF, extrait les informations, réponds puis renvoie en CSV.' },
   { label: 'Opérations DAI', category: 'operations', prompt: 'Optimise les opérations DAI en réduisant les erreurs et les délais.' },
+  { label: 'Pièces critiques (ABC/XYZ)', category: 'operations', prompt: 'Classe les pièces de rechange en ABC/XYZ et propose un stock de sécurité.' },
+  { label: 'Prévision arrivage conteneur', category: 'operations', prompt: 'Prévois les arrivages conteneur des 14 prochains jours avec niveau de risque et plan de réception.' },
+  { label: 'État des biens en temps réel', category: 'operations', prompt: 'Génère un état en temps réel des biens: disponible, réservé, en transit, bloqué qualité.' },
+  { label: 'Cross-dock intelligent', category: 'operations', prompt: 'Identifie les pièces à faire passer en cross-dock pour réduire le temps de stockage.' },
+  { label: 'Rotation lente', category: 'operations', prompt: 'Détecte les références à rotation lente et recommande des actions de déstockage.' },
+  { label: 'Rupture atelier', category: 'operations', prompt: 'Prédis les ruptures atelier à J+7 et propose les réapprovisionnements prioritaires.' },
+  { label: 'Contrôle qualité réception', category: 'operations', prompt: 'Contrôle qualité à réception: écarts, défauts, pièces en quarantaine et actions correctives.' },
+  { label: 'Optimisation emplacement', category: 'operations', prompt: 'Recommande les meilleurs emplacements selon fréquence de prélèvement et criticité véhicule.' },
+  { label: 'Priorisation commandes atelier', category: 'operations', prompt: 'Priorise les commandes selon immobilisation véhicule, SLA client et disponibilité réelle.' },
+  { label: 'Plan de charge quai', category: 'operations', prompt: 'Construit un plan de charge quai par créneau pour lisser les arrivées de conteneurs.' },
+  { label: 'Alertes écarts stock', category: 'operations', prompt: 'Signale les écarts stock théorique vs physique et propose un plan de correction.' },
+  { label: 'Cannibalisation pièces', category: 'operations', prompt: 'Détecte les risques de cannibalisation inter-sites et recommande des transferts internes.' },
 ];
 
 const WAREHOUSE_DATASETS = [
   { name: 'warehouse-stock', rows: 4, sample: [{ sku: 'A-10', qty: 120 }, { sku: 'B-22', qty: 40 }] },
   { name: 'warehouse-orders', rows: 3, sample: [{ order: 'CMD-101', lines: 8 }, { order: 'CMD-102', lines: 4 }] },
 ];
+
+const SPARE_PARTS_KNOWLEDGE_BASE = {
+  name: 'knowledge-base-spare-parts',
+  rows: 8,
+  sample: [
+    { topic: 'kpi', key: 'otif', formula: 'commandes à l\'heure et complètes / commandes totales', target: '>= 96%' },
+    { topic: 'kpi', key: 'fill-rate', formula: 'lignes servies immédiatement / lignes demandées', target: '>= 95%' },
+    { topic: 'kpi', key: 'inventory-accuracy', formula: 'références justes / références comptées', target: '>= 98.5%' },
+    { topic: 'etat_biens', status: 'disponible', meaning: 'pièce physiquement présente et libre de réservation' },
+    { topic: 'etat_biens', status: 'en_transit', meaning: 'pièce en route (fournisseur, conteneur, transfert inter-sites)' },
+    { topic: 'etat_biens', status: 'bloque_qualite', meaning: 'pièce reçue mais retenue pour contrôle qualité' },
+    { topic: 'prediction_conteneur', signal: 'retard_portuaire', action: 'augmenter stock sécurité + replanifier le quai' },
+    { topic: 'prediction_conteneur', signal: 'avance_navire', action: 'préallouer équipes de réception + créneaux de déchargement' },
+  ],
+};
 
 async function boot() {
   await initDB();
@@ -123,9 +150,10 @@ async function bindSharedActions() {
 
   document.getElementById('loadLiaPrompts')?.addEventListener('click', async () => {
     await putRecord('datasets', { name: 'lia-training-prompts', rows: WAREHOUSE_PROMPT_PRESETS.length, sample: WAREHOUSE_PROMPT_PRESETS });
+    await putRecord('datasets', SPARE_PARTS_KNOWLEDGE_BASE);
     const status = document.getElementById('liaTrainingStatus');
-    if (status) status.textContent = `Programme chargé: ${WAREHOUSE_PROMPT_PRESETS.length} prompts.`;
-    updateAiPanels('Prompts de formation chargés.', 'La base de prompts est prête.');
+    if (status) status.textContent = `Programme chargé: ${WAREHOUSE_PROMPT_PRESETS.length} prompts + base pièces auto.`;
+    updateAiPanels('Prompts de formation chargés.', 'Base de connaissances IA entrepôt pièces auto prête.');
   });
 
   document.getElementById('openLiaGuide')?.addEventListener('click', () => window.open(LIA_GUIDE_PATH, '_blank', 'noopener'));
