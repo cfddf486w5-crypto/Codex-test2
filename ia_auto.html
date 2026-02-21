@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DL.WMS — IA Automobile</title>
+  <link rel="stylesheet" href="./assets/app.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-left">
+      <a class="btn btn-ghost" href="./index.html">← Retour</a>
+      <h1 class="title">IA Automobile</h1>
+    </div>
+    <div class="topbar-right">
+      <button id="btnReloadKB" class="btn btn-ghost">↻ KB</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <h2 class="h2">Question</h2>
+
+      <div class="grid">
+        <label class="field">
+          <span class="label">Ta demande (ex: “P0171 Civic 2016: quoi vérifier?”)</span>
+          <textarea id="qInput" class="input textarea" rows="4" placeholder="Tape ici..."></textarea>
+        </label>
+
+        <div class="row">
+          <button id="btnAnalyze" class="btn btn-primary">Analyser</button>
+          <button id="btnClear" class="btn">Effacer</button>
+          <button id="btnCopyAnswer" class="btn">Copier réponse</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2 class="h2">Filtres</h2>
+      <div class="filters">
+        <label class="field">
+          <span class="label">Type</span>
+          <select id="fType" class="input">
+            <option value="">Tous</option>
+            <option value="DTC">DTC</option>
+            <option value="PROC">Procédure</option>
+            <option value="TORQUE">Couple</option>
+            <option value="FLUID">Fluide</option>
+            <option value="PART">Pièce</option>
+            <option value="NOTE">Note</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span class="label">Marque</span>
+          <input id="fMake" class="input" placeholder="Honda / Toyota / *" />
+        </label>
+
+        <label class="field">
+          <span class="label">Modèle</span>
+          <input id="fModel" class="input" placeholder="Civic / RAV4 / *" />
+        </label>
+
+        <label class="field">
+          <span class="label">Année</span>
+          <input id="fYear" class="input" inputmode="numeric" placeholder="2016" />
+        </label>
+
+        <label class="field">
+          <span class="label">Moteur</span>
+          <input id="fEngine" class="input" placeholder="1.5T / 2.0 / *" />
+        </label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2 class="h2">Réponse</h2>
+      <pre id="answerBox" class="answer" aria-live="polite"></pre>
+
+      <div class="row">
+        <button id="btnExportCSV" class="btn">Exporter CSV (rapport)</button>
+        <button id="btnPrint" class="btn">Imprimer</button>
+        <button id="btnFavorite" class="btn">★ Favori</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2 class="h2">Résultats (Top 10)</h2>
+      <div id="results" class="results"></div>
+    </section>
+
+    <section class="card">
+      <h2 class="h2">Historique</h2>
+      <div id="history" class="history"></div>
+    </section>
+
+    <section class="card">
+      <h2 class="h2">Import KB (JSON)</h2>
+      <p class="muted">Glisse-dépose un fichier JSON compatible (auto_kb.json). Sauvegardé dans le navigateur.</p>
+      <div id="dropZone" class="dropzone">Dépose ton fichier ici</div>
+      <div class="row">
+        <button id="btnResetToBundled" class="btn btn-ghost">Revenir à la KB incluse</button>
+        <button id="btnClearLocalKB" class="btn btn-ghost">Supprimer KB locale</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="./js/utils.js"></script>
+  <script src="./js/kb_store.js"></script>
+  <script src="./js/ia_auto.js"></script>
+</body>
+</html>

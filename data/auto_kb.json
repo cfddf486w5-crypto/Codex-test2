@@ -1,0 +1,40 @@
+{
+  "meta": { "version":"1.0", "updated":"2026-02-20", "source":"Alexandre KB" },
+  "items": [
+    {
+      "id": "dtc_p0171",
+      "type": "DTC",
+      "title": "P0171 — Mélange trop pauvre (Bank 1)",
+      "tags": ["obd2","fuel trim","vacuum leak","maf"],
+      "vehicle": { "make":"*", "model":"*", "yearFrom":0, "yearTo":9999, "engine":"*" },
+      "symptoms": ["Ralenti instable", "Manque de puissance", "Hésitation accélération", "MIL allumé"],
+      "causes": ["Fuite de vacuum / prise d'air", "Capteur MAF sale/incorrect", "Pression carburant faible", "Injecteurs partiellement obstrués", "Fuite échappement avant O2"],
+      "tests": ["Lire STFT/LTFT (si > +10/+15% suspect)", "Inspection visuelle durites/PCV", "Test fumée admission", "Nettoyage MAF + test", "Vérifier pression carburant si possible"],
+      "content": "Priorité terrain: confirmer trims + inspecter fuite air. Ne pas remplacer pièces sans test."
+    },
+    {
+      "id": "proc_clean_maf",
+      "type": "PROC",
+      "title": "Procédure — Nettoyage capteur MAF",
+      "tags": ["maf","entretien","air intake"],
+      "vehicle": { "make":"*", "model":"*", "yearFrom":0, "yearTo":9999, "engine":"*" },
+      "steps": [
+        "Couper moteur, clé OFF. Débrancher connecteur MAF.",
+        "Déposer le capteur (selon modèle: 2 vis).",
+        "Pulvériser nettoyant MAF (pas de contact direct avec fil/élément).",
+        "Laisser sécher complètement (10+ minutes).",
+        "Remonter, rebrancher, démarrer et vérifier trims."
+      ],
+      "content": "Utiliser uniquement un nettoyant MAF. Éviter nettoyant freins."
+    },
+    {
+      "id": "torque_generic_caliper_bracket",
+      "type": "TORQUE",
+      "title": "Couple — Support d’étrier (générique)",
+      "tags": ["freins","etrier","caliper bracket","torque"],
+      "vehicle": { "make":"*", "model":"*", "yearFrom":0, "yearTo":9999, "engine":"*" },
+      "specs": { "unit":"Nm", "value": 90, "note":"Valeur générique — confirmer selon manuel spécifique." },
+      "content": "Toujours confirmer selon véhicule. Utiliser frein-filet si recommandé."
+    }
+  ]
+}
