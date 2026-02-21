@@ -1,0 +1,28 @@
+<section class="card">
+  <h2>UI Self-test (interne)</h2>
+  <p class="muted">Route cachée pour vérifier composants, focus scan et performance liste.</p>
+</section>
+
+<section class="card">
+  <h3>Scan controller</h3>
+  <label class="label" for="scanInputSelfTest">Scan / collage code</label>
+  <input id="scanInputSelfTest" class="input" data-scan-input data-autofocus placeholder="Scannez un code puis Entrée" />
+  <p class="muted">Dernier scan: <strong id="scanLastValue">-</strong></p>
+</section>
+
+<section class="card">
+  <h3>États UI</h3>
+  <div class="row">
+    <button onclick="this.disabled=true;setTimeout(()=>this.disabled=false,700)">Loading btn</button>
+    <button class="warn">Error</button>
+    <button class="ghost">Ghost</button>
+  </div>
+  <div class="empty-state">État vide de référence.</div>
+  <div class="error-state">État erreur de référence.</div>
+</section>
+
+<section class="card">
+  <h3>Stress liste 1000 items</h3>
+  <button id="runListStress" class="primary">Lancer test perf</button>
+  <div id="stressList" class="virtual-list" aria-live="polite"></div>
+</section>

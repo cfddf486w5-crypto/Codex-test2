@@ -1,5 +1,38 @@
-body{background:#fff;color:#000}
-.topbar,.tabs,.row,.dropzone,.btn{display:none !important}
-.card{border:1px solid #ddd}
-.answer{border:1px solid #ddd;background:#fff;color:#000}
-.muted{color:#333}
+@media print {
+  :root {
+    --bg: #fff;
+    --panel: #fff;
+    --text: #000;
+    --muted: #333;
+    --stroke: #c9c9c9;
+  }
+
+  body {
+    background: #fff !important;
+    color: #000 !important;
+    max-width: none;
+    display: block;
+  }
+
+  .topbar,
+  .bottom-nav,
+  .tabs,
+  .dropzone,
+  .btn,
+  button {
+    display: none !important;
+  }
+
+  .card,
+  .answer,
+  .log {
+    border: 1px solid #d3d3d3 !important;
+    box-shadow: none !important;
+    background: #fff !important;
+    color: #000 !important;
+    break-inside: avoid;
+  }
+
+  h1, h2, h3 { color: #000 !important; }
+  .muted { color: #333 !important; }
+}
