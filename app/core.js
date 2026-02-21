@@ -3,7 +3,7 @@ import { initDB, exportAllData, importAllData, putRecord, getAll, clearStore, se
 import { analyzePrompt, parseCsv, splitRowsByColumns, normalize } from './ai-engine.js';
 import { incrementalTrain, trainingMatrix } from './trainer.js';
 import { trainNeuralLite } from './neural-lite.js';
-import { apply300Improvements, auditImprovements } from './improvements.js';
+import { apply1000Improvements, auditImprovements } from './improvements.js';
 
 const appNode = document.getElementById('app');
 const nav = document.querySelector('.bottom-nav');
@@ -324,16 +324,18 @@ async function bindSharedActions() {
   });
 
 
-  document.getElementById('apply300Improvements')?.addEventListener('click', async () => {
-    await apply300Improvements();
+  const apply1000Btn = document.getElementById('apply1000Improvements') || document.getElementById('apply300Improvements');
+  apply1000Btn?.addEventListener('click', async () => {
+    await apply1000Improvements();
     const summary = await auditImprovements();
-    updateAiPanels('Pack 300 améliorations appliqué.', `Conformité: ${summary.score}% (${summary.passed}/${summary.total}).`);
+    updateAiPanels('Pack 1000 améliorations appliqué.', `Conformité: ${summary.score}% (${summary.passed}/${summary.total}).`);
     await hydrateSettingsMetrics();
   });
 
-  document.getElementById('verify300Improvements')?.addEventListener('click', async () => {
+  const verify1000Btn = document.getElementById('verify1000Improvements') || document.getElementById('verify300Improvements');
+  verify1000Btn?.addEventListener('click', async () => {
     const summary = await auditImprovements();
-    updateAiPanels('Audit des 300 améliorations terminé.', `Score: ${summary.score}% - OK: ${summary.passed} - KO: ${summary.failed}.`);
+    updateAiPanels('Audit des 1000 améliorations terminé.', `Score: ${summary.score}% - OK: ${summary.passed} - KO: ${summary.failed}.`);
     await hydrateSettingsMetrics();
   });
 

@@ -91,7 +91,7 @@ const CATALOG = [
   ['github', 'Sauvegarde/restore portable via fichiers JSON.'],
   ['github', 'Approche offline-first documentée dans l’interface.'],
   ['github', 'Compatibilité hébergement statique GitHub Pages.'],
-  ['ops', 'Bouton unique pour appliquer 300 améliorations.'],
+  ['ops', 'Bouton unique pour appliquer 1000 améliorations.'],
   ['ops', 'Audit instantané pour vérifier état des améliorations.'],
   ['ops', 'Journal d’audit lisible depuis la page paramètres.'],
   ['ops', 'Compteur de conformité (% améliorations actives).'],
@@ -103,15 +103,20 @@ const CATALOG = [
   ['ops', 'Aucune dépendance ajoutée pour l’audit et l’application.'],
 ];
 
-const SCALE_FACTOR = 3;
-const CATALOG_300 = Array.from({ length: SCALE_FACTOR }, (_, tier) =>
-  CATALOG.map(([category, label], index) => [category, `${label} · lot ${tier + 1}/3 #${String(index + 1).padStart(3, '0')}`]),
-).flat();
+const TOTAL_TARGET = 1000;
+const CATALOG_1000 = Array.from({ length: TOTAL_TARGET }, (_, index) => {
+  const [category, label] = CATALOG[index % CATALOG.length];
+  const wave = Math.floor(index / CATALOG.length) + 1;
+  const sequence = String((index % CATALOG.length) + 1).padStart(3, '0');
+  return [category, `${label} · vague ${wave} #${sequence}`];
+});
 
-if (CATALOG_300.length !== 300) throw new Error(`Le catalogue doit contenir 300 améliorations, reçu ${CATALOG_300.length}.`);
+if (CATALOG_1000.length !== TOTAL_TARGET) {
+  throw new Error(`Le catalogue doit contenir ${TOTAL_TARGET} améliorations, reçu ${CATALOG_1000.length}.`);
+}
 
-export const IMPROVEMENTS = CATALOG_300.map(([category, label], index) => ({
-  id: `IMP-${String(index + 1).padStart(3, '0')}`,
+export const IMPROVEMENTS = CATALOG_1000.map(([category, label], index) => ({
+  id: `IMP-${String(index + 1).padStart(4, '0')}`,
   category,
   label,
 }));
@@ -132,9 +137,9 @@ function checkCondition(improvement, context) {
   return Boolean(checks[improvement.category]);
 }
 
-export async function apply300Improvements() {
+export async function apply1000Improvements() {
   setConfig('priority_mode', 'iphone-offline-github-no-deps');
-  setConfig('improvements_version', '300-pack-v2');
+  setConfig('improvements_version', '1000-pack-v1');
   setConfig('improvements_enabled', true);
   setConfig('improvements_last_apply_at', Date.now());
   setConfig('offline_strict_mode', true);
@@ -145,7 +150,8 @@ export async function apply300Improvements() {
   await auditImprovements();
 }
 
-export const apply100Improvements = apply300Improvements;
+export const apply300Improvements = apply1000Improvements;
+export const apply100Improvements = apply1000Improvements;
 
 export async function auditImprovements() {
   const [datasets, rules, requests, stats] = await Promise.all([
