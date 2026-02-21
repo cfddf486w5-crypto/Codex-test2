@@ -1,4 +1,5 @@
 import { loadRoute } from './router.js';
+import { setNavActive, setNavBadge, bindAccordions, showToast, debounce, addPassiveListener } from './ui.js';
 import { initDB, exportAllData, importAllData, putRecord, getAll, clearStore, setConfig, getConfig } from './storage.js';
 import { analyzePrompt, parseCsv, splitRowsByColumns, normalize } from './ai-engine.js';
 import { incrementalTrain, trainingMatrix } from './trainer.js';
@@ -92,7 +93,9 @@ async function boot() {
   bindInstall();
   bindNetworkBadge();
   bindNav();
-  await navigate('ai-center');
+  const initialRoute = localStorage.getItem('lastRoute') || 'ai-center';
+  await navigate(initialRoute);
+  setNavBadge('monitoring', 'IA');
   if ('serviceWorker' in navigator) await navigator.serviceWorker.register('./sw.js');
   setConfig('app_name', 'DL.WMS IA Ultimate');
 }
@@ -110,8 +113,8 @@ function bindNetworkBadge() {
   };
 
   updateBadge();
-  window.addEventListener('online', updateBadge);
-  window.addEventListener('offline', updateBadge);
+  addPassiveListener(window, 'online', updateBadge);
+  addPassiveListener(window, 'offline', updateBadge);
 }
 
 function bindInstall() {
@@ -138,10 +141,12 @@ function bindNav() {
 
 async function navigate(route) {
   await loadRoute(route, appNode);
-  document.querySelectorAll('.bottom-nav button').forEach((b) => b.classList.toggle('active', b.dataset.route === route));
+  setNavActive(route);
+  localStorage.setItem('lastRoute', route);
   appNode.querySelectorAll('[data-route]').forEach((btn) => btn.addEventListener('click', () => navigate(btn.dataset.route)));
 
   await bindSharedActions();
+  bindAccordions(appNode);
   if (route === 'parametres') await hydrateSettingsMetrics();
   if (route === 'monitoring') hydrateMonitoring();
 }
@@ -168,7 +173,7 @@ async function bindSharedActions() {
     }
   }
 
-  categoryNode?.addEventListener('change', bindSharedActions, { once: true });
+  categoryNode?.addEventListener('change', debounce(() => bindSharedActions(), 120), { once: true });
 
   document.getElementById('usePromptPreset')?.addEventListener('click', () => {
     if (!presetNode?.value) return;
@@ -296,6 +301,7 @@ async function bindSharedActions() {
     for (const store of ['rules', 'weights', 'vectors', 'decisions', 'stats', 'thresholds']) await clearStore(store);
     setConfig('nn_weights', [0.5, -0.2, 0.8, 0.3]);
     updateAiPanels('Apprentissage réinitialisé.', 'Les paramètres IA ont été remis à zéro.');
+    showToast('Apprentissage réinitialisé', 'info');
     await hydrateSettingsMetrics();
   });
 

@@ -1,15 +1,16 @@
 <!doctype html>
-<html lang="fr">
+<html lang="fr" data-theme="dark">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>DL.WMS — IA Automobile</title>
+  <link rel="stylesheet" href="./assets/style.css" />
   <link rel="stylesheet" href="./assets/app.css" />
   <link rel="stylesheet" href="./assets/print.css" media="print" />
   <link rel="manifest" href="./manifest.json" />
   <meta name="theme-color" content="#0b1220" />
 </head>
-<body>
+<body class="app-frame ia-auto-page">
   <header class="topbar">
     <div class="topbar-left">
       <a class="btn btn-ghost" href="./index.html">← Retour</a>
@@ -26,7 +27,7 @@
     </div>
   </header>
 
-  <main class="container">
+  <main class="container app-content">
     <nav class="tabs">
       <button class="tab active" data-tab="search">Recherche</button>
       <button class="tab" data-tab="guided">Diagnostic</button>
