@@ -1,22 +1,14 @@
 const DB_NAME = 'dlwms_ia_ultimate';
 const DB_VERSION = 2;
+const LOCAL_VERSION = 'v2';
 const STORES = [
-  'rules',
-  'weights',
-  'vectors',
-  'decisions',
-  'stats',
-  'preferences',
-  'thresholds',
-  'datasets',
-  'requests',
-  'excelRows',
-  'excelColumns',
-  'voiceCommands',
-  'palettes',
+  'rules', 'weights', 'vectors', 'decisions', 'stats', 'preferences', 'thresholds',
+  'datasets', 'requests', 'excelRows', 'excelColumns', 'voiceCommands', 'palettes',
 ];
 
 let dbPromise;
+const localWriteQueue = new Map();
+let flushTimer;
 
 export function initDB() {
   if (dbPromise) return dbPromise;
@@ -70,7 +62,7 @@ export async function clearStore(store) {
 }
 
 export async function exportAllData() {
-  const exportObj = {};
+  const exportObj = { meta: { db: DB_NAME, version: DB_VERSION, exportedAt: Date.now() } };
   for (const store of STORES) exportObj[store] = await getAll(store);
   return exportObj;
 }
@@ -79,18 +71,62 @@ export async function importAllData(data) {
   for (const store of STORES) {
     await clearStore(store);
     if (Array.isArray(data[store])) {
-      for (const item of data[store]) {
-        await putRecord(store, item);
+      for (const item of data[store]) await putRecord(store, item);
+    }
+  }
+}
+
+function safeJSONParse(raw, fallback = null) {
+  if (!raw) return fallback;
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return fallback;
+  }
+}
+
+function validateShape(value) {
+  if (value === null || value === undefined) return false;
+  if (Array.isArray(value)) return true;
+  return typeof value === 'object' || ['string', 'number', 'boolean'].includes(typeof value);
+}
+
+function flushLocalQueue() {
+  flushTimer = null;
+  for (const [key, value] of localWriteQueue.entries()) {
+    try {
+      localStorage.setItem(key, JSON.stringify({ version: LOCAL_VERSION, value }));
+      localWriteQueue.delete(key);
+    } catch (error) {
+      if (error?.name === 'QuotaExceededError') {
+        localStorage.setItem('storage_diag', JSON.stringify({
+          ts: Date.now(),
+          error: 'QuotaExceededError',
+          pending: [...localWriteQueue.keys()],
+        }));
       }
+      break;
     }
   }
 }
 
 export function getConfig(key, fallback = null) {
-  const raw = localStorage.getItem(key);
-  return raw ? JSON.parse(raw) : fallback;
+  const payload = safeJSONParse(localStorage.getItem(key), null);
+  if (!payload) return fallback;
+  if (payload.version && validateShape(payload.value)) return payload.value;
+  if (validateShape(payload)) return payload;
+  return fallback;
 }
 
 export function setConfig(key, value) {
-  localStorage.setItem(key, JSON.stringify(value));
+  localWriteQueue.set(key, value);
+  if (flushTimer) return;
+  flushTimer = setTimeout(flushLocalQueue, 120);
+}
+
+export function flushConfigWrites() {
+  if (flushTimer) {
+    clearTimeout(flushTimer);
+    flushLocalQueue();
+  }
 }

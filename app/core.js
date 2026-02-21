@@ -1,10 +1,11 @@
 import { loadRoute } from './router.js';
-import { setNavActive, setNavBadge, bindAccordions, showToast, debounce, addPassiveListener } from './ui.js';
-import { initDB, exportAllData, importAllData, putRecord, getAll, clearStore, setConfig, getConfig } from './storage.js';
+import ui, { setNavActive, setNavBadge, bindAccordions, showToast, debounce, addPassiveListener, UI_VERSION } from './ui.js';
+import { initDB, exportAllData, importAllData, putRecord, getAll, clearStore, setConfig, getConfig, flushConfigWrites } from './storage.js';
 import { analyzePrompt, parseCsv, splitRowsByColumns, normalize } from './ai-engine.js';
 import { incrementalTrain, trainingMatrix } from './trainer.js';
 import { trainNeuralLite } from './neural-lite.js';
 import { apply1000Improvements, auditImprovements } from './improvements.js';
+import { attachScanController } from './scan_ui.js';
 
 const appNode = document.getElementById('app');
 const nav = document.querySelector('.bottom-nav');
@@ -14,6 +15,7 @@ let deferredPrompt;
 let lastDecisionId;
 let continuousTrainingTimer;
 let continuousTrainingIndex = 0;
+let navigationLocked = false;
 
 const WAREHOUSE_PROMPT_PRESETS = [
   { label: 'Lecture Excel', category: 'excel', prompt: 'Lis le fichier Excel et résume les colonnes clés.' },
@@ -89,6 +91,7 @@ const AUTOMOTIVE_TRAINING_RULES = [
 ];
 
 async function boot() {
+  document.body.dataset.uiVersion = UI_VERSION;
   await initDB();
   bindInstall();
   bindNetworkBadge();
@@ -98,6 +101,11 @@ async function boot() {
   setNavBadge('monitoring', 'IA');
   if ('serviceWorker' in navigator) await navigator.serviceWorker.register('./sw.js');
   setConfig('app_name', 'DL.WMS IA Ultimate');
+  window.addEventListener('keydown', async (event) => {
+    if (event.altKey && event.key.toLowerCase() === 'u') {
+      await navigate('ui-self-test');
+    }
+  });
 }
 
 
@@ -134,8 +142,17 @@ function bindInstall() {
 function bindNav() {
   nav.addEventListener('click', async (event) => {
     const button = event.target.closest('button[data-route]');
-    if (!button) return;
-    await navigate(button.dataset.route);
+    if (!button || navigationLocked) return;
+    navigationLocked = true;
+    button.setAttribute('aria-disabled', 'true');
+    try {
+      await navigate(button.dataset.route);
+    } finally {
+      setTimeout(() => {
+        navigationLocked = false;
+        button.removeAttribute('aria-disabled');
+      }, 180);
+    }
   });
 }
 
@@ -147,8 +164,54 @@ async function navigate(route) {
 
   await bindSharedActions();
   bindAccordions(appNode);
+  bindScanInputs();
   if (route === 'parametres') await hydrateSettingsMetrics();
   if (route === 'monitoring') hydrateMonitoring();
+  if (route === 'ui-self-test') bindUiSelfTest();
+}
+
+
+function bindScanInputs() {
+  appNode.querySelectorAll('[data-scan-input]').forEach((input) => {
+    attachScanController(input, {
+      onScan: ({ value }) => {
+        const target = document.getElementById('scanLastValue');
+        if (target) target.textContent = value;
+      },
+      keepFocus: true,
+    });
+  });
+}
+
+function bindUiSelfTest() {
+  const launchBtn = document.getElementById('runListStress');
+  const mount = document.getElementById('stressList');
+  launchBtn?.addEventListener('click', () => {
+    const items = Array.from({ length: 1000 }, (_, i) => `SKU-${String(i + 1).padStart(4, '0')}`);
+    if (items.length > 500) {
+      ui.list.virtual({
+        items,
+        mount,
+        renderRow: (item) => {
+          const row = document.createElement('div');
+          row.className = 'list-row';
+          row.textContent = item;
+          return row;
+        },
+      });
+      return;
+    }
+    ui.list.chunked({
+      items,
+      mount,
+      renderItem: (item) => {
+        const row = document.createElement('div');
+        row.className = 'list-row';
+        row.textContent = item;
+        return row;
+      },
+    });
+  });
 }
 
 async function bindSharedActions() {
@@ -526,4 +589,5 @@ function downloadJSON(data, filename) {
   URL.revokeObjectURL(a.href);
 }
 
+window.addEventListener('beforeunload', flushConfigWrites);
 boot();
