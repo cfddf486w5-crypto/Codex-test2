@@ -4,12 +4,19 @@
 </section>
 
 <section class="card">
-  <h3>1) Import Excel / CSV / PDF + sauvegardes</h3>
-  <input id="fileInput" type="file" accept=".csv,.json,.xlsx,.xls,.pdf" multiple />
+  <h3>1) Imports documents (Excel, CSV, PDF)</h3>
+  <label for="excelInput">Import Excel</label>
+  <input id="excelInput" type="file" accept=".xlsx,.xls" multiple />
+  <label for="csvInput">Import CSV</label>
+  <input id="csvInput" type="file" accept=".csv" multiple />
+  <label for="pdfInput">Import PDF</label>
+  <input id="pdfInput" type="file" accept=".pdf" multiple />
   <div class="row">
     <button id="extractExcel">Analyser les imports</button>
     <button id="loadWarehouseData">Charger bases entrepôt</button>
   </div>
+  <label for="fileInput">Import backup JSON</label>
+  <input id="fileInput" type="file" accept=".json" />
   <div class="row">
     <button id="exportBackup">Backup JSON</button>
     <button id="importBackup">Import backup</button>
@@ -42,6 +49,11 @@
 <section class="card">
   <h3>4) Historique d’apprentissage</h3>
   <div id="learningHistory" class="log"></div>
+</section>
+
+<section class="card">
+  <h3>4-bis) Pages et données entraînées</h3>
+  <div id="trainingSources" class="log"></div>
 </section>
 
 <section class="card">
