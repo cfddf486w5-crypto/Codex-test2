@@ -411,18 +411,18 @@ async function bindSharedActions() {
   });
 
 
-  const apply1000Btn = document.getElementById('apply1000Improvements') || document.getElementById('apply300Improvements');
+  const apply1000Btn = document.getElementById('apply3000Improvements') || document.getElementById('apply1000Improvements') || document.getElementById('apply300Improvements');
   apply1000Btn?.addEventListener('click', async () => {
     await apply1000Improvements();
     const summary = await auditImprovements();
-    updateAiPanels('Pack 1000 améliorations appliqué.', `Conformité: ${summary.score}% (${summary.passed}/${summary.total}).`);
+    updateAiPanels('Pack 3000 améliorations appliqué.', `Conformité: ${summary.score}% (${summary.passed}/${summary.total}).`);
     await hydrateSettingsMetrics();
   });
 
-  const verify1000Btn = document.getElementById('verify1000Improvements') || document.getElementById('verify300Improvements');
+  const verify1000Btn = document.getElementById('verify3000Improvements') || document.getElementById('verify1000Improvements') || document.getElementById('verify300Improvements');
   verify1000Btn?.addEventListener('click', async () => {
     const summary = await auditImprovements();
-    updateAiPanels('Audit des 1000 améliorations terminé.', `Score: ${summary.score}% - OK: ${summary.passed} - KO: ${summary.failed}.`);
+    updateAiPanels('Audit des 3000 améliorations terminé.', `Score: ${summary.score}% - OK: ${summary.passed} - KO: ${summary.failed}.`);
     await hydrateSettingsMetrics();
   });
 

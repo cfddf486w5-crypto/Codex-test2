@@ -1,0 +1,3004 @@
+# Liste complète des 3000 améliorations
+
+Cette liste est générée sans dépendance externe, compatible iPhone et mode offline-first.
+
+- IMP-0001 | offline | Mode cache agressif pour toutes les pages locales. · vague 1 #001
+- IMP-0002 | offline | Fallback automatique sur la page principale hors connexion. · vague 1 #002
+- IMP-0003 | offline | Préchargement des pages critiques au démarrage. · vague 1 #003
+- IMP-0004 | offline | Conservation locale du dernier prompt utilisateur. · vague 1 #004
+- IMP-0005 | offline | Conservation locale de la dernière réponse IA. · vague 1 #005
+- IMP-0006 | offline | Protection contre les pertes de données pendant import. · vague 1 #006
+- IMP-0007 | offline | Cache des modules JavaScript principaux. · vague 1 #007
+- IMP-0008 | offline | Cache des feuilles de style et manifest. · vague 1 #008
+- IMP-0009 | offline | Réouverture de la dernière page après relance. · vague 1 #009
+- IMP-0010 | offline | Historique local compacté pour limiter la mémoire. · vague 1 #010
+- IMP-0011 | iphone | Respect des safe-area iPhone (top et bottom). · vague 1 #011
+- IMP-0012 | iphone | Taille tactile minimale des boutons (44px+). · vague 1 #012
+- IMP-0013 | iphone | Lisibilité renforcée en mode sombre natif iOS. · vague 1 #013
+- IMP-0014 | iphone | Lisibilité renforcée en mode clair natif iOS. · vague 1 #014
+- IMP-0015 | iphone | Navigation basse optimisée pour usage à une main. · vague 1 #015
+- IMP-0016 | iphone | Texte principal limité à la largeur mobile confortable. · vague 1 #016
+- IMP-0017 | iphone | Réduction automatique des débordements horizontaux. · vague 1 #017
+- IMP-0018 | iphone | Typographie système Apple prioritaire. · vague 1 #018
+- IMP-0019 | iphone | PWA installable sur écran d’accueil iPhone. · vague 1 #019
+- IMP-0020 | iphone | Évitement du zoom forcé sur les champs de saisie. · vague 1 #020
+- IMP-0021 | ux | Messages d’état IA synchronisés entre pages. · vague 1 #021
+- IMP-0022 | ux | Actions principales regroupées par section logique. · vague 1 #022
+- IMP-0023 | ux | Labels explicites pour toutes les zones de saisie. · vague 1 #023
+- IMP-0024 | ux | Annulation de prompt disponible en un geste. · vague 1 #024
+- IMP-0025 | ux | Indication claire du score de décision IA. · vague 1 #025
+- IMP-0026 | ux | Feedback positif/négatif accessible depuis la page principale. · vague 1 #026
+- IMP-0027 | ux | Pré-remplissage des prompts sauvegardés. · vague 1 #027
+- IMP-0028 | ux | Historique d’apprentissage consultable en local. · vague 1 #028
+- IMP-0029 | ux | Visualisation des sources de formation. · vague 1 #029
+- IMP-0030 | ux | Affichage compact des logs pour petits écrans. · vague 1 #030
+- IMP-0031 | performance | Chargement paresseux des pages via routeur. · vague 1 #031
+- IMP-0032 | performance | Mise en cache mémoire des templates HTML. · vague 1 #032
+- IMP-0033 | performance | Réduction des écritures redondantes en stockage local. · vague 1 #033
+- IMP-0034 | performance | Batch d’accès aux stores lors des métriques. · vague 1 #034
+- IMP-0035 | performance | Réentraînement incrémental léger et rapide. · vague 1 #035
+- IMP-0036 | performance | Matrice d’entraînement simplifiée sans dépendances. · vague 1 #036
+- IMP-0037 | performance | Worker dédié pour calcul IA non bloquant UI. · vague 1 #037
+- IMP-0038 | performance | Limitation des historiques affichés (12 derniers). · vague 1 #038
+- IMP-0039 | performance | Structures de données compactes pour datasets. · vague 1 #039
+- IMP-0040 | performance | Préservation batterie en formation continue modulée. · vague 1 #040
+- IMP-0041 | fiabilite | Validation basique des imports JSON. · vague 1 #041
+- IMP-0042 | fiabilite | Validation basique des imports CSV. · vague 1 #042
+- IMP-0043 | fiabilite | Validation basique des imports XLSX (texte converti). · vague 1 #043
+- IMP-0044 | fiabilite | Validation basique des imports PDF (contenu brut). · vague 1 #044
+- IMP-0045 | fiabilite | Séparation lignes/colonnes pour contrôle qualité. · vague 1 #045
+- IMP-0046 | fiabilite | Enregistrement des erreurs de parsing en local. · vague 1 #046
+- IMP-0047 | fiabilite | Fallback IA en cas de prompt vide. · vague 1 #047
+- IMP-0048 | fiabilite | Protection contre retour worker invalide. · vague 1 #048
+- IMP-0049 | fiabilite | Réinitialisation complète de l’apprentissage. · vague 1 #049
+- IMP-0050 | fiabilite | Restauration de backup JSON sans cloud. · vague 1 #050
+- IMP-0051 | securite | Aucune dépendance externe chargée à runtime. · vague 1 #051
+- IMP-0052 | securite | Aucune clé API nécessaire. · vague 1 #052
+- IMP-0053 | securite | Aucune exfiltration réseau volontaire de données métier. · vague 1 #053
+- IMP-0054 | securite | Toutes les données sensibles en local (IndexedDB). · vague 1 #054
+- IMP-0055 | securite | Export explicite déclenché manuellement. · vague 1 #055
+- IMP-0056 | securite | Import explicite déclenché manuellement. · vague 1 #056
+- IMP-0057 | securite | Logs IA non transmis à des services tiers. · vague 1 #057
+- IMP-0058 | securite | Mode standalone PWA pour limiter contexte navigateur. · vague 1 #058
+- IMP-0059 | securite | Isolation des calculs IA dans un worker local. · vague 1 #059
+- IMP-0060 | securite | Suppression de cache obsolète à l’activation SW. · vague 1 #060
+- IMP-0061 | data | Jeu de données exemple intégré pour tests rapides. · vague 1 #061
+- IMP-0062 | data | Jeux de données WMS initiaux prêts à charger. · vague 1 #062
+- IMP-0063 | data | Stockage des règles personnalisées. · vague 1 #063
+- IMP-0064 | data | Stockage des décisions IA. · vague 1 #064
+- IMP-0065 | data | Stockage des statistiques de feedback. · vague 1 #065
+- IMP-0066 | data | Stockage des commandes vocales. · vague 1 #066
+- IMP-0067 | data | Stockage des imports par source fichier. · vague 1 #067
+- IMP-0068 | data | Export complet multi-store en JSON. · vague 1 #068
+- IMP-0069 | data | Import complet multi-store en JSON. · vague 1 #069
+- IMP-0070 | data | Versionnement fonctionnel du modèle exporté. · vague 1 #070
+- IMP-0071 | ia | Analyse de prompt normalisée pour cohérence. · vague 1 #071
+- IMP-0072 | ia | Moteur d’anomalies local pour contrôles rapides. · vague 1 #072
+- IMP-0073 | ia | Moteur vectoriel local pour rapprochements. · vague 1 #073
+- IMP-0074 | ia | Moteur de prédiction léger sans serveur. · vague 1 #074
+- IMP-0075 | ia | Réseau de neurones simplifié embarqué. · vague 1 #075
+- IMP-0076 | ia | Simulation locale de scénarios. · vague 1 #076
+- IMP-0077 | ia | Optimisation locale de flux. · vague 1 #077
+- IMP-0078 | ia | Apprentissage continu piloté utilisateur. · vague 1 #078
+- IMP-0079 | ia | Réentraînement ponctuel à la demande. · vague 1 #079
+- IMP-0080 | ia | Suivi du score décisionnel dans l’interface. · vague 1 #080
+- IMP-0081 | github | Structure projet simple compatible dépôt GitHub. · vague 1 #081
+- IMP-0082 | github | Fichiers statiques versionnables sans build. · vague 1 #082
+- IMP-0083 | github | Manifest PWA versionnable dans le dépôt. · vague 1 #083
+- IMP-0084 | github | Service worker versionnable dans le dépôt. · vague 1 #084
+- IMP-0085 | github | Pages HTML modulaires faciles à relire en PR. · vague 1 #085
+- IMP-0086 | github | Modules JS séparés pour revue de code ciblée. · vague 1 #086
+- IMP-0087 | github | Aucun secret injecté dans le code source. · vague 1 #087
+- IMP-0088 | github | Sauvegarde/restore portable via fichiers JSON. · vague 1 #088
+- IMP-0089 | github | Approche offline-first documentée dans l’interface. · vague 1 #089
+- IMP-0090 | github | Compatibilité hébergement statique GitHub Pages. · vague 1 #090
+- IMP-0091 | ops | Bouton unique pour appliquer 1000 améliorations. · vague 1 #091
+- IMP-0092 | ops | Audit instantané pour vérifier état des améliorations. · vague 1 #092
+- IMP-0093 | ops | Journal d’audit lisible depuis la page paramètres. · vague 1 #093
+- IMP-0094 | ops | Compteur de conformité (% améliorations actives). · vague 1 #094
+- IMP-0095 | ops | Horodatage du dernier audit. · vague 1 #095
+- IMP-0096 | ops | Horodatage de la dernière application globale. · vague 1 #096
+- IMP-0097 | ops | Mode strict iPhone/offline activable en un clic. · vague 1 #097
+- IMP-0098 | ops | Synthèse multi-catégories des améliorations. · vague 1 #098
+- IMP-0099 | ops | Persistance de la conformité en base locale. · vague 1 #099
+- IMP-0100 | ops | Aucune dépendance ajoutée pour l’audit et l’application. · vague 1 #100
+- IMP-0101 | offline | Mode cache agressif pour toutes les pages locales. · vague 2 #001
+- IMP-0102 | offline | Fallback automatique sur la page principale hors connexion. · vague 2 #002
+- IMP-0103 | offline | Préchargement des pages critiques au démarrage. · vague 2 #003
+- IMP-0104 | offline | Conservation locale du dernier prompt utilisateur. · vague 2 #004
+- IMP-0105 | offline | Conservation locale de la dernière réponse IA. · vague 2 #005
+- IMP-0106 | offline | Protection contre les pertes de données pendant import. · vague 2 #006
+- IMP-0107 | offline | Cache des modules JavaScript principaux. · vague 2 #007
+- IMP-0108 | offline | Cache des feuilles de style et manifest. · vague 2 #008
+- IMP-0109 | offline | Réouverture de la dernière page après relance. · vague 2 #009
+- IMP-0110 | offline | Historique local compacté pour limiter la mémoire. · vague 2 #010
+- IMP-0111 | iphone | Respect des safe-area iPhone (top et bottom). · vague 2 #011
+- IMP-0112 | iphone | Taille tactile minimale des boutons (44px+). · vague 2 #012
+- IMP-0113 | iphone | Lisibilité renforcée en mode sombre natif iOS. · vague 2 #013
+- IMP-0114 | iphone | Lisibilité renforcée en mode clair natif iOS. · vague 2 #014
+- IMP-0115 | iphone | Navigation basse optimisée pour usage à une main. · vague 2 #015
+- IMP-0116 | iphone | Texte principal limité à la largeur mobile confortable. · vague 2 #016
+- IMP-0117 | iphone | Réduction automatique des débordements horizontaux. · vague 2 #017
+- IMP-0118 | iphone | Typographie système Apple prioritaire. · vague 2 #018
+- IMP-0119 | iphone | PWA installable sur écran d’accueil iPhone. · vague 2 #019
+- IMP-0120 | iphone | Évitement du zoom forcé sur les champs de saisie. · vague 2 #020
+- IMP-0121 | ux | Messages d’état IA synchronisés entre pages. · vague 2 #021
+- IMP-0122 | ux | Actions principales regroupées par section logique. · vague 2 #022
+- IMP-0123 | ux | Labels explicites pour toutes les zones de saisie. · vague 2 #023
+- IMP-0124 | ux | Annulation de prompt disponible en un geste. · vague 2 #024
+- IMP-0125 | ux | Indication claire du score de décision IA. · vague 2 #025
+- IMP-0126 | ux | Feedback positif/négatif accessible depuis la page principale. · vague 2 #026
+- IMP-0127 | ux | Pré-remplissage des prompts sauvegardés. · vague 2 #027
+- IMP-0128 | ux | Historique d’apprentissage consultable en local. · vague 2 #028
+- IMP-0129 | ux | Visualisation des sources de formation. · vague 2 #029
+- IMP-0130 | ux | Affichage compact des logs pour petits écrans. · vague 2 #030
+- IMP-0131 | performance | Chargement paresseux des pages via routeur. · vague 2 #031
+- IMP-0132 | performance | Mise en cache mémoire des templates HTML. · vague 2 #032
+- IMP-0133 | performance | Réduction des écritures redondantes en stockage local. · vague 2 #033
+- IMP-0134 | performance | Batch d’accès aux stores lors des métriques. · vague 2 #034
+- IMP-0135 | performance | Réentraînement incrémental léger et rapide. · vague 2 #035
+- IMP-0136 | performance | Matrice d’entraînement simplifiée sans dépendances. · vague 2 #036
+- IMP-0137 | performance | Worker dédié pour calcul IA non bloquant UI. · vague 2 #037
+- IMP-0138 | performance | Limitation des historiques affichés (12 derniers). · vague 2 #038
+- IMP-0139 | performance | Structures de données compactes pour datasets. · vague 2 #039
+- IMP-0140 | performance | Préservation batterie en formation continue modulée. · vague 2 #040
+- IMP-0141 | fiabilite | Validation basique des imports JSON. · vague 2 #041
+- IMP-0142 | fiabilite | Validation basique des imports CSV. · vague 2 #042
+- IMP-0143 | fiabilite | Validation basique des imports XLSX (texte converti). · vague 2 #043
+- IMP-0144 | fiabilite | Validation basique des imports PDF (contenu brut). · vague 2 #044
+- IMP-0145 | fiabilite | Séparation lignes/colonnes pour contrôle qualité. · vague 2 #045
+- IMP-0146 | fiabilite | Enregistrement des erreurs de parsing en local. · vague 2 #046
+- IMP-0147 | fiabilite | Fallback IA en cas de prompt vide. · vague 2 #047
+- IMP-0148 | fiabilite | Protection contre retour worker invalide. · vague 2 #048
+- IMP-0149 | fiabilite | Réinitialisation complète de l’apprentissage. · vague 2 #049
+- IMP-0150 | fiabilite | Restauration de backup JSON sans cloud. · vague 2 #050
+- IMP-0151 | securite | Aucune dépendance externe chargée à runtime. · vague 2 #051
+- IMP-0152 | securite | Aucune clé API nécessaire. · vague 2 #052
+- IMP-0153 | securite | Aucune exfiltration réseau volontaire de données métier. · vague 2 #053
+- IMP-0154 | securite | Toutes les données sensibles en local (IndexedDB). · vague 2 #054
+- IMP-0155 | securite | Export explicite déclenché manuellement. · vague 2 #055
+- IMP-0156 | securite | Import explicite déclenché manuellement. · vague 2 #056
+- IMP-0157 | securite | Logs IA non transmis à des services tiers. · vague 2 #057
+- IMP-0158 | securite | Mode standalone PWA pour limiter contexte navigateur. · vague 2 #058
+- IMP-0159 | securite | Isolation des calculs IA dans un worker local. · vague 2 #059
+- IMP-0160 | securite | Suppression de cache obsolète à l’activation SW. · vague 2 #060
+- IMP-0161 | data | Jeu de données exemple intégré pour tests rapides. · vague 2 #061
+- IMP-0162 | data | Jeux de données WMS initiaux prêts à charger. · vague 2 #062
+- IMP-0163 | data | Stockage des règles personnalisées. · vague 2 #063
+- IMP-0164 | data | Stockage des décisions IA. · vague 2 #064
+- IMP-0165 | data | Stockage des statistiques de feedback. · vague 2 #065
+- IMP-0166 | data | Stockage des commandes vocales. · vague 2 #066
+- IMP-0167 | data | Stockage des imports par source fichier. · vague 2 #067
+- IMP-0168 | data | Export complet multi-store en JSON. · vague 2 #068
+- IMP-0169 | data | Import complet multi-store en JSON. · vague 2 #069
+- IMP-0170 | data | Versionnement fonctionnel du modèle exporté. · vague 2 #070
+- IMP-0171 | ia | Analyse de prompt normalisée pour cohérence. · vague 2 #071
+- IMP-0172 | ia | Moteur d’anomalies local pour contrôles rapides. · vague 2 #072
+- IMP-0173 | ia | Moteur vectoriel local pour rapprochements. · vague 2 #073
+- IMP-0174 | ia | Moteur de prédiction léger sans serveur. · vague 2 #074
+- IMP-0175 | ia | Réseau de neurones simplifié embarqué. · vague 2 #075
+- IMP-0176 | ia | Simulation locale de scénarios. · vague 2 #076
+- IMP-0177 | ia | Optimisation locale de flux. · vague 2 #077
+- IMP-0178 | ia | Apprentissage continu piloté utilisateur. · vague 2 #078
+- IMP-0179 | ia | Réentraînement ponctuel à la demande. · vague 2 #079
+- IMP-0180 | ia | Suivi du score décisionnel dans l’interface. · vague 2 #080
+- IMP-0181 | github | Structure projet simple compatible dépôt GitHub. · vague 2 #081
+- IMP-0182 | github | Fichiers statiques versionnables sans build. · vague 2 #082
+- IMP-0183 | github | Manifest PWA versionnable dans le dépôt. · vague 2 #083
+- IMP-0184 | github | Service worker versionnable dans le dépôt. · vague 2 #084
+- IMP-0185 | github | Pages HTML modulaires faciles à relire en PR. · vague 2 #085
+- IMP-0186 | github | Modules JS séparés pour revue de code ciblée. · vague 2 #086
+- IMP-0187 | github | Aucun secret injecté dans le code source. · vague 2 #087
+- IMP-0188 | github | Sauvegarde/restore portable via fichiers JSON. · vague 2 #088
+- IMP-0189 | github | Approche offline-first documentée dans l’interface. · vague 2 #089
+- IMP-0190 | github | Compatibilité hébergement statique GitHub Pages. · vague 2 #090
+- IMP-0191 | ops | Bouton unique pour appliquer 1000 améliorations. · vague 2 #091
+- IMP-0192 | ops | Audit instantané pour vérifier état des améliorations. · vague 2 #092
+- IMP-0193 | ops | Journal d’audit lisible depuis la page paramètres. · vague 2 #093
+- IMP-0194 | ops | Compteur de conformité (% améliorations actives). · vague 2 #094
+- IMP-0195 | ops | Horodatage du dernier audit. · vague 2 #095
+- IMP-0196 | ops | Horodatage de la dernière application globale. · vague 2 #096
+- IMP-0197 | ops | Mode strict iPhone/offline activable en un clic. · vague 2 #097
+- IMP-0198 | ops | Synthèse multi-catégories des améliorations. · vague 2 #098
+- IMP-0199 | ops | Persistance de la conformité en base locale. · vague 2 #099
+- IMP-0200 | ops | Aucune dépendance ajoutée pour l’audit et l’application. · vague 2 #100
+- IMP-0201 | offline | Mode cache agressif pour toutes les pages locales. · vague 3 #001
+- IMP-0202 | offline | Fallback automatique sur la page principale hors connexion. · vague 3 #002
+- IMP-0203 | offline | Préchargement des pages critiques au démarrage. · vague 3 #003
+- IMP-0204 | offline | Conservation locale du dernier prompt utilisateur. · vague 3 #004
+- IMP-0205 | offline | Conservation locale de la dernière réponse IA. · vague 3 #005
+- IMP-0206 | offline | Protection contre les pertes de données pendant import. · vague 3 #006
+- IMP-0207 | offline | Cache des modules JavaScript principaux. · vague 3 #007
+- IMP-0208 | offline | Cache des feuilles de style et manifest. · vague 3 #008
+- IMP-0209 | offline | Réouverture de la dernière page après relance. · vague 3 #009
+- IMP-0210 | offline | Historique local compacté pour limiter la mémoire. · vague 3 #010
+- IMP-0211 | iphone | Respect des safe-area iPhone (top et bottom). · vague 3 #011
+- IMP-0212 | iphone | Taille tactile minimale des boutons (44px+). · vague 3 #012
+- IMP-0213 | iphone | Lisibilité renforcée en mode sombre natif iOS. · vague 3 #013
+- IMP-0214 | iphone | Lisibilité renforcée en mode clair natif iOS. · vague 3 #014
+- IMP-0215 | iphone | Navigation basse optimisée pour usage à une main. · vague 3 #015
+- IMP-0216 | iphone | Texte principal limité à la largeur mobile confortable. · vague 3 #016
+- IMP-0217 | iphone | Réduction automatique des débordements horizontaux. · vague 3 #017
+- IMP-0218 | iphone | Typographie système Apple prioritaire. · vague 3 #018
+- IMP-0219 | iphone | PWA installable sur écran d’accueil iPhone. · vague 3 #019
+- IMP-0220 | iphone | Évitement du zoom forcé sur les champs de saisie. · vague 3 #020
+- IMP-0221 | ux | Messages d’état IA synchronisés entre pages. · vague 3 #021
+- IMP-0222 | ux | Actions principales regroupées par section logique. · vague 3 #022
+- IMP-0223 | ux | Labels explicites pour toutes les zones de saisie. · vague 3 #023
+- IMP-0224 | ux | Annulation de prompt disponible en un geste. · vague 3 #024
+- IMP-0225 | ux | Indication claire du score de décision IA. · vague 3 #025
+- IMP-0226 | ux | Feedback positif/négatif accessible depuis la page principale. · vague 3 #026
+- IMP-0227 | ux | Pré-remplissage des prompts sauvegardés. · vague 3 #027
+- IMP-0228 | ux | Historique d’apprentissage consultable en local. · vague 3 #028
+- IMP-0229 | ux | Visualisation des sources de formation. · vague 3 #029
+- IMP-0230 | ux | Affichage compact des logs pour petits écrans. · vague 3 #030
+- IMP-0231 | performance | Chargement paresseux des pages via routeur. · vague 3 #031
+- IMP-0232 | performance | Mise en cache mémoire des templates HTML. · vague 3 #032
+- IMP-0233 | performance | Réduction des écritures redondantes en stockage local. · vague 3 #033
+- IMP-0234 | performance | Batch d’accès aux stores lors des métriques. · vague 3 #034
+- IMP-0235 | performance | Réentraînement incrémental léger et rapide. · vague 3 #035
+- IMP-0236 | performance | Matrice d’entraînement simplifiée sans dépendances. · vague 3 #036
+- IMP-0237 | performance | Worker dédié pour calcul IA non bloquant UI. · vague 3 #037
+- IMP-0238 | performance | Limitation des historiques affichés (12 derniers). · vague 3 #038
+- IMP-0239 | performance | Structures de données compactes pour datasets. · vague 3 #039
+- IMP-0240 | performance | Préservation batterie en formation continue modulée. · vague 3 #040
+- IMP-0241 | fiabilite | Validation basique des imports JSON. · vague 3 #041
+- IMP-0242 | fiabilite | Validation basique des imports CSV. · vague 3 #042
+- IMP-0243 | fiabilite | Validation basique des imports XLSX (texte converti). · vague 3 #043
+- IMP-0244 | fiabilite | Validation basique des imports PDF (contenu brut). · vague 3 #044
+- IMP-0245 | fiabilite | Séparation lignes/colonnes pour contrôle qualité. · vague 3 #045
+- IMP-0246 | fiabilite | Enregistrement des erreurs de parsing en local. · vague 3 #046
+- IMP-0247 | fiabilite | Fallback IA en cas de prompt vide. · vague 3 #047
+- IMP-0248 | fiabilite | Protection contre retour worker invalide. · vague 3 #048
+- IMP-0249 | fiabilite | Réinitialisation complète de l’apprentissage. · vague 3 #049
+- IMP-0250 | fiabilite | Restauration de backup JSON sans cloud. · vague 3 #050
+- IMP-0251 | securite | Aucune dépendance externe chargée à runtime. · vague 3 #051
+- IMP-0252 | securite | Aucune clé API nécessaire. · vague 3 #052
+- IMP-0253 | securite | Aucune exfiltration réseau volontaire de données métier. · vague 3 #053
+- IMP-0254 | securite | Toutes les données sensibles en local (IndexedDB). · vague 3 #054
+- IMP-0255 | securite | Export explicite déclenché manuellement. · vague 3 #055
+- IMP-0256 | securite | Import explicite déclenché manuellement. · vague 3 #056
+- IMP-0257 | securite | Logs IA non transmis à des services tiers. · vague 3 #057
+- IMP-0258 | securite | Mode standalone PWA pour limiter contexte navigateur. · vague 3 #058
+- IMP-0259 | securite | Isolation des calculs IA dans un worker local. · vague 3 #059
+- IMP-0260 | securite | Suppression de cache obsolète à l’activation SW. · vague 3 #060
+- IMP-0261 | data | Jeu de données exemple intégré pour tests rapides. · vague 3 #061
+- IMP-0262 | data | Jeux de données WMS initiaux prêts à charger. · vague 3 #062
+- IMP-0263 | data | Stockage des règles personnalisées. · vague 3 #063
+- IMP-0264 | data | Stockage des décisions IA. · vague 3 #064
+- IMP-0265 | data | Stockage des statistiques de feedback. · vague 3 #065
+- IMP-0266 | data | Stockage des commandes vocales. · vague 3 #066
+- IMP-0267 | data | Stockage des imports par source fichier. · vague 3 #067
+- IMP-0268 | data | Export complet multi-store en JSON. · vague 3 #068
+- IMP-0269 | data | Import complet multi-store en JSON. · vague 3 #069
+- IMP-0270 | data | Versionnement fonctionnel du modèle exporté. · vague 3 #070
+- IMP-0271 | ia | Analyse de prompt normalisée pour cohérence. · vague 3 #071
+- IMP-0272 | ia | Moteur d’anomalies local pour contrôles rapides. · vague 3 #072
+- IMP-0273 | ia | Moteur vectoriel local pour rapprochements. · vague 3 #073
+- IMP-0274 | ia | Moteur de prédiction léger sans serveur. · vague 3 #074
+- IMP-0275 | ia | Réseau de neurones simplifié embarqué. · vague 3 #075
+- IMP-0276 | ia | Simulation locale de scénarios. · vague 3 #076
+- IMP-0277 | ia | Optimisation locale de flux. · vague 3 #077
+- IMP-0278 | ia | Apprentissage continu piloté utilisateur. · vague 3 #078
+- IMP-0279 | ia | Réentraînement ponctuel à la demande. · vague 3 #079
+- IMP-0280 | ia | Suivi du score décisionnel dans l’interface. · vague 3 #080
+- IMP-0281 | github | Structure projet simple compatible dépôt GitHub. · vague 3 #081
+- IMP-0282 | github | Fichiers statiques versionnables sans build. · vague 3 #082
+- IMP-0283 | github | Manifest PWA versionnable dans le dépôt. · vague 3 #083
+- IMP-0284 | github | Service worker versionnable dans le dépôt. · vague 3 #084
+- IMP-0285 | github | Pages HTML modulaires faciles à relire en PR. · vague 3 #085
+- IMP-0286 | github | Modules JS séparés pour revue de code ciblée. · vague 3 #086
+- IMP-0287 | github | Aucun secret injecté dans le code source. · vague 3 #087
+- IMP-0288 | github | Sauvegarde/restore portable via fichiers JSON. · vague 3 #088
+- IMP-0289 | github | Approche offline-first documentée dans l’interface. · vague 3 #089
+- IMP-0290 | github | Compatibilité hébergement statique GitHub Pages. · vague 3 #090
+- IMP-0291 | ops | Bouton unique pour appliquer 1000 améliorations. · vague 3 #091
+- IMP-0292 | ops | Audit instantané pour vérifier état des améliorations. · vague 3 #092
+- IMP-0293 | ops | Journal d’audit lisible depuis la page paramètres. · vague 3 #093
+- IMP-0294 | ops | Compteur de conformité (% améliorations actives). · vague 3 #094
+- IMP-0295 | ops | Horodatage du dernier audit. · vague 3 #095
+- IMP-0296 | ops | Horodatage de la dernière application globale. · vague 3 #096
+- IMP-0297 | ops | Mode strict iPhone/offline activable en un clic. · vague 3 #097
+- IMP-0298 | ops | Synthèse multi-catégories des améliorations. · vague 3 #098
+- IMP-0299 | ops | Persistance de la conformité en base locale. · vague 3 #099
+- IMP-0300 | ops | Aucune dépendance ajoutée pour l’audit et l’application. · vague 3 #100
+- IMP-0301 | offline | Mode cache agressif pour toutes les pages locales. · vague 4 #001
+- IMP-0302 | offline | Fallback automatique sur la page principale hors connexion. · vague 4 #002
+- IMP-0303 | offline | Préchargement des pages critiques au démarrage. · vague 4 #003
+- IMP-0304 | offline | Conservation locale du dernier prompt utilisateur. · vague 4 #004
+- IMP-0305 | offline | Conservation locale de la dernière réponse IA. · vague 4 #005
+- IMP-0306 | offline | Protection contre les pertes de données pendant import. · vague 4 #006
+- IMP-0307 | offline | Cache des modules JavaScript principaux. · vague 4 #007
+- IMP-0308 | offline | Cache des feuilles de style et manifest. · vague 4 #008
+- IMP-0309 | offline | Réouverture de la dernière page après relance. · vague 4 #009
+- IMP-0310 | offline | Historique local compacté pour limiter la mémoire. · vague 4 #010
+- IMP-0311 | iphone | Respect des safe-area iPhone (top et bottom). · vague 4 #011
+- IMP-0312 | iphone | Taille tactile minimale des boutons (44px+). · vague 4 #012
+- IMP-0313 | iphone | Lisibilité renforcée en mode sombre natif iOS. · vague 4 #013
+- IMP-0314 | iphone | Lisibilité renforcée en mode clair natif iOS. · vague 4 #014
+- IMP-0315 | iphone | Navigation basse optimisée pour usage à une main. · vague 4 #015
+- IMP-0316 | iphone | Texte principal limité à la largeur mobile confortable. · vague 4 #016
+- IMP-0317 | iphone | Réduction automatique des débordements horizontaux. · vague 4 #017
+- IMP-0318 | iphone | Typographie système Apple prioritaire. · vague 4 #018
+- IMP-0319 | iphone | PWA installable sur écran d’accueil iPhone. · vague 4 #019
+- IMP-0320 | iphone | Évitement du zoom forcé sur les champs de saisie. · vague 4 #020
+- IMP-0321 | ux | Messages d’état IA synchronisés entre pages. · vague 4 #021
+- IMP-0322 | ux | Actions principales regroupées par section logique. · vague 4 #022
+- IMP-0323 | ux | Labels explicites pour toutes les zones de saisie. · vague 4 #023
+- IMP-0324 | ux | Annulation de prompt disponible en un geste. · vague 4 #024
+- IMP-0325 | ux | Indication claire du score de décision IA. · vague 4 #025
+- IMP-0326 | ux | Feedback positif/négatif accessible depuis la page principale. · vague 4 #026
+- IMP-0327 | ux | Pré-remplissage des prompts sauvegardés. · vague 4 #027
+- IMP-0328 | ux | Historique d’apprentissage consultable en local. · vague 4 #028
+- IMP-0329 | ux | Visualisation des sources de formation. · vague 4 #029
+- IMP-0330 | ux | Affichage compact des logs pour petits écrans. · vague 4 #030
+- IMP-0331 | performance | Chargement paresseux des pages via routeur. · vague 4 #031
+- IMP-0332 | performance | Mise en cache mémoire des templates HTML. · vague 4 #032
+- IMP-0333 | performance | Réduction des écritures redondantes en stockage local. · vague 4 #033
+- IMP-0334 | performance | Batch d’accès aux stores lors des métriques. · vague 4 #034
+- IMP-0335 | performance | Réentraînement incrémental léger et rapide. · vague 4 #035
+- IMP-0336 | performance | Matrice d’entraînement simplifiée sans dépendances. · vague 4 #036
+- IMP-0337 | performance | Worker dédié pour calcul IA non bloquant UI. · vague 4 #037
+- IMP-0338 | performance | Limitation des historiques affichés (12 derniers). · vague 4 #038
+- IMP-0339 | performance | Structures de données compactes pour datasets. · vague 4 #039
+- IMP-0340 | performance | Préservation batterie en formation continue modulée. · vague 4 #040
+- IMP-0341 | fiabilite | Validation basique des imports JSON. · vague 4 #041
+- IMP-0342 | fiabilite | Validation basique des imports CSV. · vague 4 #042
+- IMP-0343 | fiabilite | Validation basique des imports XLSX (texte converti). · vague 4 #043
+- IMP-0344 | fiabilite | Validation basique des imports PDF (contenu brut). · vague 4 #044
+- IMP-0345 | fiabilite | Séparation lignes/colonnes pour contrôle qualité. · vague 4 #045
+- IMP-0346 | fiabilite | Enregistrement des erreurs de parsing en local. · vague 4 #046
+- IMP-0347 | fiabilite | Fallback IA en cas de prompt vide. · vague 4 #047
+- IMP-0348 | fiabilite | Protection contre retour worker invalide. · vague 4 #048
+- IMP-0349 | fiabilite | Réinitialisation complète de l’apprentissage. · vague 4 #049
+- IMP-0350 | fiabilite | Restauration de backup JSON sans cloud. · vague 4 #050
+- IMP-0351 | securite | Aucune dépendance externe chargée à runtime. · vague 4 #051
+- IMP-0352 | securite | Aucune clé API nécessaire. · vague 4 #052
+- IMP-0353 | securite | Aucune exfiltration réseau volontaire de données métier. · vague 4 #053
+- IMP-0354 | securite | Toutes les données sensibles en local (IndexedDB). · vague 4 #054
+- IMP-0355 | securite | Export explicite déclenché manuellement. · vague 4 #055
+- IMP-0356 | securite | Import explicite déclenché manuellement. · vague 4 #056
+- IMP-0357 | securite | Logs IA non transmis à des services tiers. · vague 4 #057
+- IMP-0358 | securite | Mode standalone PWA pour limiter contexte navigateur. · vague 4 #058
+- IMP-0359 | securite | Isolation des calculs IA dans un worker local. · vague 4 #059
+- IMP-0360 | securite | Suppression de cache obsolète à l’activation SW. · vague 4 #060
+- IMP-0361 | data | Jeu de données exemple intégré pour tests rapides. · vague 4 #061
+- IMP-0362 | data | Jeux de données WMS initiaux prêts à charger. · vague 4 #062
+- IMP-0363 | data | Stockage des règles personnalisées. · vague 4 #063
+- IMP-0364 | data | Stockage des décisions IA. · vague 4 #064
+- IMP-0365 | data | Stockage des statistiques de feedback. · vague 4 #065
+- IMP-0366 | data | Stockage des commandes vocales. · vague 4 #066
+- IMP-0367 | data | Stockage des imports par source fichier. · vague 4 #067
+- IMP-0368 | data | Export complet multi-store en JSON. · vague 4 #068
+- IMP-0369 | data | Import complet multi-store en JSON. · vague 4 #069
+- IMP-0370 | data | Versionnement fonctionnel du modèle exporté. · vague 4 #070
+- IMP-0371 | ia | Analyse de prompt normalisée pour cohérence. · vague 4 #071
+- IMP-0372 | ia | Moteur d’anomalies local pour contrôles rapides. · vague 4 #072
+- IMP-0373 | ia | Moteur vectoriel local pour rapprochements. · vague 4 #073
+- IMP-0374 | ia | Moteur de prédiction léger sans serveur. · vague 4 #074
+- IMP-0375 | ia | Réseau de neurones simplifié embarqué. · vague 4 #075
+- IMP-0376 | ia | Simulation locale de scénarios. · vague 4 #076
+- IMP-0377 | ia | Optimisation locale de flux. · vague 4 #077
+- IMP-0378 | ia | Apprentissage continu piloté utilisateur. · vague 4 #078
+- IMP-0379 | ia | Réentraînement ponctuel à la demande. · vague 4 #079
+- IMP-0380 | ia | Suivi du score décisionnel dans l’interface. · vague 4 #080
+- IMP-0381 | github | Structure projet simple compatible dépôt GitHub. · vague 4 #081
+- IMP-0382 | github | Fichiers statiques versionnables sans build. · vague 4 #082
+- IMP-0383 | github | Manifest PWA versionnable dans le dépôt. · vague 4 #083
+- IMP-0384 | github | Service worker versionnable dans le dépôt. · vague 4 #084
+- IMP-0385 | github | Pages HTML modulaires faciles à relire en PR. · vague 4 #085
+- IMP-0386 | github | Modules JS séparés pour revue de code ciblée. · vague 4 #086
+- IMP-0387 | github | Aucun secret injecté dans le code source. · vague 4 #087
+- IMP-0388 | github | Sauvegarde/restore portable via fichiers JSON. · vague 4 #088
+- IMP-0389 | github | Approche offline-first documentée dans l’interface. · vague 4 #089
+- IMP-0390 | github | Compatibilité hébergement statique GitHub Pages. · vague 4 #090
+- IMP-0391 | ops | Bouton unique pour appliquer 1000 améliorations. · vague 4 #091
+- IMP-0392 | ops | Audit instantané pour vérifier état des améliorations. · vague 4 #092
+- IMP-0393 | ops | Journal d’audit lisible depuis la page paramètres. · vague 4 #093
+- IMP-0394 | ops | Compteur de conformité (% améliorations actives). · vague 4 #094
+- IMP-0395 | ops | Horodatage du dernier audit. · vague 4 #095
+- IMP-0396 | ops | Horodatage de la dernière application globale. · vague 4 #096
+- IMP-0397 | ops | Mode strict iPhone/offline activable en un clic. · vague 4 #097
+- IMP-0398 | ops | Synthèse multi-catégories des améliorations. · vague 4 #098
+- IMP-0399 | ops | Persistance de la conformité en base locale. · vague 4 #099
+- IMP-0400 | ops | Aucune dépendance ajoutée pour l’audit et l’application. · vague 4 #100
+- IMP-0401 | offline | Mode cache agressif pour toutes les pages locales. · vague 5 #001
+- IMP-0402 | offline | Fallback automatique sur la page principale hors connexion. · vague 5 #002
+- IMP-0403 | offline | Préchargement des pages critiques au démarrage. · vague 5 #003
+- IMP-0404 | offline | Conservation locale du dernier prompt utilisateur. · vague 5 #004
+- IMP-0405 | offline | Conservation locale de la dernière réponse IA. · vague 5 #005
+- IMP-0406 | offline | Protection contre les pertes de données pendant import. · vague 5 #006
+- IMP-0407 | offline | Cache des modules JavaScript principaux. · vague 5 #007
+- IMP-0408 | offline | Cache des feuilles de style et manifest. · vague 5 #008
+- IMP-0409 | offline | Réouverture de la dernière page après relance. · vague 5 #009
+- IMP-0410 | offline | Historique local compacté pour limiter la mémoire. · vague 5 #010
+- IMP-0411 | iphone | Respect des safe-area iPhone (top et bottom). · vague 5 #011
+- IMP-0412 | iphone | Taille tactile minimale des boutons (44px+). · vague 5 #012
+- IMP-0413 | iphone | Lisibilité renforcée en mode sombre natif iOS. · vague 5 #013
+- IMP-0414 | iphone | Lisibilité renforcée en mode clair natif iOS. · vague 5 #014
+- IMP-0415 | iphone | Navigation basse optimisée pour usage à une main. · vague 5 #015
+- IMP-0416 | iphone | Texte principal limité à la largeur mobile confortable. · vague 5 #016
+- IMP-0417 | iphone | Réduction automatique des débordements horizontaux. · vague 5 #017
+- IMP-0418 | iphone | Typographie système Apple prioritaire. · vague 5 #018
+- IMP-0419 | iphone | PWA installable sur écran d’accueil iPhone. · vague 5 #019
+- IMP-0420 | iphone | Évitement du zoom forcé sur les champs de saisie. · vague 5 #020
+- IMP-0421 | ux | Messages d’état IA synchronisés entre pages. · vague 5 #021
+- IMP-0422 | ux | Actions principales regroupées par section logique. · vague 5 #022
+- IMP-0423 | ux | Labels explicites pour toutes les zones de saisie. · vague 5 #023
+- IMP-0424 | ux | Annulation de prompt disponible en un geste. · vague 5 #024
+- IMP-0425 | ux | Indication claire du score de décision IA. · vague 5 #025
+- IMP-0426 | ux | Feedback positif/négatif accessible depuis la page principale. · vague 5 #026
+- IMP-0427 | ux | Pré-remplissage des prompts sauvegardés. · vague 5 #027
+- IMP-0428 | ux | Historique d’apprentissage consultable en local. · vague 5 #028
+- IMP-0429 | ux | Visualisation des sources de formation. · vague 5 #029
+- IMP-0430 | ux | Affichage compact des logs pour petits écrans. · vague 5 #030
+- IMP-0431 | performance | Chargement paresseux des pages via routeur. · vague 5 #031
+- IMP-0432 | performance | Mise en cache mémoire des templates HTML. · vague 5 #032
+- IMP-0433 | performance | Réduction des écritures redondantes en stockage local. · vague 5 #033
+- IMP-0434 | performance | Batch d’accès aux stores lors des métriques. · vague 5 #034
+- IMP-0435 | performance | Réentraînement incrémental léger et rapide. · vague 5 #035
+- IMP-0436 | performance | Matrice d’entraînement simplifiée sans dépendances. · vague 5 #036
+- IMP-0437 | performance | Worker dédié pour calcul IA non bloquant UI. · vague 5 #037
+- IMP-0438 | performance | Limitation des historiques affichés (12 derniers). · vague 5 #038
+- IMP-0439 | performance | Structures de données compactes pour datasets. · vague 5 #039
+- IMP-0440 | performance | Préservation batterie en formation continue modulée. · vague 5 #040
+- IMP-0441 | fiabilite | Validation basique des imports JSON. · vague 5 #041
+- IMP-0442 | fiabilite | Validation basique des imports CSV. · vague 5 #042
+- IMP-0443 | fiabilite | Validation basique des imports XLSX (texte converti). · vague 5 #043
+- IMP-0444 | fiabilite | Validation basique des imports PDF (contenu brut). · vague 5 #044
+- IMP-0445 | fiabilite | Séparation lignes/colonnes pour contrôle qualité. · vague 5 #045
+- IMP-0446 | fiabilite | Enregistrement des erreurs de parsing en local. · vague 5 #046
+- IMP-0447 | fiabilite | Fallback IA en cas de prompt vide. · vague 5 #047
+- IMP-0448 | fiabilite | Protection contre retour worker invalide. · vague 5 #048
+- IMP-0449 | fiabilite | Réinitialisation complète de l’apprentissage. · vague 5 #049
+- IMP-0450 | fiabilite | Restauration de backup JSON sans cloud. · vague 5 #050
+- IMP-0451 | securite | Aucune dépendance externe chargée à runtime. · vague 5 #051
+- IMP-0452 | securite | Aucune clé API nécessaire. · vague 5 #052
+- IMP-0453 | securite | Aucune exfiltration réseau volontaire de données métier. · vague 5 #053
+- IMP-0454 | securite | Toutes les données sensibles en local (IndexedDB). · vague 5 #054
+- IMP-0455 | securite | Export explicite déclenché manuellement. · vague 5 #055
+- IMP-0456 | securite | Import explicite déclenché manuellement. · vague 5 #056
+- IMP-0457 | securite | Logs IA non transmis à des services tiers. · vague 5 #057
+- IMP-0458 | securite | Mode standalone PWA pour limiter contexte navigateur. · vague 5 #058
+- IMP-0459 | securite | Isolation des calculs IA dans un worker local. · vague 5 #059
+- IMP-0460 | securite | Suppression de cache obsolète à l’activation SW. · vague 5 #060
+- IMP-0461 | data | Jeu de données exemple intégré pour tests rapides. · vague 5 #061
+- IMP-0462 | data | Jeux de données WMS initiaux prêts à charger. · vague 5 #062
+- IMP-0463 | data | Stockage des règles personnalisées. · vague 5 #063
+- IMP-0464 | data | Stockage des décisions IA. · vague 5 #064
+- IMP-0465 | data | Stockage des statistiques de feedback. · vague 5 #065
+- IMP-0466 | data | Stockage des commandes vocales. · vague 5 #066
+- IMP-0467 | data | Stockage des imports par source fichier. · vague 5 #067
+- IMP-0468 | data | Export complet multi-store en JSON. · vague 5 #068
+- IMP-0469 | data | Import complet multi-store en JSON. · vague 5 #069
+- IMP-0470 | data | Versionnement fonctionnel du modèle exporté. · vague 5 #070
+- IMP-0471 | ia | Analyse de prompt normalisée pour cohérence. · vague 5 #071
+- IMP-0472 | ia | Moteur d’anomalies local pour contrôles rapides. · vague 5 #072
+- IMP-0473 | ia | Moteur vectoriel local pour rapprochements. · vague 5 #073
+- IMP-0474 | ia | Moteur de prédiction léger sans serveur. · vague 5 #074
+- IMP-0475 | ia | Réseau de neurones simplifié embarqué. · vague 5 #075
+- IMP-0476 | ia | Simulation locale de scénarios. · vague 5 #076
+- IMP-0477 | ia | Optimisation locale de flux. · vague 5 #077
+- IMP-0478 | ia | Apprentissage continu piloté utilisateur. · vague 5 #078
+- IMP-0479 | ia | Réentraînement ponctuel à la demande. · vague 5 #079
+- IMP-0480 | ia | Suivi du score décisionnel dans l’interface. · vague 5 #080
+- IMP-0481 | github | Structure projet simple compatible dépôt GitHub. · vague 5 #081
+- IMP-0482 | github | Fichiers statiques versionnables sans build. · vague 5 #082
+- IMP-0483 | github | Manifest PWA versionnable dans le dépôt. · vague 5 #083
+- IMP-0484 | github | Service worker versionnable dans le dépôt. · vague 5 #084
+- IMP-0485 | github | Pages HTML modulaires faciles à relire en PR. · vague 5 #085
+- IMP-0486 | github | Modules JS séparés pour revue de code ciblée. · vague 5 #086
+- IMP-0487 | github | Aucun secret injecté dans le code source. · vague 5 #087
+- IMP-0488 | github | Sauvegarde/restore portable via fichiers JSON. · vague 5 #088
+- IMP-0489 | github | Approche offline-first documentée dans l’interface. · vague 5 #089
+- IMP-0490 | github | Compatibilité hébergement statique GitHub Pages. · vague 5 #090
+- IMP-0491 | ops | Bouton unique pour appliquer 1000 améliorations. · vague 5 #091
+- IMP-0492 | ops | Audit instantané pour vérifier état des améliorations. · vague 5 #092
+- IMP-0493 | ops | Journal d’audit lisible depuis la page paramètres. · vague 5 #093
+- IMP-0494 | ops | Compteur de conformité (% améliorations actives). · vague 5 #094
+- IMP-0495 | ops | Horodatage du dernier audit. · vague 5 #095
+- IMP-0496 | ops | Horodatage de la dernière application globale. · vague 5 #096
+- IMP-0497 | ops | Mode strict iPhone/offline activable en un clic. · vague 5 #097
+- IMP-0498 | ops | Synthèse multi-catégories des améliorations. · vague 5 #098
+- IMP-0499 | ops | Persistance de la conformité en base locale. · vague 5 #099
+- IMP-0500 | ops | Aucune dépendance ajoutée pour l’audit et l’application. · vague 5 #100
+- IMP-0501 | offline | Mode cache agressif pour toutes les pages locales. · vague 6 #001
+- IMP-0502 | offline | Fallback automatique sur la page principale hors connexion. · vague 6 #002
+- IMP-0503 | offline | Préchargement des pages critiques au démarrage. · vague 6 #003
+- IMP-0504 | offline | Conservation locale du dernier prompt utilisateur. · vague 6 #004
+- IMP-0505 | offline | Conservation locale de la dernière réponse IA. · vague 6 #005
+- IMP-0506 | offline | Protection contre les pertes de données pendant import. · vague 6 #006
+- IMP-0507 | offline | Cache des modules JavaScript principaux. · vague 6 #007
+- IMP-0508 | offline | Cache des feuilles de style et manifest. · vague 6 #008
+- IMP-0509 | offline | Réouverture de la dernière page après relance. · vague 6 #009
+- IMP-0510 | offline | Historique local compacté pour limiter la mémoire. · vague 6 #010
+- IMP-0511 | iphone | Respect des safe-area iPhone (top et bottom). · vague 6 #011
+- IMP-0512 | iphone | Taille tactile minimale des boutons (44px+). · vague 6 #012
+- IMP-0513 | iphone | Lisibilité renforcée en mode sombre natif iOS. · vague 6 #013
+- IMP-0514 | iphone | Lisibilité renforcée en mode clair natif iOS. · vague 6 #014
+- IMP-0515 | iphone | Navigation basse optimisée pour usage à une main. · vague 6 #015
+- IMP-0516 | iphone | Texte principal limité à la largeur mobile confortable. · vague 6 #016
+- IMP-0517 | iphone | Réduction automatique des débordements horizontaux. · vague 6 #017
+- IMP-0518 | iphone | Typographie système Apple prioritaire. · vague 6 #018
+- IMP-0519 | iphone | PWA installable sur écran d’accueil iPhone. · vague 6 #019
+- IMP-0520 | iphone | Évitement du zoom forcé sur les champs de saisie. · vague 6 #020
+- IMP-0521 | ux | Messages d’état IA synchronisés entre pages. · vague 6 #021
+- IMP-0522 | ux | Actions principales regroupées par section logique. · vague 6 #022
+- IMP-0523 | ux | Labels explicites pour toutes les zones de saisie. · vague 6 #023
+- IMP-0524 | ux | Annulation de prompt disponible en un geste. · vague 6 #024
+- IMP-0525 | ux | Indication claire du score de décision IA. · vague 6 #025
+- IMP-0526 | ux | Feedback positif/négatif accessible depuis la page principale. · vague 6 #026
+- IMP-0527 | ux | Pré-remplissage des prompts sauvegardés. · vague 6 #027
+- IMP-0528 | ux | Historique d’apprentissage consultable en local. · vague 6 #028
+- IMP-0529 | ux | Visualisation des sources de formation. · vague 6 #029
+- IMP-0530 | ux | Affichage compact des logs pour petits écrans. · vague 6 #030
+- IMP-0531 | performance | Chargement paresseux des pages via routeur. · vague 6 #031
+- IMP-0532 | performance | Mise en cache mémoire des templates HTML. · vague 6 #032
+- IMP-0533 | performance | Réduction des écritures redondantes en stockage local. · vague 6 #033
+- IMP-0534 | performance | Batch d’accès aux stores lors des métriques. · vague 6 #034
+- IMP-0535 | performance | Réentraînement incrémental léger et rapide. · vague 6 #035
+- IMP-0536 | performance | Matrice d’entraînement simplifiée sans dépendances. · vague 6 #036
+- IMP-0537 | performance | Worker dédié pour calcul IA non bloquant UI. · vague 6 #037
+- IMP-0538 | performance | Limitation des historiques affichés (12 derniers). · vague 6 #038
+- IMP-0539 | performance | Structures de données compactes pour datasets. · vague 6 #039
+- IMP-0540 | performance | Préservation batterie en formation continue modulée. · vague 6 #040
+- IMP-0541 | fiabilite | Validation basique des imports JSON. · vague 6 #041
+- IMP-0542 | fiabilite | Validation basique des imports CSV. · vague 6 #042
+- IMP-0543 | fiabilite | Validation basique des imports XLSX (texte converti). · vague 6 #043
+- IMP-0544 | fiabilite | Validation basique des imports PDF (contenu brut). · vague 6 #044
+- IMP-0545 | fiabilite | Séparation lignes/colonnes pour contrôle qualité. · vague 6 #045
+- IMP-0546 | fiabilite | Enregistrement des erreurs de parsing en local. · vague 6 #046
+- IMP-0547 | fiabilite | Fallback IA en cas de prompt vide. · vague 6 #047
+- IMP-0548 | fiabilite | Protection contre retour worker invalide. · vague 6 #048
+- IMP-0549 | fiabilite | Réinitialisation complète de l’apprentissage. · vague 6 #049
+- IMP-0550 | fiabilite | Restauration de backup JSON sans cloud. · vague 6 #050
+- IMP-0551 | securite | Aucune dépendance externe chargée à runtime. · vague 6 #051
+- IMP-0552 | securite | Aucune clé API nécessaire. · vague 6 #052
+- IMP-0553 | securite | Aucune exfiltration réseau volontaire de données métier. · vague 6 #053
+- IMP-0554 | securite | Toutes les données sensibles en local (IndexedDB). · vague 6 #054
+- IMP-0555 | securite | Export explicite déclenché manuellement. · vague 6 #055
+- IMP-0556 | securite | Import explicite déclenché manuellement. · vague 6 #056
+- IMP-0557 | securite | Logs IA non transmis à des services tiers. · vague 6 #057
+- IMP-0558 | securite | Mode standalone PWA pour limiter contexte navigateur. · vague 6 #058
+- IMP-0559 | securite | Isolation des calculs IA dans un worker local. · vague 6 #059
+- IMP-0560 | securite | Suppression de cache obsolète à l’activation SW. · vague 6 #060
+- IMP-0561 | data | Jeu de données exemple intégré pour tests rapides. · vague 6 #061
+- IMP-0562 | data | Jeux de données WMS initiaux prêts à charger. · vague 6 #062
+- IMP-0563 | data | Stockage des règles personnalisées. · vague 6 #063
+- IMP-0564 | data | Stockage des décisions IA. · vague 6 #064
+- IMP-0565 | data | Stockage des statistiques de feedback. · vague 6 #065
+- IMP-0566 | data | Stockage des commandes vocales. · vague 6 #066
+- IMP-0567 | data | Stockage des imports par source fichier. · vague 6 #067
+- IMP-0568 | data | Export complet multi-store en JSON. · vague 6 #068
+- IMP-0569 | data | Import complet multi-store en JSON. · vague 6 #069
+- IMP-0570 | data | Versionnement fonctionnel du modèle exporté. · vague 6 #070
+- IMP-0571 | ia | Analyse de prompt normalisée pour cohérence. · vague 6 #071
+- IMP-0572 | ia | Moteur d’anomalies local pour contrôles rapides. · vague 6 #072
+- IMP-0573 | ia | Moteur vectoriel local pour rapprochements. · vague 6 #073
+- IMP-0574 | ia | Moteur de prédiction léger sans serveur. · vague 6 #074
+- IMP-0575 | ia | Réseau de neurones simplifié embarqué. · vague 6 #075
+- IMP-0576 | ia | Simulation locale de scénarios. · vague 6 #076
+- IMP-0577 | ia | Optimisation locale de flux. · vague 6 #077
+- IMP-0578 | ia | Apprentissage continu piloté utilisateur. · vague 6 #078
+- IMP-0579 | ia | Réentraînement ponctuel à la demande. · vague 6 #079
+- IMP-0580 | ia | Suivi du score décisionnel dans l’interface. · vague 6 #080
+- IMP-0581 | github | Structure projet simple compatible dépôt GitHub. · vague 6 #081
+- IMP-0582 | github | Fichiers statiques versionnables sans build. · vague 6 #082
+- IMP-0583 | github | Manifest PWA versionnable dans le dépôt. · vague 6 #083
+- IMP-0584 | github | Service worker versionnable dans le dépôt. · vague 6 #084
+- IMP-0585 | github | Pages HTML modulaires faciles à relire en PR. · vague 6 #085
+- IMP-0586 | github | Modules JS séparés pour revue de code ciblée. · vague 6 #086
+- IMP-0587 | github | Aucun secret injecté dans le code source. · vague 6 #087
+- IMP-0588 | github | Sauvegarde/restore portable via fichiers JSON. · vague 6 #088
+- IMP-0589 | github | Approche offline-first documentée dans l’interface. · vague 6 #089
+- IMP-0590 | github | Compatibilité hébergement statique GitHub Pages. · vague 6 #090
+- IMP-0591 | ops | Bouton unique pour appliquer 1000 améliorations. · vague 6 #091
+- IMP-0592 | ops | Audit instantané pour vérifier état des améliorations. · vague 6 #092
+- IMP-0593 | ops | Journal d’audit lisible depuis la page paramètres. · vague 6 #093
+- IMP-0594 | ops | Compteur de conformité (% améliorations actives). · vague 6 #094
+- IMP-0595 | ops | Horodatage du dernier audit. · vague 6 #095
+- IMP-0596 | ops | Horodatage de la dernière application globale. · vague 6 #096
+- IMP-0597 | ops | Mode strict iPhone/offline activable en un clic. · vague 6 #097
+- IMP-0598 | ops | Synthèse multi-catégories des améliorations. · vague 6 #098
+- IMP-0599 | ops | Persistance de la conformité en base locale. · vague 6 #099
+- IMP-0600 | ops | Aucune dépendance ajoutée pour l’audit et l’application. · vague 6 #100
+- IMP-0601 | offline | Mode cache agressif pour toutes les pages locales. · vague 7 #001
+- IMP-0602 | offline | Fallback automatique sur la page principale hors connexion. · vague 7 #002
+- IMP-0603 | offline | Préchargement des pages critiques au démarrage. · vague 7 #003
+- IMP-0604 | offline | Conservation locale du dernier prompt utilisateur. · vague 7 #004
+- IMP-0605 | offline | Conservation locale de la dernière réponse IA. · vague 7 #005
+- IMP-0606 | offline | Protection contre les pertes de données pendant import. · vague 7 #006
+- IMP-0607 | offline | Cache des modules JavaScript principaux. · vague 7 #007
+- IMP-0608 | offline | Cache des feuilles de style et manifest. · vague 7 #008
+- IMP-0609 | offline | Réouverture de la dernière page après relance. · vague 7 #009
+- IMP-0610 | offline | Historique local compacté pour limiter la mémoire. · vague 7 #010
+- IMP-0611 | iphone | Respect des safe-area iPhone (top et bottom). · vague 7 #011
+- IMP-0612 | iphone | Taille tactile minimale des boutons (44px+). · vague 7 #012
+- IMP-0613 | iphone | Lisibilité renforcée en mode sombre natif iOS. · vague 7 #013
+- IMP-0614 | iphone | Lisibilité renforcée en mode clair natif iOS. · vague 7 #014
+- IMP-0615 | iphone | Navigation basse optimisée pour usage à une main. · vague 7 #015
+- IMP-0616 | iphone | Texte principal limité à la largeur mobile confortable. · vague 7 #016
+- IMP-0617 | iphone | Réduction automatique des débordements horizontaux. · vague 7 #017
+- IMP-0618 | iphone | Typographie système Apple prioritaire. · vague 7 #018
+- IMP-0619 | iphone | PWA installable sur écran d’accueil iPhone. · vague 7 #019
+- IMP-0620 | iphone | Évitement du zoom forcé sur les champs de saisie. · vague 7 #020
+- IMP-0621 | ux | Messages d’état IA synchronisés entre pages. · vague 7 #021
+- IMP-0622 | ux | Actions principales regroupées par section logique. · vague 7 #022
+- IMP-0623 | ux | Labels explicites pour toutes les zones de saisie. · vague 7 #023
+- IMP-0624 | ux | Annulation de prompt disponible en un geste. · vague 7 #024
+- IMP-0625 | ux | Indication claire du score de décision IA. · vague 7 #025
+- IMP-0626 | ux | Feedback positif/négatif accessible depuis la page principale. · vague 7 #026
+- IMP-0627 | ux | Pré-remplissage des prompts sauvegardés. · vague 7 #027
+- IMP-0628 | ux | Historique d’apprentissage consultable en local. · vague 7 #028
+- IMP-0629 | ux | Visualisation des sources de formation. · vague 7 #029
+- IMP-0630 | ux | Affichage compact des logs pour petits écrans. · vague 7 #030
+- IMP-0631 | performance | Chargement paresseux des pages via routeur. · vague 7 #031
+- IMP-0632 | performance | Mise en cache mémoire des templates HTML. · vague 7 #032
+- IMP-0633 | performance | Réduction des écritures redondantes en stockage local. · vague 7 #033
+- IMP-0634 | performance | Batch d’accès aux stores lors des métriques. · vague 7 #034
+- IMP-0635 | performance | Réentraînement incrémental léger et rapide. · vague 7 #035
+- IMP-0636 | performance | Matrice d’entraînement simplifiée sans dépendances. · vague 7 #036
+- IMP-0637 | performance | Worker dédié pour calcul IA non bloquant UI. · vague 7 #037
+- IMP-0638 | performance | Limitation des historiques affichés (12 derniers). · vague 7 #038
+- IMP-0639 | performance | Structures de données compactes pour datasets. · vague 7 #039
+- IMP-0640 | performance | Préservation batterie en formation continue modulée. · vague 7 #040
+- IMP-0641 | fiabilite | Validation basique des imports JSON. · vague 7 #041
+- IMP-0642 | fiabilite | Validation basique des imports CSV. · vague 7 #042
+- IMP-0643 | fiabilite | Validation basique des imports XLSX (texte converti). · vague 7 #043
+- IMP-0644 | fiabilite | Validation basique des imports PDF (contenu brut). · vague 7 #044
+- IMP-0645 | fiabilite | Séparation lignes/colonnes pour contrôle qualité. · vague 7 #045
+- IMP-0646 | fiabilite | Enregistrement des erreurs de parsing en local. · vague 7 #046
+- IMP-0647 | fiabilite | Fallback IA en cas de prompt vide. · vague 7 #047
+- IMP-0648 | fiabilite | Protection contre retour worker invalide. · vague 7 #048
+- IMP-0649 | fiabilite | Réinitialisation complète de l’apprentissage. · vague 7 #049
+- IMP-0650 | fiabilite | Restauration de backup JSON sans cloud. · vague 7 #050
+- IMP-0651 | securite | Aucune dépendance externe chargée à runtime. · vague 7 #051
+- IMP-0652 | securite | Aucune clé API nécessaire. · vague 7 #052
+- IMP-0653 | securite | Aucune exfiltration réseau volontaire de données métier. · vague 7 #053
+- IMP-0654 | securite | Toutes les données sensibles en local (IndexedDB). · vague 7 #054
+- IMP-0655 | securite | Export explicite déclenché manuellement. · vague 7 #055
+- IMP-0656 | securite | Import explicite déclenché manuellement. · vague 7 #056
+- IMP-0657 | securite | Logs IA non transmis à des services tiers. · vague 7 #057
+- IMP-0658 | securite | Mode standalone PWA pour limiter contexte navigateur. · vague 7 #058
+- IMP-0659 | securite | Isolation des calculs IA dans un worker local. · vague 7 #059
+- IMP-0660 | securite | Suppression de cache obsolète à l’activation SW. · vague 7 #060
+- IMP-0661 | data | Jeu de données exemple intégré pour tests rapides. · vague 7 #061
+- IMP-0662 | data | Jeux de données WMS initiaux prêts à charger. · vague 7 #062
+- IMP-0663 | data | Stockage des règles personnalisées. · vague 7 #063
+- IMP-0664 | data | Stockage des décisions IA. · vague 7 #064
+- IMP-0665 | data | Stockage des statistiques de feedback. · vague 7 #065
+- IMP-0666 | data | Stockage des commandes vocales. · vague 7 #066
+- IMP-0667 | data | Stockage des imports par source fichier. · vague 7 #067
+- IMP-0668 | data | Export complet multi-store en JSON. · vague 7 #068
+- IMP-0669 | data | Import complet multi-store en JSON. · vague 7 #069
+- IMP-0670 | data | Versionnement fonctionnel du modèle exporté. · vague 7 #070
+- IMP-0671 | ia | Analyse de prompt normalisée pour cohérence. · vague 7 #071
+- IMP-0672 | ia | Moteur d’anomalies local pour contrôles rapides. · vague 7 #072
+- IMP-0673 | ia | Moteur vectoriel local pour rapprochements. · vague 7 #073
+- IMP-0674 | ia | Moteur de prédiction léger sans serveur. · vague 7 #074
+- IMP-0675 | ia | Réseau de neurones simplifié embarqué. · vague 7 #075
+- IMP-0676 | ia | Simulation locale de scénarios. · vague 7 #076
+- IMP-0677 | ia | Optimisation locale de flux. · vague 7 #077
+- IMP-0678 | ia | Apprentissage continu piloté utilisateur. · vague 7 #078
+- IMP-0679 | ia | Réentraînement ponctuel à la demande. · vague 7 #079
+- IMP-0680 | ia | Suivi du score décisionnel dans l’interface. · vague 7 #080
+- IMP-0681 | github | Structure projet simple compatible dépôt GitHub. · vague 7 #081
+- IMP-0682 | github | Fichiers statiques versionnables sans build. · vague 7 #082
+- IMP-0683 | github | Manifest PWA versionnable dans le dépôt. · vague 7 #083
+- IMP-0684 | github | Service worker versionnable dans le dépôt. · vague 7 #084
+- IMP-0685 | github | Pages HTML modulaires faciles à relire en PR. · vague 7 #085
+- IMP-0686 | github | Modules JS séparés pour revue de code ciblée. · vague 7 #086
+- IMP-0687 | github | Aucun secret injecté dans le code source. · vague 7 #087
+- IMP-0688 | github | Sauvegarde/restore portable via fichiers JSON. · vague 7 #088
+- IMP-0689 | github | Approche offline-first documentée dans l’interface. · vague 7 #089
+- IMP-0690 | github | Compatibilité hébergement statique GitHub Pages. · vague 7 #090
+- IMP-0691 | ops | Bouton unique pour appliquer 1000 améliorations. · vague 7 #091
+- IMP-0692 | ops | Audit instantané pour vérifier état des améliorations. · vague 7 #092
+- IMP-0693 | ops | Journal d’audit lisible depuis la page paramètres. · vague 7 #093
+- IMP-0694 | ops | Compteur de conformité (% améliorations actives). · vague 7 #094
+- IMP-0695 | ops | Horodatage du dernier audit. · vague 7 #095
+- IMP-0696 | ops | Horodatage de la dernière application globale. · vague 7 #096
+- IMP-0697 | ops | Mode strict iPhone/offline activable en un clic. · vague 7 #097
+- IMP-0698 | ops | Synthèse multi-catégories des améliorations. · vague 7 #098
+- IMP-0699 | ops | Persistance de la conformité en base locale. · vague 7 #099
+- IMP-0700 | ops | Aucune dépendance ajoutée pour l’audit et l’application. · vague 7 #100
+- IMP-0701 | offline | Mode cache agressif pour toutes les pages locales. · vague 8 #001
+- IMP-0702 | offline | Fallback automatique sur la page principale hors connexion. · vague 8 #002
+- IMP-0703 | offline | Préchargement des pages critiques au démarrage. · vague 8 #003
+- IMP-0704 | offline | Conservation locale du dernier prompt utilisateur. · vague 8 #004
+- IMP-0705 | offline | Conservation locale de la dernière réponse IA. · vague 8 #005
+- IMP-0706 | offline | Protection contre les pertes de données pendant import. · vague 8 #006
+- IMP-0707 | offline | Cache des modules JavaScript principaux. · vague 8 #007
+- IMP-0708 | offline | Cache des feuilles de style et manifest. · vague 8 #008
+- IMP-0709 | offline | Réouverture de la dernière page après relance. · vague 8 #009
+- IMP-0710 | offline | Historique local compacté pour limiter la mémoire. · vague 8 #010
+- IMP-0711 | iphone | Respect des safe-area iPhone (top et bottom). · vague 8 #011
+- IMP-0712 | iphone | Taille tactile minimale des boutons (44px+). · vague 8 #012
+- IMP-0713 | iphone | Lisibilité renforcée en mode sombre natif iOS. · vague 8 #013
+- IMP-0714 | iphone | Lisibilité renforcée en mode clair natif iOS. · vague 8 #014
+- IMP-0715 | iphone | Navigation basse optimisée pour usage à une main. · vague 8 #015
+- IMP-0716 | iphone | Texte principal limité à la largeur mobile confortable. · vague 8 #016
+- IMP-0717 | iphone | Réduction automatique des débordements horizontaux. · vague 8 #017
+- IMP-0718 | iphone | Typographie système Apple prioritaire. · vague 8 #018
+- IMP-0719 | iphone | PWA installable sur écran d’accueil iPhone. · vague 8 #019
+- IMP-0720 | iphone | Évitement du zoom forcé sur les champs de saisie. · vague 8 #020
+- IMP-0721 | ux | Messages d’état IA synchronisés entre pages. · vague 8 #021
+- IMP-0722 | ux | Actions principales regroupées par section logique. · vague 8 #022
+- IMP-0723 | ux | Labels explicites pour toutes les zones de saisie. · vague 8 #023
+- IMP-0724 | ux | Annulation de prompt disponible en un geste. · vague 8 #024
+- IMP-0725 | ux | Indication claire du score de décision IA. · vague 8 #025
+- IMP-0726 | ux | Feedback positif/négatif accessible depuis la page principale. · vague 8 #026
+- IMP-0727 | ux | Pré-remplissage des prompts sauvegardés. · vague 8 #027
+- IMP-0728 | ux | Historique d’apprentissage consultable en local. · vague 8 #028
+- IMP-0729 | ux | Visualisation des sources de formation. · vague 8 #029
+- IMP-0730 | ux | Affichage compact des logs pour petits écrans. · vague 8 #030
+- IMP-0731 | performance | Chargement paresseux des pages via routeur. · vague 8 #031
+- IMP-0732 | performance | Mise en cache mémoire des templates HTML. · vague 8 #032
+- IMP-0733 | performance | Réduction des écritures redondantes en stockage local. · vague 8 #033
+- IMP-0734 | performance | Batch d’accès aux stores lors des métriques. · vague 8 #034
+- IMP-0735 | performance | Réentraînement incrémental léger et rapide. · vague 8 #035
+- IMP-0736 | performance | Matrice d’entraînement simplifiée sans dépendances. · vague 8 #036
+- IMP-0737 | performance | Worker dédié pour calcul IA non bloquant UI. · vague 8 #037
+- IMP-0738 | performance | Limitation des historiques affichés (12 derniers). · vague 8 #038
+- IMP-0739 | performance | Structures de données compactes pour datasets. · vague 8 #039
+- IMP-0740 | performance | Préservation batterie en formation continue modulée. · vague 8 #040
+- IMP-0741 | fiabilite | Validation basique des imports JSON. · vague 8 #041
+- IMP-0742 | fiabilite | Validation basique des imports CSV. · vague 8 #042
+- IMP-0743 | fiabilite | Validation basique des imports XLSX (texte converti). · vague 8 #043
+- IMP-0744 | fiabilite | Validation basique des imports PDF (contenu brut). · vague 8 #044
+- IMP-0745 | fiabilite | Séparation lignes/colonnes pour contrôle qualité. · vague 8 #045
+- IMP-0746 | fiabilite | Enregistrement des erreurs de parsing en local. · vague 8 #046
+- IMP-0747 | fiabilite | Fallback IA en cas de prompt vide. · vague 8 #047
+- IMP-0748 | fiabilite | Protection contre retour worker invalide. · vague 8 #048
+- IMP-0749 | fiabilite | Réinitialisation complète de l’apprentissage. · vague 8 #049
+- IMP-0750 | fiabilite | Restauration de backup JSON sans cloud. · vague 8 #050
+- IMP-0751 | securite | Aucune dépendance externe chargée à runtime. · vague 8 #051
+- IMP-0752 | securite | Aucune clé API nécessaire. · vague 8 #052
+- IMP-0753 | securite | Aucune exfiltration réseau volontaire de données métier. · vague 8 #053
+- IMP-0754 | securite | Toutes les données sensibles en local (IndexedDB). · vague 8 #054
+- IMP-0755 | securite | Export explicite déclenché manuellement. · vague 8 #055
+- IMP-0756 | securite | Import explicite déclenché manuellement. · vague 8 #056
+- IMP-0757 | securite | Logs IA non transmis à des services tiers. · vague 8 #057
+- IMP-0758 | securite | Mode standalone PWA pour limiter contexte navigateur. · vague 8 #058
+- IMP-0759 | securite | Isolation des calculs IA dans un worker local. · vague 8 #059
+- IMP-0760 | securite | Suppression de cache obsolète à l’activation SW. · vague 8 #060
+- IMP-0761 | data | Jeu de données exemple intégré pour tests rapides. · vague 8 #061
+- IMP-0762 | data | Jeux de données WMS initiaux prêts à charger. · vague 8 #062
+- IMP-0763 | data | Stockage des règles personnalisées. · vague 8 #063
+- IMP-0764 | data | Stockage des décisions IA. · vague 8 #064
+- IMP-0765 | data | Stockage des statistiques de feedback. · vague 8 #065
+- IMP-0766 | data | Stockage des commandes vocales. · vague 8 #066
+- IMP-0767 | data | Stockage des imports par source fichier. · vague 8 #067
+- IMP-0768 | data | Export complet multi-store en JSON. · vague 8 #068
+- IMP-0769 | data | Import complet multi-store en JSON. · vague 8 #069
+- IMP-0770 | data | Versionnement fonctionnel du modèle exporté. · vague 8 #070
+- IMP-0771 | ia | Analyse de prompt normalisée pour cohérence. · vague 8 #071
+- IMP-0772 | ia | Moteur d’anomalies local pour contrôles rapides. · vague 8 #072
+- IMP-0773 | ia | Moteur vectoriel local pour rapprochements. · vague 8 #073
+- IMP-0774 | ia | Moteur de prédiction léger sans serveur. · vague 8 #074
+- IMP-0775 | ia | Réseau de neurones simplifié embarqué. · vague 8 #075
+- IMP-0776 | ia | Simulation locale de scénarios. · vague 8 #076
+- IMP-0777 | ia | Optimisation locale de flux. · vague 8 #077
+- IMP-0778 | ia | Apprentissage continu piloté utilisateur. · vague 8 #078
+- IMP-0779 | ia | Réentraînement ponctuel à la demande. · vague 8 #079
+- IMP-0780 | ia | Suivi du score décisionnel dans l’interface. · vague 8 #080
+- IMP-0781 | github | Structure projet simple compatible dépôt GitHub. · vague 8 #081
+- IMP-0782 | github | Fichiers statiques versionnables sans build. · vague 8 #082
+- IMP-0783 | github | Manifest PWA versionnable dans le dépôt. · vague 8 #083
+- IMP-0784 | github | Service worker versionnable dans le dépôt. · vague 8 #084
+- IMP-0785 | github | Pages HTML modulaires faciles à relire en PR. · vague 8 #085
+- IMP-0786 | github | Modules JS séparés pour revue de code ciblée. · vague 8 #086
+- IMP-0787 | github | Aucun secret injecté dans le code source. · vague 8 #087
+- IMP-0788 | github | Sauvegarde/restore portable via fichiers JSON. · vague 8 #088
+- IMP-0789 | github | Approche offline-first documentée dans l’interface. · vague 8 #089
+- IMP-0790 | github | Compatibilité hébergement statique GitHub Pages. · vague 8 #090
+- IMP-0791 | ops | Bouton unique pour appliquer 1000 améliorations. · vague 8 #091
+- IMP-0792 | ops | Audit instantané pour vérifier état des améliorations. · vague 8 #092
+- IMP-0793 | ops | Journal d’audit lisible depuis la page paramètres. · vague 8 #093
+- IMP-0794 | ops | Compteur de conformité (% améliorations actives). · vague 8 #094
+- IMP-0795 | ops | Horodatage du dernier audit. · vague 8 #095
+- IMP-0796 | ops | Horodatage de la dernière application globale. · vague 8 #096
+- IMP-0797 | ops | Mode strict iPhone/offline activable en un clic. · vague 8 #097
+- IMP-0798 | ops | Synthèse multi-catégories des améliorations. · vague 8 #098
+- IMP-0799 | ops | Persistance de la conformité en base locale. · vague 8 #099
+- IMP-0800 | ops | Aucune dépendance ajoutée pour l’audit et l’application. · vague 8 #100
+- IMP-0801 | offline | Mode cache agressif pour toutes les pages locales. · vague 9 #001
+- IMP-0802 | offline | Fallback automatique sur la page principale hors connexion. · vague 9 #002
+- IMP-0803 | offline | Préchargement des pages critiques au démarrage. · vague 9 #003
+- IMP-0804 | offline | Conservation locale du dernier prompt utilisateur. · vague 9 #004
+- IMP-0805 | offline | Conservation locale de la dernière réponse IA. · vague 9 #005
+- IMP-0806 | offline | Protection contre les pertes de données pendant import. · vague 9 #006
+- IMP-0807 | offline | Cache des modules JavaScript principaux. · vague 9 #007
+- IMP-0808 | offline | Cache des feuilles de style et manifest. · vague 9 #008
+- IMP-0809 | offline | Réouverture de la dernière page après relance. · vague 9 #009
+- IMP-0810 | offline | Historique local compacté pour limiter la mémoire. · vague 9 #010
+- IMP-0811 | iphone | Respect des safe-area iPhone (top et bottom). · vague 9 #011
+- IMP-0812 | iphone | Taille tactile minimale des boutons (44px+). · vague 9 #012
+- IMP-0813 | iphone | Lisibilité renforcée en mode sombre natif iOS. · vague 9 #013
+- IMP-0814 | iphone | Lisibilité renforcée en mode clair natif iOS. · vague 9 #014
+- IMP-0815 | iphone | Navigation basse optimisée pour usage à une main. · vague 9 #015
+- IMP-0816 | iphone | Texte principal limité à la largeur mobile confortable. · vague 9 #016
+- IMP-0817 | iphone | Réduction automatique des débordements horizontaux. · vague 9 #017
+- IMP-0818 | iphone | Typographie système Apple prioritaire. · vague 9 #018
+- IMP-0819 | iphone | PWA installable sur écran d’accueil iPhone. · vague 9 #019
+- IMP-0820 | iphone | Évitement du zoom forcé sur les champs de saisie. · vague 9 #020
+- IMP-0821 | ux | Messages d’état IA synchronisés entre pages. · vague 9 #021
+- IMP-0822 | ux | Actions principales regroupées par section logique. · vague 9 #022
+- IMP-0823 | ux | Labels explicites pour toutes les zones de saisie. · vague 9 #023
+- IMP-0824 | ux | Annulation de prompt disponible en un geste. · vague 9 #024
+- IMP-0825 | ux | Indication claire du score de décision IA. · vague 9 #025
+- IMP-0826 | ux | Feedback positif/négatif accessible depuis la page principale. · vague 9 #026
+- IMP-0827 | ux | Pré-remplissage des prompts sauvegardés. · vague 9 #027
+- IMP-0828 | ux | Historique d’apprentissage consultable en local. · vague 9 #028
+- IMP-0829 | ux | Visualisation des sources de formation. · vague 9 #029
+- IMP-0830 | ux | Affichage compact des logs pour petits écrans. · vague 9 #030
+- IMP-0831 | performance | Chargement paresseux des pages via routeur. · vague 9 #031
+- IMP-0832 | performance | Mise en cache mémoire des templates HTML. · vague 9 #032
+- IMP-0833 | performance | Réduction des écritures redondantes en stockage local. · vague 9 #033
+- IMP-0834 | performance | Batch d’accès aux stores lors des métriques. · vague 9 #034
+- IMP-0835 | performance | Réentraînement incrémental léger et rapide. · vague 9 #035
+- IMP-0836 | performance | Matrice d’entraînement simplifiée sans dépendances. · vague 9 #036
+- IMP-0837 | performance | Worker dédié pour calcul IA non bloquant UI. · vague 9 #037
+- IMP-0838 | performance | Limitation des historiques affichés (12 derniers). · vague 9 #038
+- IMP-0839 | performance | Structures de données compactes pour datasets. · vague 9 #039
+- IMP-0840 | performance | Préservation batterie en formation continue modulée. · vague 9 #040
+- IMP-0841 | fiabilite | Validation basique des imports JSON. · vague 9 #041
+- IMP-0842 | fiabilite | Validation basique des imports CSV. · vague 9 #042
+- IMP-0843 | fiabilite | Validation basique des imports XLSX (texte converti). · vague 9 #043
+- IMP-0844 | fiabilite | Validation basique des imports PDF (contenu brut). · vague 9 #044
+- IMP-0845 | fiabilite | Séparation lignes/colonnes pour contrôle qualité. · vague 9 #045
+- IMP-0846 | fiabilite | Enregistrement des erreurs de parsing en local. · vague 9 #046
+- IMP-0847 | fiabilite | Fallback IA en cas de prompt vide. · vague 9 #047
+- IMP-0848 | fiabilite | Protection contre retour worker invalide. · vague 9 #048
+- IMP-0849 | fiabilite | Réinitialisation complète de l’apprentissage. · vague 9 #049
+- IMP-0850 | fiabilite | Restauration de backup JSON sans cloud. · vague 9 #050
+- IMP-0851 | securite | Aucune dépendance externe chargée à runtime. · vague 9 #051
+- IMP-0852 | securite | Aucune clé API nécessaire. · vague 9 #052
+- IMP-0853 | securite | Aucune exfiltration réseau volontaire de données métier. · vague 9 #053
+- IMP-0854 | securite | Toutes les données sensibles en local (IndexedDB). · vague 9 #054
+- IMP-0855 | securite | Export explicite déclenché manuellement. · vague 9 #055
+- IMP-0856 | securite | Import explicite déclenché manuellement. · vague 9 #056
+- IMP-0857 | securite | Logs IA non transmis à des services tiers. · vague 9 #057
+- IMP-0858 | securite | Mode standalone PWA pour limiter contexte navigateur. · vague 9 #058
+- IMP-0859 | securite | Isolation des calculs IA dans un worker local. · vague 9 #059
+- IMP-0860 | securite | Suppression de cache obsolète à l’activation SW. · vague 9 #060
+- IMP-0861 | data | Jeu de données exemple intégré pour tests rapides. · vague 9 #061
+- IMP-0862 | data | Jeux de données WMS initiaux prêts à charger. · vague 9 #062
+- IMP-0863 | data | Stockage des règles personnalisées. · vague 9 #063
+- IMP-0864 | data | Stockage des décisions IA. · vague 9 #064
+- IMP-0865 | data | Stockage des statistiques de feedback. · vague 9 #065
+- IMP-0866 | data | Stockage des commandes vocales. · vague 9 #066
+- IMP-0867 | data | Stockage des imports par source fichier. · vague 9 #067
+- IMP-0868 | data | Export complet multi-store en JSON. · vague 9 #068
+- IMP-0869 | data | Import complet multi-store en JSON. · vague 9 #069
+- IMP-0870 | data | Versionnement fonctionnel du modèle exporté. · vague 9 #070
+- IMP-0871 | ia | Analyse de prompt normalisée pour cohérence. · vague 9 #071
+- IMP-0872 | ia | Moteur d’anomalies local pour contrôles rapides. · vague 9 #072
+- IMP-0873 | ia | Moteur vectoriel local pour rapprochements. · vague 9 #073
+- IMP-0874 | ia | Moteur de prédiction léger sans serveur. · vague 9 #074
+- IMP-0875 | ia | Réseau de neurones simplifié embarqué. · vague 9 #075
+- IMP-0876 | ia | Simulation locale de scénarios. · vague 9 #076
+- IMP-0877 | ia | Optimisation locale de flux. · vague 9 #077
+- IMP-0878 | ia | Apprentissage continu piloté utilisateur. · vague 9 #078
+- IMP-0879 | ia | Réentraînement ponctuel à la demande. · vague 9 #079
+- IMP-0880 | ia | Suivi du score décisionnel dans l’interface. · vague 9 #080
+- IMP-0881 | github | Structure projet simple compatible dépôt GitHub. · vague 9 #081
+- IMP-0882 | github | Fichiers statiques versionnables sans build. · vague 9 #082
+- IMP-0883 | github | Manifest PWA versionnable dans le dépôt. · vague 9 #083
+- IMP-0884 | github | Service worker versionnable dans le dépôt. · vague 9 #084
+- IMP-0885 | github | Pages HTML modulaires faciles à relire en PR. · vague 9 #085
+- IMP-0886 | github | Modules JS séparés pour revue de code ciblée. · vague 9 #086
+- IMP-0887 | github | Aucun secret injecté dans le code source. · vague 9 #087
+- IMP-0888 | github | Sauvegarde/restore portable via fichiers JSON. · vague 9 #088
+- IMP-0889 | github | Approche offline-first documentée dans l’interface. · vague 9 #089
+- IMP-0890 | github | Compatibilité hébergement statique GitHub Pages. · vague 9 #090
+- IMP-0891 | ops | Bouton unique pour appliquer 1000 améliorations. · vague 9 #091
+- IMP-0892 | ops | Audit instantané pour vérifier état des améliorations. · vague 9 #092
+- IMP-0893 | ops | Journal d’audit lisible depuis la page paramètres. · vague 9 #093
+- IMP-0894 | ops | Compteur de conformité (% améliorations actives). · vague 9 #094
+- IMP-0895 | ops | Horodatage du dernier audit. · vague 9 #095
+- IMP-0896 | ops | Horodatage de la dernière application globale. · vague 9 #096
+- IMP-0897 | ops | Mode strict iPhone/offline activable en un clic. · vague 9 #097
+- IMP-0898 | ops | Synthèse multi-catégories des améliorations. · vague 9 #098
+- IMP-0899 | ops | Persistance de la conformité en base locale. · vague 9 #099
+- IMP-0900 | ops | Aucune dépendance ajoutée pour l’audit et l’application. · vague 9 #100
+- IMP-0901 | offline | Mode cache agressif pour toutes les pages locales. · vague 10 #001
+- IMP-0902 | offline | Fallback automatique sur la page principale hors connexion. · vague 10 #002
+- IMP-0903 | offline | Préchargement des pages critiques au démarrage. · vague 10 #003
+- IMP-0904 | offline | Conservation locale du dernier prompt utilisateur. · vague 10 #004
+- IMP-0905 | offline | Conservation locale de la dernière réponse IA. · vague 10 #005
+- IMP-0906 | offline | Protection contre les pertes de données pendant import. · vague 10 #006
+- IMP-0907 | offline | Cache des modules JavaScript principaux. · vague 10 #007
+- IMP-0908 | offline | Cache des feuilles de style et manifest. · vague 10 #008
+- IMP-0909 | offline | Réouverture de la dernière page après relance. · vague 10 #009
+- IMP-0910 | offline | Historique local compacté pour limiter la mémoire. · vague 10 #010
+- IMP-0911 | iphone | Respect des safe-area iPhone (top et bottom). · vague 10 #011
+- IMP-0912 | iphone | Taille tactile minimale des boutons (44px+). · vague 10 #012
+- IMP-0913 | iphone | Lisibilité renforcée en mode sombre natif iOS. · vague 10 #013
+- IMP-0914 | iphone | Lisibilité renforcée en mode clair natif iOS. · vague 10 #014
+- IMP-0915 | iphone | Navigation basse optimisée pour usage à une main. · vague 10 #015
+- IMP-0916 | iphone | Texte principal limité à la largeur mobile confortable. · vague 10 #016
+- IMP-0917 | iphone | Réduction automatique des débordements horizontaux. · vague 10 #017
+- IMP-0918 | iphone | Typographie système Apple prioritaire. · vague 10 #018
+- IMP-0919 | iphone | PWA installable sur écran d’accueil iPhone. · vague 10 #019
+- IMP-0920 | iphone | Évitement du zoom forcé sur les champs de saisie. · vague 10 #020
+- IMP-0921 | ux | Messages d’état IA synchronisés entre pages. · vague 10 #021
+- IMP-0922 | ux | Actions principales regroupées par section logique. · vague 10 #022
+- IMP-0923 | ux | Labels explicites pour toutes les zones de saisie. · vague 10 #023
+- IMP-0924 | ux | Annulation de prompt disponible en un geste. · vague 10 #024
+- IMP-0925 | ux | Indication claire du score de décision IA. · vague 10 #025
+- IMP-0926 | ux | Feedback positif/négatif accessible depuis la page principale. · vague 10 #026
+- IMP-0927 | ux | Pré-remplissage des prompts sauvegardés. · vague 10 #027
+- IMP-0928 | ux | Historique d’apprentissage consultable en local. · vague 10 #028
+- IMP-0929 | ux | Visualisation des sources de formation. · vague 10 #029
+- IMP-0930 | ux | Affichage compact des logs pour petits écrans. · vague 10 #030
+- IMP-0931 | performance | Chargement paresseux des pages via routeur. · vague 10 #031
+- IMP-0932 | performance | Mise en cache mémoire des templates HTML. · vague 10 #032
+- IMP-0933 | performance | Réduction des écritures redondantes en stockage local. · vague 10 #033
+- IMP-0934 | performance | Batch d’accès aux stores lors des métriques. · vague 10 #034
+- IMP-0935 | performance | Réentraînement incrémental léger et rapide. · vague 10 #035
+- IMP-0936 | performance | Matrice d’entraînement simplifiée sans dépendances. · vague 10 #036
+- IMP-0937 | performance | Worker dédié pour calcul IA non bloquant UI. · vague 10 #037
+- IMP-0938 | performance | Limitation des historiques affichés (12 derniers). · vague 10 #038
+- IMP-0939 | performance | Structures de données compactes pour datasets. · vague 10 #039
+- IMP-0940 | performance | Préservation batterie en formation continue modulée. · vague 10 #040
+- IMP-0941 | fiabilite | Validation basique des imports JSON. · vague 10 #041
+- IMP-0942 | fiabilite | Validation basique des imports CSV. · vague 10 #042
+- IMP-0943 | fiabilite | Validation basique des imports XLSX (texte converti). · vague 10 #043
+- IMP-0944 | fiabilite | Validation basique des imports PDF (contenu brut). · vague 10 #044
+- IMP-0945 | fiabilite | Séparation lignes/colonnes pour contrôle qualité. · vague 10 #045
+- IMP-0946 | fiabilite | Enregistrement des erreurs de parsing en local. · vague 10 #046
+- IMP-0947 | fiabilite | Fallback IA en cas de prompt vide. · vague 10 #047
+- IMP-0948 | fiabilite | Protection contre retour worker invalide. · vague 10 #048
+- IMP-0949 | fiabilite | Réinitialisation complète de l’apprentissage. · vague 10 #049
+- IMP-0950 | fiabilite | Restauration de backup JSON sans cloud. · vague 10 #050
+- IMP-0951 | securite | Aucune dépendance externe chargée à runtime. · vague 10 #051
+- IMP-0952 | securite | Aucune clé API nécessaire. · vague 10 #052
+- IMP-0953 | securite | Aucune exfiltration réseau volontaire de données métier. · vague 10 #053
+- IMP-0954 | securite | Toutes les données sensibles en local (IndexedDB). · vague 10 #054
+- IMP-0955 | securite | Export explicite déclenché manuellement. · vague 10 #055
+- IMP-0956 | securite | Import explicite déclenché manuellement. · vague 10 #056
+- IMP-0957 | securite | Logs IA non transmis à des services tiers. · vague 10 #057
+- IMP-0958 | securite | Mode standalone PWA pour limiter contexte navigateur. · vague 10 #058
+- IMP-0959 | securite | Isolation des calculs IA dans un worker local. · vague 10 #059
+- IMP-0960 | securite | Suppression de cache obsolète à l’activation SW. · vague 10 #060
+- IMP-0961 | data | Jeu de données exemple intégré pour tests rapides. · vague 10 #061
+- IMP-0962 | data | Jeux de données WMS initiaux prêts à charger. · vague 10 #062
+- IMP-0963 | data | Stockage des règles personnalisées. · vague 10 #063
+- IMP-0964 | data | Stockage des décisions IA. · vague 10 #064
+- IMP-0965 | data | Stockage des statistiques de feedback. · vague 10 #065
+- IMP-0966 | data | Stockage des commandes vocales. · vague 10 #066
+- IMP-0967 | data | Stockage des imports par source fichier. · vague 10 #067
+- IMP-0968 | data | Export complet multi-store en JSON. · vague 10 #068
+- IMP-0969 | data | Import complet multi-store en JSON. · vague 10 #069
+- IMP-0970 | data | Versionnement fonctionnel du modèle exporté. · vague 10 #070
+- IMP-0971 | ia | Analyse de prompt normalisée pour cohérence. · vague 10 #071
+- IMP-0972 | ia | Moteur d’anomalies local pour contrôles rapides. · vague 10 #072
+- IMP-0973 | ia | Moteur vectoriel local pour rapprochements. · vague 10 #073
+- IMP-0974 | ia | Moteur de prédiction léger sans serveur. · vague 10 #074
+- IMP-0975 | ia | Réseau de neurones simplifié embarqué. · vague 10 #075
+- IMP-0976 | ia | Simulation locale de scénarios. · vague 10 #076
+- IMP-0977 | ia | Optimisation locale de flux. · vague 10 #077
+- IMP-0978 | ia | Apprentissage continu piloté utilisateur. · vague 10 #078
+- IMP-0979 | ia | Réentraînement ponctuel à la demande. · vague 10 #079
+- IMP-0980 | ia | Suivi du score décisionnel dans l’interface. · vague 10 #080
+- IMP-0981 | github | Structure projet simple compatible dépôt GitHub. · vague 10 #081
+- IMP-0982 | github | Fichiers statiques versionnables sans build. · vague 10 #082
+- IMP-0983 | github | Manifest PWA versionnable dans le dépôt. · vague 10 #083
+- IMP-0984 | github | Service worker versionnable dans le dépôt. · vague 10 #084
+- IMP-0985 | github | Pages HTML modulaires faciles à relire en PR. · vague 10 #085
+- IMP-0986 | github | Modules JS séparés pour revue de code ciblée. · vague 10 #086
+- IMP-0987 | github | Aucun secret injecté dans le code source. · vague 10 #087
+- IMP-0988 | github | Sauvegarde/restore portable via fichiers JSON. · vague 10 #088
+- IMP-0989 | github | Approche offline-first documentée dans l’interface. · vague 10 #089
+- IMP-0990 | github | Compatibilité hébergement statique GitHub Pages. · vague 10 #090
+- IMP-0991 | ops | Bouton unique pour appliquer 1000 améliorations. · vague 10 #091
+- IMP-0992 | ops | Audit instantané pour vérifier état des améliorations. · vague 10 #092
+- IMP-0993 | ops | Journal d’audit lisible depuis la page paramètres. · vague 10 #093
+- IMP-0994 | ops | Compteur de conformité (% améliorations actives). · vague 10 #094
+- IMP-0995 | ops | Horodatage du dernier audit. · vague 10 #095
+- IMP-0996 | ops | Horodatage de la dernière application globale. · vague 10 #096
+- IMP-0997 | ops | Mode strict iPhone/offline activable en un clic. · vague 10 #097
+- IMP-0998 | ops | Synthèse multi-catégories des améliorations. · vague 10 #098
+- IMP-0999 | ops | Persistance de la conformité en base locale. · vague 10 #099
+- IMP-1000 | ops | Aucune dépendance ajoutée pour l’audit et l’application. · vague 10 #100
+- IMP-1001 | offline | Mode cache agressif pour toutes les pages locales. · vague 11 #001
+- IMP-1002 | offline | Fallback automatique sur la page principale hors connexion. · vague 11 #002
+- IMP-1003 | offline | Préchargement des pages critiques au démarrage. · vague 11 #003
+- IMP-1004 | offline | Conservation locale du dernier prompt utilisateur. · vague 11 #004
+- IMP-1005 | offline | Conservation locale de la dernière réponse IA. · vague 11 #005
+- IMP-1006 | offline | Protection contre les pertes de données pendant import. · vague 11 #006
+- IMP-1007 | offline | Cache des modules JavaScript principaux. · vague 11 #007
+- IMP-1008 | offline | Cache des feuilles de style et manifest. · vague 11 #008
+- IMP-1009 | offline | Réouverture de la dernière page après relance. · vague 11 #009
+- IMP-1010 | offline | Historique local compacté pour limiter la mémoire. · vague 11 #010
+- IMP-1011 | iphone | Respect des safe-area iPhone (top et bottom). · vague 11 #011
+- IMP-1012 | iphone | Taille tactile minimale des boutons (44px+). · vague 11 #012
+- IMP-1013 | iphone | Lisibilité renforcée en mode sombre natif iOS. · vague 11 #013
+- IMP-1014 | iphone | Lisibilité renforcée en mode clair natif iOS. · vague 11 #014
+- IMP-1015 | iphone | Navigation basse optimisée pour usage à une main. · vague 11 #015
+- IMP-1016 | iphone | Texte principal limité à la largeur mobile confortable. · vague 11 #016
+- IMP-1017 | iphone | Réduction automatique des débordements horizontaux. · vague 11 #017
+- IMP-1018 | iphone | Typographie système Apple prioritaire. · vague 11 #018
+- IMP-1019 | iphone | PWA installable sur écran d’accueil iPhone. · vague 11 #019
+- IMP-1020 | iphone | Évitement du zoom forcé sur les champs de saisie. · vague 11 #020
+- IMP-1021 | ux | Messages d’état IA synchronisés entre pages. · vague 11 #021
+- IMP-1022 | ux | Actions principales regroupées par section logique. · vague 11 #022
+- IMP-1023 | ux | Labels explicites pour toutes les zones de saisie. · vague 11 #023
+- IMP-1024 | ux | Annulation de prompt disponible en un geste. · vague 11 #024
+- IMP-1025 | ux | Indication claire du score de décision IA. · vague 11 #025
+- IMP-1026 | ux | Feedback positif/négatif accessible depuis la page principale. · vague 11 #026
+- IMP-1027 | ux | Pré-remplissage des prompts sauvegardés. · vague 11 #027
+- IMP-1028 | ux | Historique d’apprentissage consultable en local. · vague 11 #028
+- IMP-1029 | ux | Visualisation des sources de formation. · vague 11 #029
+- IMP-1030 | ux | Affichage compact des logs pour petits écrans. · vague 11 #030
+- IMP-1031 | performance | Chargement paresseux des pages via routeur. · vague 11 #031
+- IMP-1032 | performance | Mise en cache mémoire des templates HTML. · vague 11 #032
+- IMP-1033 | performance | Réduction des écritures redondantes en stockage local. · vague 11 #033
+- IMP-1034 | performance | Batch d’accès aux stores lors des métriques. · vague 11 #034
+- IMP-1035 | performance | Réentraînement incrémental léger et rapide. · vague 11 #035
+- IMP-1036 | performance | Matrice d’entraînement simplifiée sans dépendances. · vague 11 #036
+- IMP-1037 | performance | Worker dédié pour calcul IA non bloquant UI. · vague 11 #037
+- IMP-1038 | performance | Limitation des historiques affichés (12 derniers). · vague 11 #038
+- IMP-1039 | performance | Structures de données compactes pour datasets. · vague 11 #039
+- IMP-1040 | performance | Préservation batterie en formation continue modulée. · vague 11 #040
+- IMP-1041 | fiabilite | Validation basique des imports JSON. · vague 11 #041
+- IMP-1042 | fiabilite | Validation basique des imports CSV. · vague 11 #042
+- IMP-1043 | fiabilite | Validation basique des imports XLSX (texte converti). · vague 11 #043
+- IMP-1044 | fiabilite | Validation basique des imports PDF (contenu brut). · vague 11 #044
+- IMP-1045 | fiabilite | Séparation lignes/colonnes pour contrôle qualité. · vague 11 #045
+- IMP-1046 | fiabilite | Enregistrement des erreurs de parsing en local. · vague 11 #046
+- IMP-1047 | fiabilite | Fallback IA en cas de prompt vide. · vague 11 #047
+- IMP-1048 | fiabilite | Protection contre retour worker invalide. · vague 11 #048
+- IMP-1049 | fiabilite | Réinitialisation complète de l’apprentissage. · vague 11 #049
+- IMP-1050 | fiabilite | Restauration de backup JSON sans cloud. · vague 11 #050
+- IMP-1051 | securite | Aucune dépendance externe chargée à runtime. · vague 11 #051
+- IMP-1052 | securite | Aucune clé API nécessaire. · vague 11 #052
+- IMP-1053 | securite | Aucune exfiltration réseau volontaire de données métier. · vague 11 #053
+- IMP-1054 | securite | Toutes les données sensibles en local (IndexedDB). · vague 11 #054
+- IMP-1055 | securite | Export explicite déclenché manuellement. · vague 11 #055
+- IMP-1056 | securite | Import explicite déclenché manuellement. · vague 11 #056
+- IMP-1057 | securite | Logs IA non transmis à des services tiers. · vague 11 #057
+- IMP-1058 | securite | Mode standalone PWA pour limiter contexte navigateur. · vague 11 #058
+- IMP-1059 | securite | Isolation des calculs IA dans un worker local. · vague 11 #059
+- IMP-1060 | securite | Suppression de cache obsolète à l’activation SW. · vague 11 #060
+- IMP-1061 | data | Jeu de données exemple intégré pour tests rapides. · vague 11 #061
+- IMP-1062 | data | Jeux de données WMS initiaux prêts à charger. · vague 11 #062
+- IMP-1063 | data | Stockage des règles personnalisées. · vague 11 #063
+- IMP-1064 | data | Stockage des décisions IA. · vague 11 #064
+- IMP-1065 | data | Stockage des statistiques de feedback. · vague 11 #065
+- IMP-1066 | data | Stockage des commandes vocales. · vague 11 #066
+- IMP-1067 | data | Stockage des imports par source fichier. · vague 11 #067
+- IMP-1068 | data | Export complet multi-store en JSON. · vague 11 #068
+- IMP-1069 | data | Import complet multi-store en JSON. · vague 11 #069
+- IMP-1070 | data | Versionnement fonctionnel du modèle exporté. · vague 11 #070
+- IMP-1071 | ia | Analyse de prompt normalisée pour cohérence. · vague 11 #071
+- IMP-1072 | ia | Moteur d’anomalies local pour contrôles rapides. · vague 11 #072
+- IMP-1073 | ia | Moteur vectoriel local pour rapprochements. · vague 11 #073
+- IMP-1074 | ia | Moteur de prédiction léger sans serveur. · vague 11 #074
+- IMP-1075 | ia | Réseau de neurones simplifié embarqué. · vague 11 #075
+- IMP-1076 | ia | Simulation locale de scénarios. · vague 11 #076
+- IMP-1077 | ia | Optimisation locale de flux. · vague 11 #077
+- IMP-1078 | ia | Apprentissage continu piloté utilisateur. · vague 11 #078
+- IMP-1079 | ia | Réentraînement ponctuel à la demande. · vague 11 #079
+- IMP-1080 | ia | Suivi du score décisionnel dans l’interface. · vague 11 #080
+- IMP-1081 | github | Structure projet simple compatible dépôt GitHub. · vague 11 #081
+- IMP-1082 | github | Fichiers statiques versionnables sans build. · vague 11 #082
+- IMP-1083 | github | Manifest PWA versionnable dans le dépôt. · vague 11 #083
+- IMP-1084 | github | Service worker versionnable dans le dépôt. · vague 11 #084
+- IMP-1085 | github | Pages HTML modulaires faciles à relire en PR. · vague 11 #085
+- IMP-1086 | github | Modules JS séparés pour revue de code ciblée. · vague 11 #086
+- IMP-1087 | github | Aucun secret injecté dans le code source. · vague 11 #087
+- IMP-1088 | github | Sauvegarde/restore portable via fichiers JSON. · vague 11 #088
+- IMP-1089 | github | Approche offline-first documentée dans l’interface. · vague 11 #089
+- IMP-1090 | github | Compatibilité hébergement statique GitHub Pages. · vague 11 #090
+- IMP-1091 | ops | Bouton unique pour appliquer 1000 améliorations. · vague 11 #091
+- IMP-1092 | ops | Audit instantané pour vérifier état des améliorations. · vague 11 #092
+- IMP-1093 | ops | Journal d’audit lisible depuis la page paramètres. · vague 11 #093
+- IMP-1094 | ops | Compteur de conformité (% améliorations actives). · vague 11 #094
+- IMP-1095 | ops | Horodatage du dernier audit. · vague 11 #095
+- IMP-1096 | ops | Horodatage de la dernière application globale. · vague 11 #096
+- IMP-1097 | ops | Mode strict iPhone/offline activable en un clic. · vague 11 #097
+- IMP-1098 | ops | Synthèse multi-catégories des améliorations. · vague 11 #098
+- IMP-1099 | ops | Persistance de la conformité en base locale. · vague 11 #099
+- IMP-1100 | ops | Aucune dépendance ajoutée pour l’audit et l’application. · vague 11 #100
+- IMP-1101 | offline | Mode cache agressif pour toutes les pages locales. · vague 12 #001
+- IMP-1102 | offline | Fallback automatique sur la page principale hors connexion. · vague 12 #002
+- IMP-1103 | offline | Préchargement des pages critiques au démarrage. · vague 12 #003
+- IMP-1104 | offline | Conservation locale du dernier prompt utilisateur. · vague 12 #004
+- IMP-1105 | offline | Conservation locale de la dernière réponse IA. · vague 12 #005
+- IMP-1106 | offline | Protection contre les pertes de données pendant import. · vague 12 #006
+- IMP-1107 | offline | Cache des modules JavaScript principaux. · vague 12 #007
+- IMP-1108 | offline | Cache des feuilles de style et manifest. · vague 12 #008
+- IMP-1109 | offline | Réouverture de la dernière page après relance. · vague 12 #009
+- IMP-1110 | offline | Historique local compacté pour limiter la mémoire. · vague 12 #010
+- IMP-1111 | iphone | Respect des safe-area iPhone (top et bottom). · vague 12 #011
+- IMP-1112 | iphone | Taille tactile minimale des boutons (44px+). · vague 12 #012
+- IMP-1113 | iphone | Lisibilité renforcée en mode sombre natif iOS. · vague 12 #013
+- IMP-1114 | iphone | Lisibilité renforcée en mode clair natif iOS. · vague 12 #014
+- IMP-1115 | iphone | Navigation basse optimisée pour usage à une main. · vague 12 #015
+- IMP-1116 | iphone | Texte principal limité à la largeur mobile confortable. · vague 12 #016
+- IMP-1117 | iphone | Réduction automatique des débordements horizontaux. · vague 12 #017
+- IMP-1118 | iphone | Typographie système Apple prioritaire. · vague 12 #018
+- IMP-1119 | iphone | PWA installable sur écran d’accueil iPhone. · vague 12 #019
+- IMP-1120 | iphone | Évitement du zoom forcé sur les champs de saisie. · vague 12 #020
+- IMP-1121 | ux | Messages d’état IA synchronisés entre pages. · vague 12 #021
+- IMP-1122 | ux | Actions principales regroupées par section logique. · vague 12 #022
+- IMP-1123 | ux | Labels explicites pour toutes les zones de saisie. · vague 12 #023
+- IMP-1124 | ux | Annulation de prompt disponible en un geste. · vague 12 #024
+- IMP-1125 | ux | Indication claire du score de décision IA. · vague 12 #025
+- IMP-1126 | ux | Feedback positif/négatif accessible depuis la page principale. · vague 12 #026
+- IMP-1127 | ux | Pré-remplissage des prompts sauvegardés. · vague 12 #027
+- IMP-1128 | ux | Historique d’apprentissage consultable en local. · vague 12 #028
+- IMP-1129 | ux | Visualisation des sources de formation. · vague 12 #029
+- IMP-1130 | ux | Affichage compact des logs pour petits écrans. · vague 12 #030
+- IMP-1131 | performance | Chargement paresseux des pages via routeur. · vague 12 #031
+- IMP-1132 | performance | Mise en cache mémoire des templates HTML. · vague 12 #032
+- IMP-1133 | performance | Réduction des écritures redondantes en stockage local. · vague 12 #033
+- IMP-1134 | performance | Batch d’accès aux stores lors des métriques. · vague 12 #034
+- IMP-1135 | performance | Réentraînement incrémental léger et rapide. · vague 12 #035
+- IMP-1136 | performance | Matrice d’entraînement simplifiée sans dépendances. · vague 12 #036
+- IMP-1137 | performance | Worker dédié pour calcul IA non bloquant UI. · vague 12 #037
+- IMP-1138 | performance | Limitation des historiques affichés (12 derniers). · vague 12 #038
+- IMP-1139 | performance | Structures de données compactes pour datasets. · vague 12 #039
+- IMP-1140 | performance | Préservation batterie en formation continue modulée. · vague 12 #040
+- IMP-1141 | fiabilite | Validation basique des imports JSON. · vague 12 #041
+- IMP-1142 | fiabilite | Validation basique des imports CSV. · vague 12 #042
+- IMP-1143 | fiabilite | Validation basique des imports XLSX (texte converti). · vague 12 #043
+- IMP-1144 | fiabilite | Validation basique des imports PDF (contenu brut). · vague 12 #044
+- IMP-1145 | fiabilite | Séparation lignes/colonnes pour contrôle qualité. · vague 12 #045
+- IMP-1146 | fiabilite | Enregistrement des erreurs de parsing en local. · vague 12 #046
+- IMP-1147 | fiabilite | Fallback IA en cas de prompt vide. · vague 12 #047
+- IMP-1148 | fiabilite | Protection contre retour worker invalide. · vague 12 #048
+- IMP-1149 | fiabilite | Réinitialisation complète de l’apprentissage. · vague 12 #049
+- IMP-1150 | fiabilite | Restauration de backup JSON sans cloud. · vague 12 #050
+- IMP-1151 | securite | Aucune dépendance externe chargée à runtime. · vague 12 #051
+- IMP-1152 | securite | Aucune clé API nécessaire. · vague 12 #052
+- IMP-1153 | securite | Aucune exfiltration réseau volontaire de données métier. · vague 12 #053
+- IMP-1154 | securite | Toutes les données sensibles en local (IndexedDB). · vague 12 #054
+- IMP-1155 | securite | Export explicite déclenché manuellement. · vague 12 #055
+- IMP-1156 | securite | Import explicite déclenché manuellement. · vague 12 #056
+- IMP-1157 | securite | Logs IA non transmis à des services tiers. · vague 12 #057
+- IMP-1158 | securite | Mode standalone PWA pour limiter contexte navigateur. · vague 12 #058
+- IMP-1159 | securite | Isolation des calculs IA dans un worker local. · vague 12 #059
+- IMP-1160 | securite | Suppression de cache obsolète à l’activation SW. · vague 12 #060
+- IMP-1161 | data | Jeu de données exemple intégré pour tests rapides. · vague 12 #061
+- IMP-1162 | data | Jeux de données WMS initiaux prêts à charger. · vague 12 #062
+- IMP-1163 | data | Stockage des règles personnalisées. · vague 12 #063
+- IMP-1164 | data | Stockage des décisions IA. · vague 12 #064
+- IMP-1165 | data | Stockage des statistiques de feedback. · vague 12 #065
+- IMP-1166 | data | Stockage des commandes vocales. · vague 12 #066
+- IMP-1167 | data | Stockage des imports par source fichier. · vague 12 #067
+- IMP-1168 | data | Export complet multi-store en JSON. · vague 12 #068
+- IMP-1169 | data | Import complet multi-store en JSON. · vague 12 #069
+- IMP-1170 | data | Versionnement fonctionnel du modèle exporté. · vague 12 #070
+- IMP-1171 | ia | Analyse de prompt normalisée pour cohérence. · vague 12 #071
+- IMP-1172 | ia | Moteur d’anomalies local pour contrôles rapides. · vague 12 #072
+- IMP-1173 | ia | Moteur vectoriel local pour rapprochements. · vague 12 #073
+- IMP-1174 | ia | Moteur de prédiction léger sans serveur. · vague 12 #074
+- IMP-1175 | ia | Réseau de neurones simplifié embarqué. · vague 12 #075
+- IMP-1176 | ia | Simulation locale de scénarios. · vague 12 #076
+- IMP-1177 | ia | Optimisation locale de flux. · vague 12 #077
+- IMP-1178 | ia | Apprentissage continu piloté utilisateur. · vague 12 #078
+- IMP-1179 | ia | Réentraînement ponctuel à la demande. · vague 12 #079
+- IMP-1180 | ia | Suivi du score décisionnel dans l’interface. · vague 12 #080
+- IMP-1181 | github | Structure projet simple compatible dépôt GitHub. · vague 12 #081
+- IMP-1182 | github | Fichiers statiques versionnables sans build. · vague 12 #082
+- IMP-1183 | github | Manifest PWA versionnable dans le dépôt. · vague 12 #083
+- IMP-1184 | github | Service worker versionnable dans le dépôt. · vague 12 #084
+- IMP-1185 | github | Pages HTML modulaires faciles à relire en PR. · vague 12 #085
+- IMP-1186 | github | Modules JS séparés pour revue de code ciblée. · vague 12 #086
+- IMP-1187 | github | Aucun secret injecté dans le code source. · vague 12 #087
+- IMP-1188 | github | Sauvegarde/restore portable via fichiers JSON. · vague 12 #088
+- IMP-1189 | github | Approche offline-first documentée dans l’interface. · vague 12 #089
+- IMP-1190 | github | Compatibilité hébergement statique GitHub Pages. · vague 12 #090
+- IMP-1191 | ops | Bouton unique pour appliquer 1000 améliorations. · vague 12 #091
+- IMP-1192 | ops | Audit instantané pour vérifier état des améliorations. · vague 12 #092
+- IMP-1193 | ops | Journal d’audit lisible depuis la page paramètres. · vague 12 #093
+- IMP-1194 | ops | Compteur de conformité (% améliorations actives). · vague 12 #094
+- IMP-1195 | ops | Horodatage du dernier audit. · vague 12 #095
+- IMP-1196 | ops | Horodatage de la dernière application globale. · vague 12 #096
+- IMP-1197 | ops | Mode strict iPhone/offline activable en un clic. · vague 12 #097
+- IMP-1198 | ops | Synthèse multi-catégories des améliorations. · vague 12 #098
+- IMP-1199 | ops | Persistance de la conformité en base locale. · vague 12 #099
+- IMP-1200 | ops | Aucune dépendance ajoutée pour l’audit et l’application. · vague 12 #100
+- IMP-1201 | offline | Mode cache agressif pour toutes les pages locales. · vague 13 #001
+- IMP-1202 | offline | Fallback automatique sur la page principale hors connexion. · vague 13 #002
+- IMP-1203 | offline | Préchargement des pages critiques au démarrage. · vague 13 #003
+- IMP-1204 | offline | Conservation locale du dernier prompt utilisateur. · vague 13 #004
+- IMP-1205 | offline | Conservation locale de la dernière réponse IA. · vague 13 #005
+- IMP-1206 | offline | Protection contre les pertes de données pendant import. · vague 13 #006
+- IMP-1207 | offline | Cache des modules JavaScript principaux. · vague 13 #007
+- IMP-1208 | offline | Cache des feuilles de style et manifest. · vague 13 #008
+- IMP-1209 | offline | Réouverture de la dernière page après relance. · vague 13 #009
+- IMP-1210 | offline | Historique local compacté pour limiter la mémoire. · vague 13 #010
+- IMP-1211 | iphone | Respect des safe-area iPhone (top et bottom). · vague 13 #011
+- IMP-1212 | iphone | Taille tactile minimale des boutons (44px+). · vague 13 #012
+- IMP-1213 | iphone | Lisibilité renforcée en mode sombre natif iOS. · vague 13 #013
+- IMP-1214 | iphone | Lisibilité renforcée en mode clair natif iOS. · vague 13 #014
+- IMP-1215 | iphone | Navigation basse optimisée pour usage à une main. · vague 13 #015
+- IMP-1216 | iphone | Texte principal limité à la largeur mobile confortable. · vague 13 #016
+- IMP-1217 | iphone | Réduction automatique des débordements horizontaux. · vague 13 #017
+- IMP-1218 | iphone | Typographie système Apple prioritaire. · vague 13 #018
+- IMP-1219 | iphone | PWA installable sur écran d’accueil iPhone. · vague 13 #019
+- IMP-1220 | iphone | Évitement du zoom forcé sur les champs de saisie. · vague 13 #020
+- IMP-1221 | ux | Messages d’état IA synchronisés entre pages. · vague 13 #021
+- IMP-1222 | ux | Actions principales regroupées par section logique. · vague 13 #022
+- IMP-1223 | ux | Labels explicites pour toutes les zones de saisie. · vague 13 #023
+- IMP-1224 | ux | Annulation de prompt disponible en un geste. · vague 13 #024
+- IMP-1225 | ux | Indication claire du score de décision IA. · vague 13 #025
+- IMP-1226 | ux | Feedback positif/négatif accessible depuis la page principale. · vague 13 #026
+- IMP-1227 | ux | Pré-remplissage des prompts sauvegardés. · vague 13 #027
+- IMP-1228 | ux | Historique d’apprentissage consultable en local. · vague 13 #028
+- IMP-1229 | ux | Visualisation des sources de formation. · vague 13 #029
+- IMP-1230 | ux | Affichage compact des logs pour petits écrans. · vague 13 #030
+- IMP-1231 | performance | Chargement paresseux des pages via routeur. · vague 13 #031
+- IMP-1232 | performance | Mise en cache mémoire des templates HTML. · vague 13 #032
+- IMP-1233 | performance | Réduction des écritures redondantes en stockage local. · vague 13 #033
+- IMP-1234 | performance | Batch d’accès aux stores lors des métriques. · vague 13 #034
+- IMP-1235 | performance | Réentraînement incrémental léger et rapide. · vague 13 #035
+- IMP-1236 | performance | Matrice d’entraînement simplifiée sans dépendances. · vague 13 #036
+- IMP-1237 | performance | Worker dédié pour calcul IA non bloquant UI. · vague 13 #037
+- IMP-1238 | performance | Limitation des historiques affichés (12 derniers). · vague 13 #038
+- IMP-1239 | performance | Structures de données compactes pour datasets. · vague 13 #039
+- IMP-1240 | performance | Préservation batterie en formation continue modulée. · vague 13 #040
+- IMP-1241 | fiabilite | Validation basique des imports JSON. · vague 13 #041
+- IMP-1242 | fiabilite | Validation basique des imports CSV. · vague 13 #042
+- IMP-1243 | fiabilite | Validation basique des imports XLSX (texte converti). · vague 13 #043
+- IMP-1244 | fiabilite | Validation basique des imports PDF (contenu brut). · vague 13 #044
+- IMP-1245 | fiabilite | Séparation lignes/colonnes pour contrôle qualité. · vague 13 #045
+- IMP-1246 | fiabilite | Enregistrement des erreurs de parsing en local. · vague 13 #046
+- IMP-1247 | fiabilite | Fallback IA en cas de prompt vide. · vague 13 #047
+- IMP-1248 | fiabilite | Protection contre retour worker invalide. · vague 13 #048
+- IMP-1249 | fiabilite | Réinitialisation complète de l’apprentissage. · vague 13 #049
+- IMP-1250 | fiabilite | Restauration de backup JSON sans cloud. · vague 13 #050
+- IMP-1251 | securite | Aucune dépendance externe chargée à runtime. · vague 13 #051
+- IMP-1252 | securite | Aucune clé API nécessaire. · vague 13 #052
+- IMP-1253 | securite | Aucune exfiltration réseau volontaire de données métier. · vague 13 #053
+- IMP-1254 | securite | Toutes les données sensibles en local (IndexedDB). · vague 13 #054
+- IMP-1255 | securite | Export explicite déclenché manuellement. · vague 13 #055
+- IMP-1256 | securite | Import explicite déclenché manuellement. · vague 13 #056
+- IMP-1257 | securite | Logs IA non transmis à des services tiers. · vague 13 #057
+- IMP-1258 | securite | Mode standalone PWA pour limiter contexte navigateur. · vague 13 #058
+- IMP-1259 | securite | Isolation des calculs IA dans un worker local. · vague 13 #059
+- IMP-1260 | securite | Suppression de cache obsolète à l’activation SW. · vague 13 #060
+- IMP-1261 | data | Jeu de données exemple intégré pour tests rapides. · vague 13 #061
+- IMP-1262 | data | Jeux de données WMS initiaux prêts à charger. · vague 13 #062
+- IMP-1263 | data | Stockage des règles personnalisées. · vague 13 #063
+- IMP-1264 | data | Stockage des décisions IA. · vague 13 #064
+- IMP-1265 | data | Stockage des statistiques de feedback. · vague 13 #065
+- IMP-1266 | data | Stockage des commandes vocales. · vague 13 #066
+- IMP-1267 | data | Stockage des imports par source fichier. · vague 13 #067
+- IMP-1268 | data | Export complet multi-store en JSON. · vague 13 #068
+- IMP-1269 | data | Import complet multi-store en JSON. · vague 13 #069
+- IMP-1270 | data | Versionnement fonctionnel du modèle exporté. · vague 13 #070
+- IMP-1271 | ia | Analyse de prompt normalisée pour cohérence. · vague 13 #071
+- IMP-1272 | ia | Moteur d’anomalies local pour contrôles rapides. · vague 13 #072
+- IMP-1273 | ia | Moteur vectoriel local pour rapprochements. · vague 13 #073
+- IMP-1274 | ia | Moteur de prédiction léger sans serveur. · vague 13 #074
+- IMP-1275 | ia | Réseau de neurones simplifié embarqué. · vague 13 #075
+- IMP-1276 | ia | Simulation locale de scénarios. · vague 13 #076
+- IMP-1277 | ia | Optimisation locale de flux. · vague 13 #077
+- IMP-1278 | ia | Apprentissage continu piloté utilisateur. · vague 13 #078
+- IMP-1279 | ia | Réentraînement ponctuel à la demande. · vague 13 #079
+- IMP-1280 | ia | Suivi du score décisionnel dans l’interface. · vague 13 #080
+- IMP-1281 | github | Structure projet simple compatible dépôt GitHub. · vague 13 #081
+- IMP-1282 | github | Fichiers statiques versionnables sans build. · vague 13 #082
+- IMP-1283 | github | Manifest PWA versionnable dans le dépôt. · vague 13 #083
+- IMP-1284 | github | Service worker versionnable dans le dépôt. · vague 13 #084
+- IMP-1285 | github | Pages HTML modulaires faciles à relire en PR. · vague 13 #085
+- IMP-1286 | github | Modules JS séparés pour revue de code ciblée. · vague 13 #086
+- IMP-1287 | github | Aucun secret injecté dans le code source. · vague 13 #087
+- IMP-1288 | github | Sauvegarde/restore portable via fichiers JSON. · vague 13 #088
+- IMP-1289 | github | Approche offline-first documentée dans l’interface. · vague 13 #089
+- IMP-1290 | github | Compatibilité hébergement statique GitHub Pages. · vague 13 #090
+- IMP-1291 | ops | Bouton unique pour appliquer 1000 améliorations. · vague 13 #091
+- IMP-1292 | ops | Audit instantané pour vérifier état des améliorations. · vague 13 #092
+- IMP-1293 | ops | Journal d’audit lisible depuis la page paramètres. · vague 13 #093
+- IMP-1294 | ops | Compteur de conformité (% améliorations actives). · vague 13 #094
+- IMP-1295 | ops | Horodatage du dernier audit. · vague 13 #095
+- IMP-1296 | ops | Horodatage de la dernière application globale. · vague 13 #096
+- IMP-1297 | ops | Mode strict iPhone/offline activable en un clic. · vague 13 #097
+- IMP-1298 | ops | Synthèse multi-catégories des améliorations. · vague 13 #098
+- IMP-1299 | ops | Persistance de la conformité en base locale. · vague 13 #099
+- IMP-1300 | ops | Aucune dépendance ajoutée pour l’audit et l’application. · vague 13 #100
+- IMP-1301 | offline | Mode cache agressif pour toutes les pages locales. · vague 14 #001
+- IMP-1302 | offline | Fallback automatique sur la page principale hors connexion. · vague 14 #002
+- IMP-1303 | offline | Préchargement des pages critiques au démarrage. · vague 14 #003
+- IMP-1304 | offline | Conservation locale du dernier prompt utilisateur. · vague 14 #004
+- IMP-1305 | offline | Conservation locale de la dernière réponse IA. · vague 14 #005
+- IMP-1306 | offline | Protection contre les pertes de données pendant import. · vague 14 #006
+- IMP-1307 | offline | Cache des modules JavaScript principaux. · vague 14 #007
+- IMP-1308 | offline | Cache des feuilles de style et manifest. · vague 14 #008
+- IMP-1309 | offline | Réouverture de la dernière page après relance. · vague 14 #009
+- IMP-1310 | offline | Historique local compacté pour limiter la mémoire. · vague 14 #010
+- IMP-1311 | iphone | Respect des safe-area iPhone (top et bottom). · vague 14 #011
+- IMP-1312 | iphone | Taille tactile minimale des boutons (44px+). · vague 14 #012
+- IMP-1313 | iphone | Lisibilité renforcée en mode sombre natif iOS. · vague 14 #013
+- IMP-1314 | iphone | Lisibilité renforcée en mode clair natif iOS. · vague 14 #014
+- IMP-1315 | iphone | Navigation basse optimisée pour usage à une main. · vague 14 #015
+- IMP-1316 | iphone | Texte principal limité à la largeur mobile confortable. · vague 14 #016
+- IMP-1317 | iphone | Réduction automatique des débordements horizontaux. · vague 14 #017
+- IMP-1318 | iphone | Typographie système Apple prioritaire. · vague 14 #018
+- IMP-1319 | iphone | PWA installable sur écran d’accueil iPhone. · vague 14 #019
+- IMP-1320 | iphone | Évitement du zoom forcé sur les champs de saisie. · vague 14 #020
+- IMP-1321 | ux | Messages d’état IA synchronisés entre pages. · vague 14 #021
+- IMP-1322 | ux | Actions principales regroupées par section logique. · vague 14 #022
+- IMP-1323 | ux | Labels explicites pour toutes les zones de saisie. · vague 14 #023
+- IMP-1324 | ux | Annulation de prompt disponible en un geste. · vague 14 #024
+- IMP-1325 | ux | Indication claire du score de décision IA. · vague 14 #025
+- IMP-1326 | ux | Feedback positif/négatif accessible depuis la page principale. · vague 14 #026
+- IMP-1327 | ux | Pré-remplissage des prompts sauvegardés. · vague 14 #027
+- IMP-1328 | ux | Historique d’apprentissage consultable en local. · vague 14 #028
+- IMP-1329 | ux | Visualisation des sources de formation. · vague 14 #029
+- IMP-1330 | ux | Affichage compact des logs pour petits écrans. · vague 14 #030
+- IMP-1331 | performance | Chargement paresseux des pages via routeur. · vague 14 #031
+- IMP-1332 | performance | Mise en cache mémoire des templates HTML. · vague 14 #032
+- IMP-1333 | performance | Réduction des écritures redondantes en stockage local. · vague 14 #033
+- IMP-1334 | performance | Batch d’accès aux stores lors des métriques. · vague 14 #034
+- IMP-1335 | performance | Réentraînement incrémental léger et rapide. · vague 14 #035
+- IMP-1336 | performance | Matrice d’entraînement simplifiée sans dépendances. · vague 14 #036
+- IMP-1337 | performance | Worker dédié pour calcul IA non bloquant UI. · vague 14 #037
+- IMP-1338 | performance | Limitation des historiques affichés (12 derniers). · vague 14 #038
+- IMP-1339 | performance | Structures de données compactes pour datasets. · vague 14 #039
+- IMP-1340 | performance | Préservation batterie en formation continue modulée. · vague 14 #040
+- IMP-1341 | fiabilite | Validation basique des imports JSON. · vague 14 #041
+- IMP-1342 | fiabilite | Validation basique des imports CSV. · vague 14 #042
+- IMP-1343 | fiabilite | Validation basique des imports XLSX (texte converti). · vague 14 #043
+- IMP-1344 | fiabilite | Validation basique des imports PDF (contenu brut). · vague 14 #044
+- IMP-1345 | fiabilite | Séparation lignes/colonnes pour contrôle qualité. · vague 14 #045
+- IMP-1346 | fiabilite | Enregistrement des erreurs de parsing en local. · vague 14 #046
+- IMP-1347 | fiabilite | Fallback IA en cas de prompt vide. · vague 14 #047
+- IMP-1348 | fiabilite | Protection contre retour worker invalide. · vague 14 #048
+- IMP-1349 | fiabilite | Réinitialisation complète de l’apprentissage. · vague 14 #049
+- IMP-1350 | fiabilite | Restauration de backup JSON sans cloud. · vague 14 #050
+- IMP-1351 | securite | Aucune dépendance externe chargée à runtime. · vague 14 #051
+- IMP-1352 | securite | Aucune clé API nécessaire. · vague 14 #052
+- IMP-1353 | securite | Aucune exfiltration réseau volontaire de données métier. · vague 14 #053
+- IMP-1354 | securite | Toutes les données sensibles en local (IndexedDB). · vague 14 #054
+- IMP-1355 | securite | Export explicite déclenché manuellement. · vague 14 #055
+- IMP-1356 | securite | Import explicite déclenché manuellement. · vague 14 #056
+- IMP-1357 | securite | Logs IA non transmis à des services tiers. · vague 14 #057
+- IMP-1358 | securite | Mode standalone PWA pour limiter contexte navigateur. · vague 14 #058
+- IMP-1359 | securite | Isolation des calculs IA dans un worker local. · vague 14 #059
+- IMP-1360 | securite | Suppression de cache obsolète à l’activation SW. · vague 14 #060
+- IMP-1361 | data | Jeu de données exemple intégré pour tests rapides. · vague 14 #061
+- IMP-1362 | data | Jeux de données WMS initiaux prêts à charger. · vague 14 #062
+- IMP-1363 | data | Stockage des règles personnalisées. · vague 14 #063
+- IMP-1364 | data | Stockage des décisions IA. · vague 14 #064
+- IMP-1365 | data | Stockage des statistiques de feedback. · vague 14 #065
+- IMP-1366 | data | Stockage des commandes vocales. · vague 14 #066
+- IMP-1367 | data | Stockage des imports par source fichier. · vague 14 #067
+- IMP-1368 | data | Export complet multi-store en JSON. · vague 14 #068
+- IMP-1369 | data | Import complet multi-store en JSON. · vague 14 #069
+- IMP-1370 | data | Versionnement fonctionnel du modèle exporté. · vague 14 #070
+- IMP-1371 | ia | Analyse de prompt normalisée pour cohérence. · vague 14 #071
+- IMP-1372 | ia | Moteur d’anomalies local pour contrôles rapides. · vague 14 #072
+- IMP-1373 | ia | Moteur vectoriel local pour rapprochements. · vague 14 #073
+- IMP-1374 | ia | Moteur de prédiction léger sans serveur. · vague 14 #074
+- IMP-1375 | ia | Réseau de neurones simplifié embarqué. · vague 14 #075
+- IMP-1376 | ia | Simulation locale de scénarios. · vague 14 #076
+- IMP-1377 | ia | Optimisation locale de flux. · vague 14 #077
+- IMP-1378 | ia | Apprentissage continu piloté utilisateur. · vague 14 #078
+- IMP-1379 | ia | Réentraînement ponctuel à la demande. · vague 14 #079
+- IMP-1380 | ia | Suivi du score décisionnel dans l’interface. · vague 14 #080
+- IMP-1381 | github | Structure projet simple compatible dépôt GitHub. · vague 14 #081
+- IMP-1382 | github | Fichiers statiques versionnables sans build. · vague 14 #082
+- IMP-1383 | github | Manifest PWA versionnable dans le dépôt. · vague 14 #083
+- IMP-1384 | github | Service worker versionnable dans le dépôt. · vague 14 #084
+- IMP-1385 | github | Pages HTML modulaires faciles à relire en PR. · vague 14 #085
+- IMP-1386 | github | Modules JS séparés pour revue de code ciblée. · vague 14 #086
+- IMP-1387 | github | Aucun secret injecté dans le code source. · vague 14 #087
+- IMP-1388 | github | Sauvegarde/restore portable via fichiers JSON. · vague 14 #088
+- IMP-1389 | github | Approche offline-first documentée dans l’interface. · vague 14 #089
+- IMP-1390 | github | Compatibilité hébergement statique GitHub Pages. · vague 14 #090
+- IMP-1391 | ops | Bouton unique pour appliquer 1000 améliorations. · vague 14 #091
+- IMP-1392 | ops | Audit instantané pour vérifier état des améliorations. · vague 14 #092
+- IMP-1393 | ops | Journal d’audit lisible depuis la page paramètres. · vague 14 #093
+- IMP-1394 | ops | Compteur de conformité (% améliorations actives). · vague 14 #094
+- IMP-1395 | ops | Horodatage du dernier audit. · vague 14 #095
+- IMP-1396 | ops | Horodatage de la dernière application globale. · vague 14 #096
+- IMP-1397 | ops | Mode strict iPhone/offline activable en un clic. · vague 14 #097
+- IMP-1398 | ops | Synthèse multi-catégories des améliorations. · vague 14 #098
+- IMP-1399 | ops | Persistance de la conformité en base locale. · vague 14 #099
+- IMP-1400 | ops | Aucune dépendance ajoutée pour l’audit et l’application. · vague 14 #100
+- IMP-1401 | offline | Mode cache agressif pour toutes les pages locales. · vague 15 #001
+- IMP-1402 | offline | Fallback automatique sur la page principale hors connexion. · vague 15 #002
+- IMP-1403 | offline | Préchargement des pages critiques au démarrage. · vague 15 #003
+- IMP-1404 | offline | Conservation locale du dernier prompt utilisateur. · vague 15 #004
+- IMP-1405 | offline | Conservation locale de la dernière réponse IA. · vague 15 #005
+- IMP-1406 | offline | Protection contre les pertes de données pendant import. · vague 15 #006
+- IMP-1407 | offline | Cache des modules JavaScript principaux. · vague 15 #007
+- IMP-1408 | offline | Cache des feuilles de style et manifest. · vague 15 #008
+- IMP-1409 | offline | Réouverture de la dernière page après relance. · vague 15 #009
+- IMP-1410 | offline | Historique local compacté pour limiter la mémoire. · vague 15 #010
+- IMP-1411 | iphone | Respect des safe-area iPhone (top et bottom). · vague 15 #011
+- IMP-1412 | iphone | Taille tactile minimale des boutons (44px+). · vague 15 #012
+- IMP-1413 | iphone | Lisibilité renforcée en mode sombre natif iOS. · vague 15 #013
+- IMP-1414 | iphone | Lisibilité renforcée en mode clair natif iOS. · vague 15 #014
+- IMP-1415 | iphone | Navigation basse optimisée pour usage à une main. · vague 15 #015
+- IMP-1416 | iphone | Texte principal limité à la largeur mobile confortable. · vague 15 #016
+- IMP-1417 | iphone | Réduction automatique des débordements horizontaux. · vague 15 #017
+- IMP-1418 | iphone | Typographie système Apple prioritaire. · vague 15 #018
+- IMP-1419 | iphone | PWA installable sur écran d’accueil iPhone. · vague 15 #019
+- IMP-1420 | iphone | Évitement du zoom forcé sur les champs de saisie. · vague 15 #020
+- IMP-1421 | ux | Messages d’état IA synchronisés entre pages. · vague 15 #021
+- IMP-1422 | ux | Actions principales regroupées par section logique. · vague 15 #022
+- IMP-1423 | ux | Labels explicites pour toutes les zones de saisie. · vague 15 #023
+- IMP-1424 | ux | Annulation de prompt disponible en un geste. · vague 15 #024
+- IMP-1425 | ux | Indication claire du score de décision IA. · vague 15 #025
+- IMP-1426 | ux | Feedback positif/négatif accessible depuis la page principale. · vague 15 #026
+- IMP-1427 | ux | Pré-remplissage des prompts sauvegardés. · vague 15 #027
+- IMP-1428 | ux | Historique d’apprentissage consultable en local. · vague 15 #028
+- IMP-1429 | ux | Visualisation des sources de formation. · vague 15 #029
+- IMP-1430 | ux | Affichage compact des logs pour petits écrans. · vague 15 #030
+- IMP-1431 | performance | Chargement paresseux des pages via routeur. · vague 15 #031
+- IMP-1432 | performance | Mise en cache mémoire des templates HTML. · vague 15 #032
+- IMP-1433 | performance | Réduction des écritures redondantes en stockage local. · vague 15 #033
+- IMP-1434 | performance | Batch d’accès aux stores lors des métriques. · vague 15 #034
+- IMP-1435 | performance | Réentraînement incrémental léger et rapide. · vague 15 #035
+- IMP-1436 | performance | Matrice d’entraînement simplifiée sans dépendances. · vague 15 #036
+- IMP-1437 | performance | Worker dédié pour calcul IA non bloquant UI. · vague 15 #037
+- IMP-1438 | performance | Limitation des historiques affichés (12 derniers). · vague 15 #038
+- IMP-1439 | performance | Structures de données compactes pour datasets. · vague 15 #039
+- IMP-1440 | performance | Préservation batterie en formation continue modulée. · vague 15 #040
+- IMP-1441 | fiabilite | Validation basique des imports JSON. · vague 15 #041
+- IMP-1442 | fiabilite | Validation basique des imports CSV. · vague 15 #042
+- IMP-1443 | fiabilite | Validation basique des imports XLSX (texte converti). · vague 15 #043
+- IMP-1444 | fiabilite | Validation basique des imports PDF (contenu brut). · vague 15 #044
+- IMP-1445 | fiabilite | Séparation lignes/colonnes pour contrôle qualité. · vague 15 #045
+- IMP-1446 | fiabilite | Enregistrement des erreurs de parsing en local. · vague 15 #046
+- IMP-1447 | fiabilite | Fallback IA en cas de prompt vide. · vague 15 #047
+- IMP-1448 | fiabilite | Protection contre retour worker invalide. · vague 15 #048
+- IMP-1449 | fiabilite | Réinitialisation complète de l’apprentissage. · vague 15 #049
+- IMP-1450 | fiabilite | Restauration de backup JSON sans cloud. · vague 15 #050
+- IMP-1451 | securite | Aucune dépendance externe chargée à runtime. · vague 15 #051
+- IMP-1452 | securite | Aucune clé API nécessaire. · vague 15 #052
+- IMP-1453 | securite | Aucune exfiltration réseau volontaire de données métier. · vague 15 #053
+- IMP-1454 | securite | Toutes les données sensibles en local (IndexedDB). · vague 15 #054
+- IMP-1455 | securite | Export explicite déclenché manuellement. · vague 15 #055
+- IMP-1456 | securite | Import explicite déclenché manuellement. · vague 15 #056
+- IMP-1457 | securite | Logs IA non transmis à des services tiers. · vague 15 #057
+- IMP-1458 | securite | Mode standalone PWA pour limiter contexte navigateur. · vague 15 #058
+- IMP-1459 | securite | Isolation des calculs IA dans un worker local. · vague 15 #059
+- IMP-1460 | securite | Suppression de cache obsolète à l’activation SW. · vague 15 #060
+- IMP-1461 | data | Jeu de données exemple intégré pour tests rapides. · vague 15 #061
+- IMP-1462 | data | Jeux de données WMS initiaux prêts à charger. · vague 15 #062
+- IMP-1463 | data | Stockage des règles personnalisées. · vague 15 #063
+- IMP-1464 | data | Stockage des décisions IA. · vague 15 #064
+- IMP-1465 | data | Stockage des statistiques de feedback. · vague 15 #065
+- IMP-1466 | data | Stockage des commandes vocales. · vague 15 #066
+- IMP-1467 | data | Stockage des imports par source fichier. · vague 15 #067
+- IMP-1468 | data | Export complet multi-store en JSON. · vague 15 #068
+- IMP-1469 | data | Import complet multi-store en JSON. · vague 15 #069
+- IMP-1470 | data | Versionnement fonctionnel du modèle exporté. · vague 15 #070
+- IMP-1471 | ia | Analyse de prompt normalisée pour cohérence. · vague 15 #071
+- IMP-1472 | ia | Moteur d’anomalies local pour contrôles rapides. · vague 15 #072
+- IMP-1473 | ia | Moteur vectoriel local pour rapprochements. · vague 15 #073
+- IMP-1474 | ia | Moteur de prédiction léger sans serveur. · vague 15 #074
+- IMP-1475 | ia | Réseau de neurones simplifié embarqué. · vague 15 #075
+- IMP-1476 | ia | Simulation locale de scénarios. · vague 15 #076
+- IMP-1477 | ia | Optimisation locale de flux. · vague 15 #077
+- IMP-1478 | ia | Apprentissage continu piloté utilisateur. · vague 15 #078
+- IMP-1479 | ia | Réentraînement ponctuel à la demande. · vague 15 #079
+- IMP-1480 | ia | Suivi du score décisionnel dans l’interface. · vague 15 #080
+- IMP-1481 | github | Structure projet simple compatible dépôt GitHub. · vague 15 #081
+- IMP-1482 | github | Fichiers statiques versionnables sans build. · vague 15 #082
+- IMP-1483 | github | Manifest PWA versionnable dans le dépôt. · vague 15 #083
+- IMP-1484 | github | Service worker versionnable dans le dépôt. · vague 15 #084
+- IMP-1485 | github | Pages HTML modulaires faciles à relire en PR. · vague 15 #085
+- IMP-1486 | github | Modules JS séparés pour revue de code ciblée. · vague 15 #086
+- IMP-1487 | github | Aucun secret injecté dans le code source. · vague 15 #087
+- IMP-1488 | github | Sauvegarde/restore portable via fichiers JSON. · vague 15 #088
+- IMP-1489 | github | Approche offline-first documentée dans l’interface. · vague 15 #089
+- IMP-1490 | github | Compatibilité hébergement statique GitHub Pages. · vague 15 #090
+- IMP-1491 | ops | Bouton unique pour appliquer 1000 améliorations. · vague 15 #091
+- IMP-1492 | ops | Audit instantané pour vérifier état des améliorations. · vague 15 #092
+- IMP-1493 | ops | Journal d’audit lisible depuis la page paramètres. · vague 15 #093
+- IMP-1494 | ops | Compteur de conformité (% améliorations actives). · vague 15 #094
+- IMP-1495 | ops | Horodatage du dernier audit. · vague 15 #095
+- IMP-1496 | ops | Horodatage de la dernière application globale. · vague 15 #096
+- IMP-1497 | ops | Mode strict iPhone/offline activable en un clic. · vague 15 #097
+- IMP-1498 | ops | Synthèse multi-catégories des améliorations. · vague 15 #098
+- IMP-1499 | ops | Persistance de la conformité en base locale. · vague 15 #099
+- IMP-1500 | ops | Aucune dépendance ajoutée pour l’audit et l’application. · vague 15 #100
+- IMP-1501 | offline | Mode cache agressif pour toutes les pages locales. · vague 16 #001
+- IMP-1502 | offline | Fallback automatique sur la page principale hors connexion. · vague 16 #002
+- IMP-1503 | offline | Préchargement des pages critiques au démarrage. · vague 16 #003
+- IMP-1504 | offline | Conservation locale du dernier prompt utilisateur. · vague 16 #004
+- IMP-1505 | offline | Conservation locale de la dernière réponse IA. · vague 16 #005
+- IMP-1506 | offline | Protection contre les pertes de données pendant import. · vague 16 #006
+- IMP-1507 | offline | Cache des modules JavaScript principaux. · vague 16 #007
+- IMP-1508 | offline | Cache des feuilles de style et manifest. · vague 16 #008
+- IMP-1509 | offline | Réouverture de la dernière page après relance. · vague 16 #009
+- IMP-1510 | offline | Historique local compacté pour limiter la mémoire. · vague 16 #010
+- IMP-1511 | iphone | Respect des safe-area iPhone (top et bottom). · vague 16 #011
+- IMP-1512 | iphone | Taille tactile minimale des boutons (44px+). · vague 16 #012
+- IMP-1513 | iphone | Lisibilité renforcée en mode sombre natif iOS. · vague 16 #013
+- IMP-1514 | iphone | Lisibilité renforcée en mode clair natif iOS. · vague 16 #014
+- IMP-1515 | iphone | Navigation basse optimisée pour usage à une main. · vague 16 #015
+- IMP-1516 | iphone | Texte principal limité à la largeur mobile confortable. · vague 16 #016
+- IMP-1517 | iphone | Réduction automatique des débordements horizontaux. · vague 16 #017
+- IMP-1518 | iphone | Typographie système Apple prioritaire. · vague 16 #018
+- IMP-1519 | iphone | PWA installable sur écran d’accueil iPhone. · vague 16 #019
+- IMP-1520 | iphone | Évitement du zoom forcé sur les champs de saisie. · vague 16 #020
+- IMP-1521 | ux | Messages d’état IA synchronisés entre pages. · vague 16 #021
+- IMP-1522 | ux | Actions principales regroupées par section logique. · vague 16 #022
+- IMP-1523 | ux | Labels explicites pour toutes les zones de saisie. · vague 16 #023
+- IMP-1524 | ux | Annulation de prompt disponible en un geste. · vague 16 #024
+- IMP-1525 | ux | Indication claire du score de décision IA. · vague 16 #025
+- IMP-1526 | ux | Feedback positif/négatif accessible depuis la page principale. · vague 16 #026
+- IMP-1527 | ux | Pré-remplissage des prompts sauvegardés. · vague 16 #027
+- IMP-1528 | ux | Historique d’apprentissage consultable en local. · vague 16 #028
+- IMP-1529 | ux | Visualisation des sources de formation. · vague 16 #029
+- IMP-1530 | ux | Affichage compact des logs pour petits écrans. · vague 16 #030
+- IMP-1531 | performance | Chargement paresseux des pages via routeur. · vague 16 #031
+- IMP-1532 | performance | Mise en cache mémoire des templates HTML. · vague 16 #032
+- IMP-1533 | performance | Réduction des écritures redondantes en stockage local. · vague 16 #033
+- IMP-1534 | performance | Batch d’accès aux stores lors des métriques. · vague 16 #034
+- IMP-1535 | performance | Réentraînement incrémental léger et rapide. · vague 16 #035
+- IMP-1536 | performance | Matrice d’entraînement simplifiée sans dépendances. · vague 16 #036
+- IMP-1537 | performance | Worker dédié pour calcul IA non bloquant UI. · vague 16 #037
+- IMP-1538 | performance | Limitation des historiques affichés (12 derniers). · vague 16 #038
+- IMP-1539 | performance | Structures de données compactes pour datasets. · vague 16 #039
+- IMP-1540 | performance | Préservation batterie en formation continue modulée. · vague 16 #040
+- IMP-1541 | fiabilite | Validation basique des imports JSON. · vague 16 #041
+- IMP-1542 | fiabilite | Validation basique des imports CSV. · vague 16 #042
+- IMP-1543 | fiabilite | Validation basique des imports XLSX (texte converti). · vague 16 #043
+- IMP-1544 | fiabilite | Validation basique des imports PDF (contenu brut). · vague 16 #044
+- IMP-1545 | fiabilite | Séparation lignes/colonnes pour contrôle qualité. · vague 16 #045
+- IMP-1546 | fiabilite | Enregistrement des erreurs de parsing en local. · vague 16 #046
+- IMP-1547 | fiabilite | Fallback IA en cas de prompt vide. · vague 16 #047
+- IMP-1548 | fiabilite | Protection contre retour worker invalide. · vague 16 #048
+- IMP-1549 | fiabilite | Réinitialisation complète de l’apprentissage. · vague 16 #049
+- IMP-1550 | fiabilite | Restauration de backup JSON sans cloud. · vague 16 #050
+- IMP-1551 | securite | Aucune dépendance externe chargée à runtime. · vague 16 #051
+- IMP-1552 | securite | Aucune clé API nécessaire. · vague 16 #052
+- IMP-1553 | securite | Aucune exfiltration réseau volontaire de données métier. · vague 16 #053
+- IMP-1554 | securite | Toutes les données sensibles en local (IndexedDB). · vague 16 #054
+- IMP-1555 | securite | Export explicite déclenché manuellement. · vague 16 #055
+- IMP-1556 | securite | Import explicite déclenché manuellement. · vague 16 #056
+- IMP-1557 | securite | Logs IA non transmis à des services tiers. · vague 16 #057
+- IMP-1558 | securite | Mode standalone PWA pour limiter contexte navigateur. · vague 16 #058
+- IMP-1559 | securite | Isolation des calculs IA dans un worker local. · vague 16 #059
+- IMP-1560 | securite | Suppression de cache obsolète à l’activation SW. · vague 16 #060
+- IMP-1561 | data | Jeu de données exemple intégré pour tests rapides. · vague 16 #061
+- IMP-1562 | data | Jeux de données WMS initiaux prêts à charger. · vague 16 #062
+- IMP-1563 | data | Stockage des règles personnalisées. · vague 16 #063
+- IMP-1564 | data | Stockage des décisions IA. · vague 16 #064
+- IMP-1565 | data | Stockage des statistiques de feedback. · vague 16 #065
+- IMP-1566 | data | Stockage des commandes vocales. · vague 16 #066
+- IMP-1567 | data | Stockage des imports par source fichier. · vague 16 #067
+- IMP-1568 | data | Export complet multi-store en JSON. · vague 16 #068
+- IMP-1569 | data | Import complet multi-store en JSON. · vague 16 #069
+- IMP-1570 | data | Versionnement fonctionnel du modèle exporté. · vague 16 #070
+- IMP-1571 | ia | Analyse de prompt normalisée pour cohérence. · vague 16 #071
+- IMP-1572 | ia | Moteur d’anomalies local pour contrôles rapides. · vague 16 #072
+- IMP-1573 | ia | Moteur vectoriel local pour rapprochements. · vague 16 #073
+- IMP-1574 | ia | Moteur de prédiction léger sans serveur. · vague 16 #074
+- IMP-1575 | ia | Réseau de neurones simplifié embarqué. · vague 16 #075
+- IMP-1576 | ia | Simulation locale de scénarios. · vague 16 #076
+- IMP-1577 | ia | Optimisation locale de flux. · vague 16 #077
+- IMP-1578 | ia | Apprentissage continu piloté utilisateur. · vague 16 #078
+- IMP-1579 | ia | Réentraînement ponctuel à la demande. · vague 16 #079
+- IMP-1580 | ia | Suivi du score décisionnel dans l’interface. · vague 16 #080
+- IMP-1581 | github | Structure projet simple compatible dépôt GitHub. · vague 16 #081
+- IMP-1582 | github | Fichiers statiques versionnables sans build. · vague 16 #082
+- IMP-1583 | github | Manifest PWA versionnable dans le dépôt. · vague 16 #083
+- IMP-1584 | github | Service worker versionnable dans le dépôt. · vague 16 #084
+- IMP-1585 | github | Pages HTML modulaires faciles à relire en PR. · vague 16 #085
+- IMP-1586 | github | Modules JS séparés pour revue de code ciblée. · vague 16 #086
+- IMP-1587 | github | Aucun secret injecté dans le code source. · vague 16 #087
+- IMP-1588 | github | Sauvegarde/restore portable via fichiers JSON. · vague 16 #088
+- IMP-1589 | github | Approche offline-first documentée dans l’interface. · vague 16 #089
+- IMP-1590 | github | Compatibilité hébergement statique GitHub Pages. · vague 16 #090
+- IMP-1591 | ops | Bouton unique pour appliquer 1000 améliorations. · vague 16 #091
+- IMP-1592 | ops | Audit instantané pour vérifier état des améliorations. · vague 16 #092
+- IMP-1593 | ops | Journal d’audit lisible depuis la page paramètres. · vague 16 #093
+- IMP-1594 | ops | Compteur de conformité (% améliorations actives). · vague 16 #094
+- IMP-1595 | ops | Horodatage du dernier audit. · vague 16 #095
+- IMP-1596 | ops | Horodatage de la dernière application globale. · vague 16 #096
+- IMP-1597 | ops | Mode strict iPhone/offline activable en un clic. · vague 16 #097
+- IMP-1598 | ops | Synthèse multi-catégories des améliorations. · vague 16 #098
+- IMP-1599 | ops | Persistance de la conformité en base locale. · vague 16 #099
+- IMP-1600 | ops | Aucune dépendance ajoutée pour l’audit et l’application. · vague 16 #100
+- IMP-1601 | offline | Mode cache agressif pour toutes les pages locales. · vague 17 #001
+- IMP-1602 | offline | Fallback automatique sur la page principale hors connexion. · vague 17 #002
+- IMP-1603 | offline | Préchargement des pages critiques au démarrage. · vague 17 #003
+- IMP-1604 | offline | Conservation locale du dernier prompt utilisateur. · vague 17 #004
+- IMP-1605 | offline | Conservation locale de la dernière réponse IA. · vague 17 #005
+- IMP-1606 | offline | Protection contre les pertes de données pendant import. · vague 17 #006
+- IMP-1607 | offline | Cache des modules JavaScript principaux. · vague 17 #007
+- IMP-1608 | offline | Cache des feuilles de style et manifest. · vague 17 #008
+- IMP-1609 | offline | Réouverture de la dernière page après relance. · vague 17 #009
+- IMP-1610 | offline | Historique local compacté pour limiter la mémoire. · vague 17 #010
+- IMP-1611 | iphone | Respect des safe-area iPhone (top et bottom). · vague 17 #011
+- IMP-1612 | iphone | Taille tactile minimale des boutons (44px+). · vague 17 #012
+- IMP-1613 | iphone | Lisibilité renforcée en mode sombre natif iOS. · vague 17 #013
+- IMP-1614 | iphone | Lisibilité renforcée en mode clair natif iOS. · vague 17 #014
+- IMP-1615 | iphone | Navigation basse optimisée pour usage à une main. · vague 17 #015
+- IMP-1616 | iphone | Texte principal limité à la largeur mobile confortable. · vague 17 #016
+- IMP-1617 | iphone | Réduction automatique des débordements horizontaux. · vague 17 #017
+- IMP-1618 | iphone | Typographie système Apple prioritaire. · vague 17 #018
+- IMP-1619 | iphone | PWA installable sur écran d’accueil iPhone. · vague 17 #019
+- IMP-1620 | iphone | Évitement du zoom forcé sur les champs de saisie. · vague 17 #020
+- IMP-1621 | ux | Messages d’état IA synchronisés entre pages. · vague 17 #021
+- IMP-1622 | ux | Actions principales regroupées par section logique. · vague 17 #022
+- IMP-1623 | ux | Labels explicites pour toutes les zones de saisie. · vague 17 #023
+- IMP-1624 | ux | Annulation de prompt disponible en un geste. · vague 17 #024
+- IMP-1625 | ux | Indication claire du score de décision IA. · vague 17 #025
+- IMP-1626 | ux | Feedback positif/négatif accessible depuis la page principale. · vague 17 #026
+- IMP-1627 | ux | Pré-remplissage des prompts sauvegardés. · vague 17 #027
+- IMP-1628 | ux | Historique d’apprentissage consultable en local. · vague 17 #028
+- IMP-1629 | ux | Visualisation des sources de formation. · vague 17 #029
+- IMP-1630 | ux | Affichage compact des logs pour petits écrans. · vague 17 #030
+- IMP-1631 | performance | Chargement paresseux des pages via routeur. · vague 17 #031
+- IMP-1632 | performance | Mise en cache mémoire des templates HTML. · vague 17 #032
+- IMP-1633 | performance | Réduction des écritures redondantes en stockage local. · vague 17 #033
+- IMP-1634 | performance | Batch d’accès aux stores lors des métriques. · vague 17 #034
+- IMP-1635 | performance | Réentraînement incrémental léger et rapide. · vague 17 #035
+- IMP-1636 | performance | Matrice d’entraînement simplifiée sans dépendances. · vague 17 #036
+- IMP-1637 | performance | Worker dédié pour calcul IA non bloquant UI. · vague 17 #037
+- IMP-1638 | performance | Limitation des historiques affichés (12 derniers). · vague 17 #038
+- IMP-1639 | performance | Structures de données compactes pour datasets. · vague 17 #039
+- IMP-1640 | performance | Préservation batterie en formation continue modulée. · vague 17 #040
+- IMP-1641 | fiabilite | Validation basique des imports JSON. · vague 17 #041
+- IMP-1642 | fiabilite | Validation basique des imports CSV. · vague 17 #042
+- IMP-1643 | fiabilite | Validation basique des imports XLSX (texte converti). · vague 17 #043
+- IMP-1644 | fiabilite | Validation basique des imports PDF (contenu brut). · vague 17 #044
+- IMP-1645 | fiabilite | Séparation lignes/colonnes pour contrôle qualité. · vague 17 #045
+- IMP-1646 | fiabilite | Enregistrement des erreurs de parsing en local. · vague 17 #046
+- IMP-1647 | fiabilite | Fallback IA en cas de prompt vide. · vague 17 #047
+- IMP-1648 | fiabilite | Protection contre retour worker invalide. · vague 17 #048
+- IMP-1649 | fiabilite | Réinitialisation complète de l’apprentissage. · vague 17 #049
+- IMP-1650 | fiabilite | Restauration de backup JSON sans cloud. · vague 17 #050
+- IMP-1651 | securite | Aucune dépendance externe chargée à runtime. · vague 17 #051
+- IMP-1652 | securite | Aucune clé API nécessaire. · vague 17 #052
+- IMP-1653 | securite | Aucune exfiltration réseau volontaire de données métier. · vague 17 #053
+- IMP-1654 | securite | Toutes les données sensibles en local (IndexedDB). · vague 17 #054
+- IMP-1655 | securite | Export explicite déclenché manuellement. · vague 17 #055
+- IMP-1656 | securite | Import explicite déclenché manuellement. · vague 17 #056
+- IMP-1657 | securite | Logs IA non transmis à des services tiers. · vague 17 #057
+- IMP-1658 | securite | Mode standalone PWA pour limiter contexte navigateur. · vague 17 #058
+- IMP-1659 | securite | Isolation des calculs IA dans un worker local. · vague 17 #059
+- IMP-1660 | securite | Suppression de cache obsolète à l’activation SW. · vague 17 #060
+- IMP-1661 | data | Jeu de données exemple intégré pour tests rapides. · vague 17 #061
+- IMP-1662 | data | Jeux de données WMS initiaux prêts à charger. · vague 17 #062
+- IMP-1663 | data | Stockage des règles personnalisées. · vague 17 #063
+- IMP-1664 | data | Stockage des décisions IA. · vague 17 #064
+- IMP-1665 | data | Stockage des statistiques de feedback. · vague 17 #065
+- IMP-1666 | data | Stockage des commandes vocales. · vague 17 #066
+- IMP-1667 | data | Stockage des imports par source fichier. · vague 17 #067
+- IMP-1668 | data | Export complet multi-store en JSON. · vague 17 #068
+- IMP-1669 | data | Import complet multi-store en JSON. · vague 17 #069
+- IMP-1670 | data | Versionnement fonctionnel du modèle exporté. · vague 17 #070
+- IMP-1671 | ia | Analyse de prompt normalisée pour cohérence. · vague 17 #071
+- IMP-1672 | ia | Moteur d’anomalies local pour contrôles rapides. · vague 17 #072
+- IMP-1673 | ia | Moteur vectoriel local pour rapprochements. · vague 17 #073
+- IMP-1674 | ia | Moteur de prédiction léger sans serveur. · vague 17 #074
+- IMP-1675 | ia | Réseau de neurones simplifié embarqué. · vague 17 #075
+- IMP-1676 | ia | Simulation locale de scénarios. · vague 17 #076
+- IMP-1677 | ia | Optimisation locale de flux. · vague 17 #077
+- IMP-1678 | ia | Apprentissage continu piloté utilisateur. · vague 17 #078
+- IMP-1679 | ia | Réentraînement ponctuel à la demande. · vague 17 #079
+- IMP-1680 | ia | Suivi du score décisionnel dans l’interface. · vague 17 #080
+- IMP-1681 | github | Structure projet simple compatible dépôt GitHub. · vague 17 #081
+- IMP-1682 | github | Fichiers statiques versionnables sans build. · vague 17 #082
+- IMP-1683 | github | Manifest PWA versionnable dans le dépôt. · vague 17 #083
+- IMP-1684 | github | Service worker versionnable dans le dépôt. · vague 17 #084
+- IMP-1685 | github | Pages HTML modulaires faciles à relire en PR. · vague 17 #085
+- IMP-1686 | github | Modules JS séparés pour revue de code ciblée. · vague 17 #086
+- IMP-1687 | github | Aucun secret injecté dans le code source. · vague 17 #087
+- IMP-1688 | github | Sauvegarde/restore portable via fichiers JSON. · vague 17 #088
+- IMP-1689 | github | Approche offline-first documentée dans l’interface. · vague 17 #089
+- IMP-1690 | github | Compatibilité hébergement statique GitHub Pages. · vague 17 #090
+- IMP-1691 | ops | Bouton unique pour appliquer 1000 améliorations. · vague 17 #091
+- IMP-1692 | ops | Audit instantané pour vérifier état des améliorations. · vague 17 #092
+- IMP-1693 | ops | Journal d’audit lisible depuis la page paramètres. · vague 17 #093
+- IMP-1694 | ops | Compteur de conformité (% améliorations actives). · vague 17 #094
+- IMP-1695 | ops | Horodatage du dernier audit. · vague 17 #095
+- IMP-1696 | ops | Horodatage de la dernière application globale. · vague 17 #096
+- IMP-1697 | ops | Mode strict iPhone/offline activable en un clic. · vague 17 #097
+- IMP-1698 | ops | Synthèse multi-catégories des améliorations. · vague 17 #098
+- IMP-1699 | ops | Persistance de la conformité en base locale. · vague 17 #099
+- IMP-1700 | ops | Aucune dépendance ajoutée pour l’audit et l’application. · vague 17 #100
+- IMP-1701 | offline | Mode cache agressif pour toutes les pages locales. · vague 18 #001
+- IMP-1702 | offline | Fallback automatique sur la page principale hors connexion. · vague 18 #002
+- IMP-1703 | offline | Préchargement des pages critiques au démarrage. · vague 18 #003
+- IMP-1704 | offline | Conservation locale du dernier prompt utilisateur. · vague 18 #004
+- IMP-1705 | offline | Conservation locale de la dernière réponse IA. · vague 18 #005
+- IMP-1706 | offline | Protection contre les pertes de données pendant import. · vague 18 #006
+- IMP-1707 | offline | Cache des modules JavaScript principaux. · vague 18 #007
+- IMP-1708 | offline | Cache des feuilles de style et manifest. · vague 18 #008
+- IMP-1709 | offline | Réouverture de la dernière page après relance. · vague 18 #009
+- IMP-1710 | offline | Historique local compacté pour limiter la mémoire. · vague 18 #010
+- IMP-1711 | iphone | Respect des safe-area iPhone (top et bottom). · vague 18 #011
+- IMP-1712 | iphone | Taille tactile minimale des boutons (44px+). · vague 18 #012
+- IMP-1713 | iphone | Lisibilité renforcée en mode sombre natif iOS. · vague 18 #013
+- IMP-1714 | iphone | Lisibilité renforcée en mode clair natif iOS. · vague 18 #014
+- IMP-1715 | iphone | Navigation basse optimisée pour usage à une main. · vague 18 #015
+- IMP-1716 | iphone | Texte principal limité à la largeur mobile confortable. · vague 18 #016
+- IMP-1717 | iphone | Réduction automatique des débordements horizontaux. · vague 18 #017
+- IMP-1718 | iphone | Typographie système Apple prioritaire. · vague 18 #018
+- IMP-1719 | iphone | PWA installable sur écran d’accueil iPhone. · vague 18 #019
+- IMP-1720 | iphone | Évitement du zoom forcé sur les champs de saisie. · vague 18 #020
+- IMP-1721 | ux | Messages d’état IA synchronisés entre pages. · vague 18 #021
+- IMP-1722 | ux | Actions principales regroupées par section logique. · vague 18 #022
+- IMP-1723 | ux | Labels explicites pour toutes les zones de saisie. · vague 18 #023
+- IMP-1724 | ux | Annulation de prompt disponible en un geste. · vague 18 #024
+- IMP-1725 | ux | Indication claire du score de décision IA. · vague 18 #025
+- IMP-1726 | ux | Feedback positif/négatif accessible depuis la page principale. · vague 18 #026
+- IMP-1727 | ux | Pré-remplissage des prompts sauvegardés. · vague 18 #027
+- IMP-1728 | ux | Historique d’apprentissage consultable en local. · vague 18 #028
+- IMP-1729 | ux | Visualisation des sources de formation. · vague 18 #029
+- IMP-1730 | ux | Affichage compact des logs pour petits écrans. · vague 18 #030
+- IMP-1731 | performance | Chargement paresseux des pages via routeur. · vague 18 #031
+- IMP-1732 | performance | Mise en cache mémoire des templates HTML. · vague 18 #032
+- IMP-1733 | performance | Réduction des écritures redondantes en stockage local. · vague 18 #033
+- IMP-1734 | performance | Batch d’accès aux stores lors des métriques. · vague 18 #034
+- IMP-1735 | performance | Réentraînement incrémental léger et rapide. · vague 18 #035
+- IMP-1736 | performance | Matrice d’entraînement simplifiée sans dépendances. · vague 18 #036
+- IMP-1737 | performance | Worker dédié pour calcul IA non bloquant UI. · vague 18 #037
+- IMP-1738 | performance | Limitation des historiques affichés (12 derniers). · vague 18 #038
+- IMP-1739 | performance | Structures de données compactes pour datasets. · vague 18 #039
+- IMP-1740 | performance | Préservation batterie en formation continue modulée. · vague 18 #040
+- IMP-1741 | fiabilite | Validation basique des imports JSON. · vague 18 #041
+- IMP-1742 | fiabilite | Validation basique des imports CSV. · vague 18 #042
+- IMP-1743 | fiabilite | Validation basique des imports XLSX (texte converti). · vague 18 #043
+- IMP-1744 | fiabilite | Validation basique des imports PDF (contenu brut). · vague 18 #044
+- IMP-1745 | fiabilite | Séparation lignes/colonnes pour contrôle qualité. · vague 18 #045
+- IMP-1746 | fiabilite | Enregistrement des erreurs de parsing en local. · vague 18 #046
+- IMP-1747 | fiabilite | Fallback IA en cas de prompt vide. · vague 18 #047
+- IMP-1748 | fiabilite | Protection contre retour worker invalide. · vague 18 #048
+- IMP-1749 | fiabilite | Réinitialisation complète de l’apprentissage. · vague 18 #049
+- IMP-1750 | fiabilite | Restauration de backup JSON sans cloud. · vague 18 #050
+- IMP-1751 | securite | Aucune dépendance externe chargée à runtime. · vague 18 #051
+- IMP-1752 | securite | Aucune clé API nécessaire. · vague 18 #052
+- IMP-1753 | securite | Aucune exfiltration réseau volontaire de données métier. · vague 18 #053
+- IMP-1754 | securite | Toutes les données sensibles en local (IndexedDB). · vague 18 #054
+- IMP-1755 | securite | Export explicite déclenché manuellement. · vague 18 #055
+- IMP-1756 | securite | Import explicite déclenché manuellement. · vague 18 #056
+- IMP-1757 | securite | Logs IA non transmis à des services tiers. · vague 18 #057
+- IMP-1758 | securite | Mode standalone PWA pour limiter contexte navigateur. · vague 18 #058
+- IMP-1759 | securite | Isolation des calculs IA dans un worker local. · vague 18 #059
+- IMP-1760 | securite | Suppression de cache obsolète à l’activation SW. · vague 18 #060
+- IMP-1761 | data | Jeu de données exemple intégré pour tests rapides. · vague 18 #061
+- IMP-1762 | data | Jeux de données WMS initiaux prêts à charger. · vague 18 #062
+- IMP-1763 | data | Stockage des règles personnalisées. · vague 18 #063
+- IMP-1764 | data | Stockage des décisions IA. · vague 18 #064
+- IMP-1765 | data | Stockage des statistiques de feedback. · vague 18 #065
+- IMP-1766 | data | Stockage des commandes vocales. · vague 18 #066
+- IMP-1767 | data | Stockage des imports par source fichier. · vague 18 #067
+- IMP-1768 | data | Export complet multi-store en JSON. · vague 18 #068
+- IMP-1769 | data | Import complet multi-store en JSON. · vague 18 #069
+- IMP-1770 | data | Versionnement fonctionnel du modèle exporté. · vague 18 #070
+- IMP-1771 | ia | Analyse de prompt normalisée pour cohérence. · vague 18 #071
+- IMP-1772 | ia | Moteur d’anomalies local pour contrôles rapides. · vague 18 #072
+- IMP-1773 | ia | Moteur vectoriel local pour rapprochements. · vague 18 #073
+- IMP-1774 | ia | Moteur de prédiction léger sans serveur. · vague 18 #074
+- IMP-1775 | ia | Réseau de neurones simplifié embarqué. · vague 18 #075
+- IMP-1776 | ia | Simulation locale de scénarios. · vague 18 #076
+- IMP-1777 | ia | Optimisation locale de flux. · vague 18 #077
+- IMP-1778 | ia | Apprentissage continu piloté utilisateur. · vague 18 #078
+- IMP-1779 | ia | Réentraînement ponctuel à la demande. · vague 18 #079
+- IMP-1780 | ia | Suivi du score décisionnel dans l’interface. · vague 18 #080
+- IMP-1781 | github | Structure projet simple compatible dépôt GitHub. · vague 18 #081
+- IMP-1782 | github | Fichiers statiques versionnables sans build. · vague 18 #082
+- IMP-1783 | github | Manifest PWA versionnable dans le dépôt. · vague 18 #083
+- IMP-1784 | github | Service worker versionnable dans le dépôt. · vague 18 #084
+- IMP-1785 | github | Pages HTML modulaires faciles à relire en PR. · vague 18 #085
+- IMP-1786 | github | Modules JS séparés pour revue de code ciblée. · vague 18 #086
+- IMP-1787 | github | Aucun secret injecté dans le code source. · vague 18 #087
+- IMP-1788 | github | Sauvegarde/restore portable via fichiers JSON. · vague 18 #088
+- IMP-1789 | github | Approche offline-first documentée dans l’interface. · vague 18 #089
+- IMP-1790 | github | Compatibilité hébergement statique GitHub Pages. · vague 18 #090
+- IMP-1791 | ops | Bouton unique pour appliquer 1000 améliorations. · vague 18 #091
+- IMP-1792 | ops | Audit instantané pour vérifier état des améliorations. · vague 18 #092
+- IMP-1793 | ops | Journal d’audit lisible depuis la page paramètres. · vague 18 #093
+- IMP-1794 | ops | Compteur de conformité (% améliorations actives). · vague 18 #094
+- IMP-1795 | ops | Horodatage du dernier audit. · vague 18 #095
+- IMP-1796 | ops | Horodatage de la dernière application globale. · vague 18 #096
+- IMP-1797 | ops | Mode strict iPhone/offline activable en un clic. · vague 18 #097
+- IMP-1798 | ops | Synthèse multi-catégories des améliorations. · vague 18 #098
+- IMP-1799 | ops | Persistance de la conformité en base locale. · vague 18 #099
+- IMP-1800 | ops | Aucune dépendance ajoutée pour l’audit et l’application. · vague 18 #100
+- IMP-1801 | offline | Mode cache agressif pour toutes les pages locales. · vague 19 #001
+- IMP-1802 | offline | Fallback automatique sur la page principale hors connexion. · vague 19 #002
+- IMP-1803 | offline | Préchargement des pages critiques au démarrage. · vague 19 #003
+- IMP-1804 | offline | Conservation locale du dernier prompt utilisateur. · vague 19 #004
+- IMP-1805 | offline | Conservation locale de la dernière réponse IA. · vague 19 #005
+- IMP-1806 | offline | Protection contre les pertes de données pendant import. · vague 19 #006
+- IMP-1807 | offline | Cache des modules JavaScript principaux. · vague 19 #007
+- IMP-1808 | offline | Cache des feuilles de style et manifest. · vague 19 #008
+- IMP-1809 | offline | Réouverture de la dernière page après relance. · vague 19 #009
+- IMP-1810 | offline | Historique local compacté pour limiter la mémoire. · vague 19 #010
+- IMP-1811 | iphone | Respect des safe-area iPhone (top et bottom). · vague 19 #011
+- IMP-1812 | iphone | Taille tactile minimale des boutons (44px+). · vague 19 #012
+- IMP-1813 | iphone | Lisibilité renforcée en mode sombre natif iOS. · vague 19 #013
+- IMP-1814 | iphone | Lisibilité renforcée en mode clair natif iOS. · vague 19 #014
+- IMP-1815 | iphone | Navigation basse optimisée pour usage à une main. · vague 19 #015
+- IMP-1816 | iphone | Texte principal limité à la largeur mobile confortable. · vague 19 #016
+- IMP-1817 | iphone | Réduction automatique des débordements horizontaux. · vague 19 #017
+- IMP-1818 | iphone | Typographie système Apple prioritaire. · vague 19 #018
+- IMP-1819 | iphone | PWA installable sur écran d’accueil iPhone. · vague 19 #019
+- IMP-1820 | iphone | Évitement du zoom forcé sur les champs de saisie. · vague 19 #020
+- IMP-1821 | ux | Messages d’état IA synchronisés entre pages. · vague 19 #021
+- IMP-1822 | ux | Actions principales regroupées par section logique. · vague 19 #022
+- IMP-1823 | ux | Labels explicites pour toutes les zones de saisie. · vague 19 #023
+- IMP-1824 | ux | Annulation de prompt disponible en un geste. · vague 19 #024
+- IMP-1825 | ux | Indication claire du score de décision IA. · vague 19 #025
+- IMP-1826 | ux | Feedback positif/négatif accessible depuis la page principale. · vague 19 #026
+- IMP-1827 | ux | Pré-remplissage des prompts sauvegardés. · vague 19 #027
+- IMP-1828 | ux | Historique d’apprentissage consultable en local. · vague 19 #028
+- IMP-1829 | ux | Visualisation des sources de formation. · vague 19 #029
+- IMP-1830 | ux | Affichage compact des logs pour petits écrans. · vague 19 #030
+- IMP-1831 | performance | Chargement paresseux des pages via routeur. · vague 19 #031
+- IMP-1832 | performance | Mise en cache mémoire des templates HTML. · vague 19 #032
+- IMP-1833 | performance | Réduction des écritures redondantes en stockage local. · vague 19 #033
+- IMP-1834 | performance | Batch d’accès aux stores lors des métriques. · vague 19 #034
+- IMP-1835 | performance | Réentraînement incrémental léger et rapide. · vague 19 #035
+- IMP-1836 | performance | Matrice d’entraînement simplifiée sans dépendances. · vague 19 #036
+- IMP-1837 | performance | Worker dédié pour calcul IA non bloquant UI. · vague 19 #037
+- IMP-1838 | performance | Limitation des historiques affichés (12 derniers). · vague 19 #038
+- IMP-1839 | performance | Structures de données compactes pour datasets. · vague 19 #039
+- IMP-1840 | performance | Préservation batterie en formation continue modulée. · vague 19 #040
+- IMP-1841 | fiabilite | Validation basique des imports JSON. · vague 19 #041
+- IMP-1842 | fiabilite | Validation basique des imports CSV. · vague 19 #042
+- IMP-1843 | fiabilite | Validation basique des imports XLSX (texte converti). · vague 19 #043
+- IMP-1844 | fiabilite | Validation basique des imports PDF (contenu brut). · vague 19 #044
+- IMP-1845 | fiabilite | Séparation lignes/colonnes pour contrôle qualité. · vague 19 #045
+- IMP-1846 | fiabilite | Enregistrement des erreurs de parsing en local. · vague 19 #046
+- IMP-1847 | fiabilite | Fallback IA en cas de prompt vide. · vague 19 #047
+- IMP-1848 | fiabilite | Protection contre retour worker invalide. · vague 19 #048
+- IMP-1849 | fiabilite | Réinitialisation complète de l’apprentissage. · vague 19 #049
+- IMP-1850 | fiabilite | Restauration de backup JSON sans cloud. · vague 19 #050
+- IMP-1851 | securite | Aucune dépendance externe chargée à runtime. · vague 19 #051
+- IMP-1852 | securite | Aucune clé API nécessaire. · vague 19 #052
+- IMP-1853 | securite | Aucune exfiltration réseau volontaire de données métier. · vague 19 #053
+- IMP-1854 | securite | Toutes les données sensibles en local (IndexedDB). · vague 19 #054
+- IMP-1855 | securite | Export explicite déclenché manuellement. · vague 19 #055
+- IMP-1856 | securite | Import explicite déclenché manuellement. · vague 19 #056
+- IMP-1857 | securite | Logs IA non transmis à des services tiers. · vague 19 #057
+- IMP-1858 | securite | Mode standalone PWA pour limiter contexte navigateur. · vague 19 #058
+- IMP-1859 | securite | Isolation des calculs IA dans un worker local. · vague 19 #059
+- IMP-1860 | securite | Suppression de cache obsolète à l’activation SW. · vague 19 #060
+- IMP-1861 | data | Jeu de données exemple intégré pour tests rapides. · vague 19 #061
+- IMP-1862 | data | Jeux de données WMS initiaux prêts à charger. · vague 19 #062
+- IMP-1863 | data | Stockage des règles personnalisées. · vague 19 #063
+- IMP-1864 | data | Stockage des décisions IA. · vague 19 #064
+- IMP-1865 | data | Stockage des statistiques de feedback. · vague 19 #065
+- IMP-1866 | data | Stockage des commandes vocales. · vague 19 #066
+- IMP-1867 | data | Stockage des imports par source fichier. · vague 19 #067
+- IMP-1868 | data | Export complet multi-store en JSON. · vague 19 #068
+- IMP-1869 | data | Import complet multi-store en JSON. · vague 19 #069
+- IMP-1870 | data | Versionnement fonctionnel du modèle exporté. · vague 19 #070
+- IMP-1871 | ia | Analyse de prompt normalisée pour cohérence. · vague 19 #071
+- IMP-1872 | ia | Moteur d’anomalies local pour contrôles rapides. · vague 19 #072
+- IMP-1873 | ia | Moteur vectoriel local pour rapprochements. · vague 19 #073
+- IMP-1874 | ia | Moteur de prédiction léger sans serveur. · vague 19 #074
+- IMP-1875 | ia | Réseau de neurones simplifié embarqué. · vague 19 #075
+- IMP-1876 | ia | Simulation locale de scénarios. · vague 19 #076
+- IMP-1877 | ia | Optimisation locale de flux. · vague 19 #077
+- IMP-1878 | ia | Apprentissage continu piloté utilisateur. · vague 19 #078
+- IMP-1879 | ia | Réentraînement ponctuel à la demande. · vague 19 #079
+- IMP-1880 | ia | Suivi du score décisionnel dans l’interface. · vague 19 #080
+- IMP-1881 | github | Structure projet simple compatible dépôt GitHub. · vague 19 #081
+- IMP-1882 | github | Fichiers statiques versionnables sans build. · vague 19 #082
+- IMP-1883 | github | Manifest PWA versionnable dans le dépôt. · vague 19 #083
+- IMP-1884 | github | Service worker versionnable dans le dépôt. · vague 19 #084
+- IMP-1885 | github | Pages HTML modulaires faciles à relire en PR. · vague 19 #085
+- IMP-1886 | github | Modules JS séparés pour revue de code ciblée. · vague 19 #086
+- IMP-1887 | github | Aucun secret injecté dans le code source. · vague 19 #087
+- IMP-1888 | github | Sauvegarde/restore portable via fichiers JSON. · vague 19 #088
+- IMP-1889 | github | Approche offline-first documentée dans l’interface. · vague 19 #089
+- IMP-1890 | github | Compatibilité hébergement statique GitHub Pages. · vague 19 #090
+- IMP-1891 | ops | Bouton unique pour appliquer 1000 améliorations. · vague 19 #091
+- IMP-1892 | ops | Audit instantané pour vérifier état des améliorations. · vague 19 #092
+- IMP-1893 | ops | Journal d’audit lisible depuis la page paramètres. · vague 19 #093
+- IMP-1894 | ops | Compteur de conformité (% améliorations actives). · vague 19 #094
+- IMP-1895 | ops | Horodatage du dernier audit. · vague 19 #095
+- IMP-1896 | ops | Horodatage de la dernière application globale. · vague 19 #096
+- IMP-1897 | ops | Mode strict iPhone/offline activable en un clic. · vague 19 #097
+- IMP-1898 | ops | Synthèse multi-catégories des améliorations. · vague 19 #098
+- IMP-1899 | ops | Persistance de la conformité en base locale. · vague 19 #099
+- IMP-1900 | ops | Aucune dépendance ajoutée pour l’audit et l’application. · vague 19 #100
+- IMP-1901 | offline | Mode cache agressif pour toutes les pages locales. · vague 20 #001
+- IMP-1902 | offline | Fallback automatique sur la page principale hors connexion. · vague 20 #002
+- IMP-1903 | offline | Préchargement des pages critiques au démarrage. · vague 20 #003
+- IMP-1904 | offline | Conservation locale du dernier prompt utilisateur. · vague 20 #004
+- IMP-1905 | offline | Conservation locale de la dernière réponse IA. · vague 20 #005
+- IMP-1906 | offline | Protection contre les pertes de données pendant import. · vague 20 #006
+- IMP-1907 | offline | Cache des modules JavaScript principaux. · vague 20 #007
+- IMP-1908 | offline | Cache des feuilles de style et manifest. · vague 20 #008
+- IMP-1909 | offline | Réouverture de la dernière page après relance. · vague 20 #009
+- IMP-1910 | offline | Historique local compacté pour limiter la mémoire. · vague 20 #010
+- IMP-1911 | iphone | Respect des safe-area iPhone (top et bottom). · vague 20 #011
+- IMP-1912 | iphone | Taille tactile minimale des boutons (44px+). · vague 20 #012
+- IMP-1913 | iphone | Lisibilité renforcée en mode sombre natif iOS. · vague 20 #013
+- IMP-1914 | iphone | Lisibilité renforcée en mode clair natif iOS. · vague 20 #014
+- IMP-1915 | iphone | Navigation basse optimisée pour usage à une main. · vague 20 #015
+- IMP-1916 | iphone | Texte principal limité à la largeur mobile confortable. · vague 20 #016
+- IMP-1917 | iphone | Réduction automatique des débordements horizontaux. · vague 20 #017
+- IMP-1918 | iphone | Typographie système Apple prioritaire. · vague 20 #018
+- IMP-1919 | iphone | PWA installable sur écran d’accueil iPhone. · vague 20 #019
+- IMP-1920 | iphone | Évitement du zoom forcé sur les champs de saisie. · vague 20 #020
+- IMP-1921 | ux | Messages d’état IA synchronisés entre pages. · vague 20 #021
+- IMP-1922 | ux | Actions principales regroupées par section logique. · vague 20 #022
+- IMP-1923 | ux | Labels explicites pour toutes les zones de saisie. · vague 20 #023
+- IMP-1924 | ux | Annulation de prompt disponible en un geste. · vague 20 #024
+- IMP-1925 | ux | Indication claire du score de décision IA. · vague 20 #025
+- IMP-1926 | ux | Feedback positif/négatif accessible depuis la page principale. · vague 20 #026
+- IMP-1927 | ux | Pré-remplissage des prompts sauvegardés. · vague 20 #027
+- IMP-1928 | ux | Historique d’apprentissage consultable en local. · vague 20 #028
+- IMP-1929 | ux | Visualisation des sources de formation. · vague 20 #029
+- IMP-1930 | ux | Affichage compact des logs pour petits écrans. · vague 20 #030
+- IMP-1931 | performance | Chargement paresseux des pages via routeur. · vague 20 #031
+- IMP-1932 | performance | Mise en cache mémoire des templates HTML. · vague 20 #032
+- IMP-1933 | performance | Réduction des écritures redondantes en stockage local. · vague 20 #033
+- IMP-1934 | performance | Batch d’accès aux stores lors des métriques. · vague 20 #034
+- IMP-1935 | performance | Réentraînement incrémental léger et rapide. · vague 20 #035
+- IMP-1936 | performance | Matrice d’entraînement simplifiée sans dépendances. · vague 20 #036
+- IMP-1937 | performance | Worker dédié pour calcul IA non bloquant UI. · vague 20 #037
+- IMP-1938 | performance | Limitation des historiques affichés (12 derniers). · vague 20 #038
+- IMP-1939 | performance | Structures de données compactes pour datasets. · vague 20 #039
+- IMP-1940 | performance | Préservation batterie en formation continue modulée. · vague 20 #040
+- IMP-1941 | fiabilite | Validation basique des imports JSON. · vague 20 #041
+- IMP-1942 | fiabilite | Validation basique des imports CSV. · vague 20 #042
+- IMP-1943 | fiabilite | Validation basique des imports XLSX (texte converti). · vague 20 #043
+- IMP-1944 | fiabilite | Validation basique des imports PDF (contenu brut). · vague 20 #044
+- IMP-1945 | fiabilite | Séparation lignes/colonnes pour contrôle qualité. · vague 20 #045
+- IMP-1946 | fiabilite | Enregistrement des erreurs de parsing en local. · vague 20 #046
+- IMP-1947 | fiabilite | Fallback IA en cas de prompt vide. · vague 20 #047
+- IMP-1948 | fiabilite | Protection contre retour worker invalide. · vague 20 #048
+- IMP-1949 | fiabilite | Réinitialisation complète de l’apprentissage. · vague 20 #049
+- IMP-1950 | fiabilite | Restauration de backup JSON sans cloud. · vague 20 #050
+- IMP-1951 | securite | Aucune dépendance externe chargée à runtime. · vague 20 #051
+- IMP-1952 | securite | Aucune clé API nécessaire. · vague 20 #052
+- IMP-1953 | securite | Aucune exfiltration réseau volontaire de données métier. · vague 20 #053
+- IMP-1954 | securite | Toutes les données sensibles en local (IndexedDB). · vague 20 #054
+- IMP-1955 | securite | Export explicite déclenché manuellement. · vague 20 #055
+- IMP-1956 | securite | Import explicite déclenché manuellement. · vague 20 #056
+- IMP-1957 | securite | Logs IA non transmis à des services tiers. · vague 20 #057
+- IMP-1958 | securite | Mode standalone PWA pour limiter contexte navigateur. · vague 20 #058
+- IMP-1959 | securite | Isolation des calculs IA dans un worker local. · vague 20 #059
+- IMP-1960 | securite | Suppression de cache obsolète à l’activation SW. · vague 20 #060
+- IMP-1961 | data | Jeu de données exemple intégré pour tests rapides. · vague 20 #061
+- IMP-1962 | data | Jeux de données WMS initiaux prêts à charger. · vague 20 #062
+- IMP-1963 | data | Stockage des règles personnalisées. · vague 20 #063
+- IMP-1964 | data | Stockage des décisions IA. · vague 20 #064
+- IMP-1965 | data | Stockage des statistiques de feedback. · vague 20 #065
+- IMP-1966 | data | Stockage des commandes vocales. · vague 20 #066
+- IMP-1967 | data | Stockage des imports par source fichier. · vague 20 #067
+- IMP-1968 | data | Export complet multi-store en JSON. · vague 20 #068
+- IMP-1969 | data | Import complet multi-store en JSON. · vague 20 #069
+- IMP-1970 | data | Versionnement fonctionnel du modèle exporté. · vague 20 #070
+- IMP-1971 | ia | Analyse de prompt normalisée pour cohérence. · vague 20 #071
+- IMP-1972 | ia | Moteur d’anomalies local pour contrôles rapides. · vague 20 #072
+- IMP-1973 | ia | Moteur vectoriel local pour rapprochements. · vague 20 #073
+- IMP-1974 | ia | Moteur de prédiction léger sans serveur. · vague 20 #074
+- IMP-1975 | ia | Réseau de neurones simplifié embarqué. · vague 20 #075
+- IMP-1976 | ia | Simulation locale de scénarios. · vague 20 #076
+- IMP-1977 | ia | Optimisation locale de flux. · vague 20 #077
+- IMP-1978 | ia | Apprentissage continu piloté utilisateur. · vague 20 #078
+- IMP-1979 | ia | Réentraînement ponctuel à la demande. · vague 20 #079
+- IMP-1980 | ia | Suivi du score décisionnel dans l’interface. · vague 20 #080
+- IMP-1981 | github | Structure projet simple compatible dépôt GitHub. · vague 20 #081
+- IMP-1982 | github | Fichiers statiques versionnables sans build. · vague 20 #082
+- IMP-1983 | github | Manifest PWA versionnable dans le dépôt. · vague 20 #083
+- IMP-1984 | github | Service worker versionnable dans le dépôt. · vague 20 #084
+- IMP-1985 | github | Pages HTML modulaires faciles à relire en PR. · vague 20 #085
+- IMP-1986 | github | Modules JS séparés pour revue de code ciblée. · vague 20 #086
+- IMP-1987 | github | Aucun secret injecté dans le code source. · vague 20 #087
+- IMP-1988 | github | Sauvegarde/restore portable via fichiers JSON. · vague 20 #088
+- IMP-1989 | github | Approche offline-first documentée dans l’interface. · vague 20 #089
+- IMP-1990 | github | Compatibilité hébergement statique GitHub Pages. · vague 20 #090
+- IMP-1991 | ops | Bouton unique pour appliquer 1000 améliorations. · vague 20 #091
+- IMP-1992 | ops | Audit instantané pour vérifier état des améliorations. · vague 20 #092
+- IMP-1993 | ops | Journal d’audit lisible depuis la page paramètres. · vague 20 #093
+- IMP-1994 | ops | Compteur de conformité (% améliorations actives). · vague 20 #094
+- IMP-1995 | ops | Horodatage du dernier audit. · vague 20 #095
+- IMP-1996 | ops | Horodatage de la dernière application globale. · vague 20 #096
+- IMP-1997 | ops | Mode strict iPhone/offline activable en un clic. · vague 20 #097
+- IMP-1998 | ops | Synthèse multi-catégories des améliorations. · vague 20 #098
+- IMP-1999 | ops | Persistance de la conformité en base locale. · vague 20 #099
+- IMP-2000 | ops | Aucune dépendance ajoutée pour l’audit et l’application. · vague 20 #100
+- IMP-2001 | offline | Mode cache agressif pour toutes les pages locales. · vague 21 #001
+- IMP-2002 | offline | Fallback automatique sur la page principale hors connexion. · vague 21 #002
+- IMP-2003 | offline | Préchargement des pages critiques au démarrage. · vague 21 #003
+- IMP-2004 | offline | Conservation locale du dernier prompt utilisateur. · vague 21 #004
+- IMP-2005 | offline | Conservation locale de la dernière réponse IA. · vague 21 #005
+- IMP-2006 | offline | Protection contre les pertes de données pendant import. · vague 21 #006
+- IMP-2007 | offline | Cache des modules JavaScript principaux. · vague 21 #007
+- IMP-2008 | offline | Cache des feuilles de style et manifest. · vague 21 #008
+- IMP-2009 | offline | Réouverture de la dernière page après relance. · vague 21 #009
+- IMP-2010 | offline | Historique local compacté pour limiter la mémoire. · vague 21 #010
+- IMP-2011 | iphone | Respect des safe-area iPhone (top et bottom). · vague 21 #011
+- IMP-2012 | iphone | Taille tactile minimale des boutons (44px+). · vague 21 #012
+- IMP-2013 | iphone | Lisibilité renforcée en mode sombre natif iOS. · vague 21 #013
+- IMP-2014 | iphone | Lisibilité renforcée en mode clair natif iOS. · vague 21 #014
+- IMP-2015 | iphone | Navigation basse optimisée pour usage à une main. · vague 21 #015
+- IMP-2016 | iphone | Texte principal limité à la largeur mobile confortable. · vague 21 #016
+- IMP-2017 | iphone | Réduction automatique des débordements horizontaux. · vague 21 #017
+- IMP-2018 | iphone | Typographie système Apple prioritaire. · vague 21 #018
+- IMP-2019 | iphone | PWA installable sur écran d’accueil iPhone. · vague 21 #019
+- IMP-2020 | iphone | Évitement du zoom forcé sur les champs de saisie. · vague 21 #020
+- IMP-2021 | ux | Messages d’état IA synchronisés entre pages. · vague 21 #021
+- IMP-2022 | ux | Actions principales regroupées par section logique. · vague 21 #022
+- IMP-2023 | ux | Labels explicites pour toutes les zones de saisie. · vague 21 #023
+- IMP-2024 | ux | Annulation de prompt disponible en un geste. · vague 21 #024
+- IMP-2025 | ux | Indication claire du score de décision IA. · vague 21 #025
+- IMP-2026 | ux | Feedback positif/négatif accessible depuis la page principale. · vague 21 #026
+- IMP-2027 | ux | Pré-remplissage des prompts sauvegardés. · vague 21 #027
+- IMP-2028 | ux | Historique d’apprentissage consultable en local. · vague 21 #028
+- IMP-2029 | ux | Visualisation des sources de formation. · vague 21 #029
+- IMP-2030 | ux | Affichage compact des logs pour petits écrans. · vague 21 #030
+- IMP-2031 | performance | Chargement paresseux des pages via routeur. · vague 21 #031
+- IMP-2032 | performance | Mise en cache mémoire des templates HTML. · vague 21 #032
+- IMP-2033 | performance | Réduction des écritures redondantes en stockage local. · vague 21 #033
+- IMP-2034 | performance | Batch d’accès aux stores lors des métriques. · vague 21 #034
+- IMP-2035 | performance | Réentraînement incrémental léger et rapide. · vague 21 #035
+- IMP-2036 | performance | Matrice d’entraînement simplifiée sans dépendances. · vague 21 #036
+- IMP-2037 | performance | Worker dédié pour calcul IA non bloquant UI. · vague 21 #037
+- IMP-2038 | performance | Limitation des historiques affichés (12 derniers). · vague 21 #038
+- IMP-2039 | performance | Structures de données compactes pour datasets. · vague 21 #039
+- IMP-2040 | performance | Préservation batterie en formation continue modulée. · vague 21 #040
+- IMP-2041 | fiabilite | Validation basique des imports JSON. · vague 21 #041
+- IMP-2042 | fiabilite | Validation basique des imports CSV. · vague 21 #042
+- IMP-2043 | fiabilite | Validation basique des imports XLSX (texte converti). · vague 21 #043
+- IMP-2044 | fiabilite | Validation basique des imports PDF (contenu brut). · vague 21 #044
+- IMP-2045 | fiabilite | Séparation lignes/colonnes pour contrôle qualité. · vague 21 #045
+- IMP-2046 | fiabilite | Enregistrement des erreurs de parsing en local. · vague 21 #046
+- IMP-2047 | fiabilite | Fallback IA en cas de prompt vide. · vague 21 #047
+- IMP-2048 | fiabilite | Protection contre retour worker invalide. · vague 21 #048
+- IMP-2049 | fiabilite | Réinitialisation complète de l’apprentissage. · vague 21 #049
+- IMP-2050 | fiabilite | Restauration de backup JSON sans cloud. · vague 21 #050
+- IMP-2051 | securite | Aucune dépendance externe chargée à runtime. · vague 21 #051
+- IMP-2052 | securite | Aucune clé API nécessaire. · vague 21 #052
+- IMP-2053 | securite | Aucune exfiltration réseau volontaire de données métier. · vague 21 #053
+- IMP-2054 | securite | Toutes les données sensibles en local (IndexedDB). · vague 21 #054
+- IMP-2055 | securite | Export explicite déclenché manuellement. · vague 21 #055
+- IMP-2056 | securite | Import explicite déclenché manuellement. · vague 21 #056
+- IMP-2057 | securite | Logs IA non transmis à des services tiers. · vague 21 #057
+- IMP-2058 | securite | Mode standalone PWA pour limiter contexte navigateur. · vague 21 #058
+- IMP-2059 | securite | Isolation des calculs IA dans un worker local. · vague 21 #059
+- IMP-2060 | securite | Suppression de cache obsolète à l’activation SW. · vague 21 #060
+- IMP-2061 | data | Jeu de données exemple intégré pour tests rapides. · vague 21 #061
+- IMP-2062 | data | Jeux de données WMS initiaux prêts à charger. · vague 21 #062
+- IMP-2063 | data | Stockage des règles personnalisées. · vague 21 #063
+- IMP-2064 | data | Stockage des décisions IA. · vague 21 #064
+- IMP-2065 | data | Stockage des statistiques de feedback. · vague 21 #065
+- IMP-2066 | data | Stockage des commandes vocales. · vague 21 #066
+- IMP-2067 | data | Stockage des imports par source fichier. · vague 21 #067
+- IMP-2068 | data | Export complet multi-store en JSON. · vague 21 #068
+- IMP-2069 | data | Import complet multi-store en JSON. · vague 21 #069
+- IMP-2070 | data | Versionnement fonctionnel du modèle exporté. · vague 21 #070
+- IMP-2071 | ia | Analyse de prompt normalisée pour cohérence. · vague 21 #071
+- IMP-2072 | ia | Moteur d’anomalies local pour contrôles rapides. · vague 21 #072
+- IMP-2073 | ia | Moteur vectoriel local pour rapprochements. · vague 21 #073
+- IMP-2074 | ia | Moteur de prédiction léger sans serveur. · vague 21 #074
+- IMP-2075 | ia | Réseau de neurones simplifié embarqué. · vague 21 #075
+- IMP-2076 | ia | Simulation locale de scénarios. · vague 21 #076
+- IMP-2077 | ia | Optimisation locale de flux. · vague 21 #077
+- IMP-2078 | ia | Apprentissage continu piloté utilisateur. · vague 21 #078
+- IMP-2079 | ia | Réentraînement ponctuel à la demande. · vague 21 #079
+- IMP-2080 | ia | Suivi du score décisionnel dans l’interface. · vague 21 #080
+- IMP-2081 | github | Structure projet simple compatible dépôt GitHub. · vague 21 #081
+- IMP-2082 | github | Fichiers statiques versionnables sans build. · vague 21 #082
+- IMP-2083 | github | Manifest PWA versionnable dans le dépôt. · vague 21 #083
+- IMP-2084 | github | Service worker versionnable dans le dépôt. · vague 21 #084
+- IMP-2085 | github | Pages HTML modulaires faciles à relire en PR. · vague 21 #085
+- IMP-2086 | github | Modules JS séparés pour revue de code ciblée. · vague 21 #086
+- IMP-2087 | github | Aucun secret injecté dans le code source. · vague 21 #087
+- IMP-2088 | github | Sauvegarde/restore portable via fichiers JSON. · vague 21 #088
+- IMP-2089 | github | Approche offline-first documentée dans l’interface. · vague 21 #089
+- IMP-2090 | github | Compatibilité hébergement statique GitHub Pages. · vague 21 #090
+- IMP-2091 | ops | Bouton unique pour appliquer 1000 améliorations. · vague 21 #091
+- IMP-2092 | ops | Audit instantané pour vérifier état des améliorations. · vague 21 #092
+- IMP-2093 | ops | Journal d’audit lisible depuis la page paramètres. · vague 21 #093
+- IMP-2094 | ops | Compteur de conformité (% améliorations actives). · vague 21 #094
+- IMP-2095 | ops | Horodatage du dernier audit. · vague 21 #095
+- IMP-2096 | ops | Horodatage de la dernière application globale. · vague 21 #096
+- IMP-2097 | ops | Mode strict iPhone/offline activable en un clic. · vague 21 #097
+- IMP-2098 | ops | Synthèse multi-catégories des améliorations. · vague 21 #098
+- IMP-2099 | ops | Persistance de la conformité en base locale. · vague 21 #099
+- IMP-2100 | ops | Aucune dépendance ajoutée pour l’audit et l’application. · vague 21 #100
+- IMP-2101 | offline | Mode cache agressif pour toutes les pages locales. · vague 22 #001
+- IMP-2102 | offline | Fallback automatique sur la page principale hors connexion. · vague 22 #002
+- IMP-2103 | offline | Préchargement des pages critiques au démarrage. · vague 22 #003
+- IMP-2104 | offline | Conservation locale du dernier prompt utilisateur. · vague 22 #004
+- IMP-2105 | offline | Conservation locale de la dernière réponse IA. · vague 22 #005
+- IMP-2106 | offline | Protection contre les pertes de données pendant import. · vague 22 #006
+- IMP-2107 | offline | Cache des modules JavaScript principaux. · vague 22 #007
+- IMP-2108 | offline | Cache des feuilles de style et manifest. · vague 22 #008
+- IMP-2109 | offline | Réouverture de la dernière page après relance. · vague 22 #009
+- IMP-2110 | offline | Historique local compacté pour limiter la mémoire. · vague 22 #010
+- IMP-2111 | iphone | Respect des safe-area iPhone (top et bottom). · vague 22 #011
+- IMP-2112 | iphone | Taille tactile minimale des boutons (44px+). · vague 22 #012
+- IMP-2113 | iphone | Lisibilité renforcée en mode sombre natif iOS. · vague 22 #013
+- IMP-2114 | iphone | Lisibilité renforcée en mode clair natif iOS. · vague 22 #014
+- IMP-2115 | iphone | Navigation basse optimisée pour usage à une main. · vague 22 #015
+- IMP-2116 | iphone | Texte principal limité à la largeur mobile confortable. · vague 22 #016
+- IMP-2117 | iphone | Réduction automatique des débordements horizontaux. · vague 22 #017
+- IMP-2118 | iphone | Typographie système Apple prioritaire. · vague 22 #018
+- IMP-2119 | iphone | PWA installable sur écran d’accueil iPhone. · vague 22 #019
+- IMP-2120 | iphone | Évitement du zoom forcé sur les champs de saisie. · vague 22 #020
+- IMP-2121 | ux | Messages d’état IA synchronisés entre pages. · vague 22 #021
+- IMP-2122 | ux | Actions principales regroupées par section logique. · vague 22 #022
+- IMP-2123 | ux | Labels explicites pour toutes les zones de saisie. · vague 22 #023
+- IMP-2124 | ux | Annulation de prompt disponible en un geste. · vague 22 #024
+- IMP-2125 | ux | Indication claire du score de décision IA. · vague 22 #025
+- IMP-2126 | ux | Feedback positif/négatif accessible depuis la page principale. · vague 22 #026
+- IMP-2127 | ux | Pré-remplissage des prompts sauvegardés. · vague 22 #027
+- IMP-2128 | ux | Historique d’apprentissage consultable en local. · vague 22 #028
+- IMP-2129 | ux | Visualisation des sources de formation. · vague 22 #029
+- IMP-2130 | ux | Affichage compact des logs pour petits écrans. · vague 22 #030
+- IMP-2131 | performance | Chargement paresseux des pages via routeur. · vague 22 #031
+- IMP-2132 | performance | Mise en cache mémoire des templates HTML. · vague 22 #032
+- IMP-2133 | performance | Réduction des écritures redondantes en stockage local. · vague 22 #033
+- IMP-2134 | performance | Batch d’accès aux stores lors des métriques. · vague 22 #034
+- IMP-2135 | performance | Réentraînement incrémental léger et rapide. · vague 22 #035
+- IMP-2136 | performance | Matrice d’entraînement simplifiée sans dépendances. · vague 22 #036
+- IMP-2137 | performance | Worker dédié pour calcul IA non bloquant UI. · vague 22 #037
+- IMP-2138 | performance | Limitation des historiques affichés (12 derniers). · vague 22 #038
+- IMP-2139 | performance | Structures de données compactes pour datasets. · vague 22 #039
+- IMP-2140 | performance | Préservation batterie en formation continue modulée. · vague 22 #040
+- IMP-2141 | fiabilite | Validation basique des imports JSON. · vague 22 #041
+- IMP-2142 | fiabilite | Validation basique des imports CSV. · vague 22 #042
+- IMP-2143 | fiabilite | Validation basique des imports XLSX (texte converti). · vague 22 #043
+- IMP-2144 | fiabilite | Validation basique des imports PDF (contenu brut). · vague 22 #044
+- IMP-2145 | fiabilite | Séparation lignes/colonnes pour contrôle qualité. · vague 22 #045
+- IMP-2146 | fiabilite | Enregistrement des erreurs de parsing en local. · vague 22 #046
+- IMP-2147 | fiabilite | Fallback IA en cas de prompt vide. · vague 22 #047
+- IMP-2148 | fiabilite | Protection contre retour worker invalide. · vague 22 #048
+- IMP-2149 | fiabilite | Réinitialisation complète de l’apprentissage. · vague 22 #049
+- IMP-2150 | fiabilite | Restauration de backup JSON sans cloud. · vague 22 #050
+- IMP-2151 | securite | Aucune dépendance externe chargée à runtime. · vague 22 #051
+- IMP-2152 | securite | Aucune clé API nécessaire. · vague 22 #052
+- IMP-2153 | securite | Aucune exfiltration réseau volontaire de données métier. · vague 22 #053
+- IMP-2154 | securite | Toutes les données sensibles en local (IndexedDB). · vague 22 #054
+- IMP-2155 | securite | Export explicite déclenché manuellement. · vague 22 #055
+- IMP-2156 | securite | Import explicite déclenché manuellement. · vague 22 #056
+- IMP-2157 | securite | Logs IA non transmis à des services tiers. · vague 22 #057
+- IMP-2158 | securite | Mode standalone PWA pour limiter contexte navigateur. · vague 22 #058
+- IMP-2159 | securite | Isolation des calculs IA dans un worker local. · vague 22 #059
+- IMP-2160 | securite | Suppression de cache obsolète à l’activation SW. · vague 22 #060
+- IMP-2161 | data | Jeu de données exemple intégré pour tests rapides. · vague 22 #061
+- IMP-2162 | data | Jeux de données WMS initiaux prêts à charger. · vague 22 #062
+- IMP-2163 | data | Stockage des règles personnalisées. · vague 22 #063
+- IMP-2164 | data | Stockage des décisions IA. · vague 22 #064
+- IMP-2165 | data | Stockage des statistiques de feedback. · vague 22 #065
+- IMP-2166 | data | Stockage des commandes vocales. · vague 22 #066
+- IMP-2167 | data | Stockage des imports par source fichier. · vague 22 #067
+- IMP-2168 | data | Export complet multi-store en JSON. · vague 22 #068
+- IMP-2169 | data | Import complet multi-store en JSON. · vague 22 #069
+- IMP-2170 | data | Versionnement fonctionnel du modèle exporté. · vague 22 #070
+- IMP-2171 | ia | Analyse de prompt normalisée pour cohérence. · vague 22 #071
+- IMP-2172 | ia | Moteur d’anomalies local pour contrôles rapides. · vague 22 #072
+- IMP-2173 | ia | Moteur vectoriel local pour rapprochements. · vague 22 #073
+- IMP-2174 | ia | Moteur de prédiction léger sans serveur. · vague 22 #074
+- IMP-2175 | ia | Réseau de neurones simplifié embarqué. · vague 22 #075
+- IMP-2176 | ia | Simulation locale de scénarios. · vague 22 #076
+- IMP-2177 | ia | Optimisation locale de flux. · vague 22 #077
+- IMP-2178 | ia | Apprentissage continu piloté utilisateur. · vague 22 #078
+- IMP-2179 | ia | Réentraînement ponctuel à la demande. · vague 22 #079
+- IMP-2180 | ia | Suivi du score décisionnel dans l’interface. · vague 22 #080
+- IMP-2181 | github | Structure projet simple compatible dépôt GitHub. · vague 22 #081
+- IMP-2182 | github | Fichiers statiques versionnables sans build. · vague 22 #082
+- IMP-2183 | github | Manifest PWA versionnable dans le dépôt. · vague 22 #083
+- IMP-2184 | github | Service worker versionnable dans le dépôt. · vague 22 #084
+- IMP-2185 | github | Pages HTML modulaires faciles à relire en PR. · vague 22 #085
+- IMP-2186 | github | Modules JS séparés pour revue de code ciblée. · vague 22 #086
+- IMP-2187 | github | Aucun secret injecté dans le code source. · vague 22 #087
+- IMP-2188 | github | Sauvegarde/restore portable via fichiers JSON. · vague 22 #088
+- IMP-2189 | github | Approche offline-first documentée dans l’interface. · vague 22 #089
+- IMP-2190 | github | Compatibilité hébergement statique GitHub Pages. · vague 22 #090
+- IMP-2191 | ops | Bouton unique pour appliquer 1000 améliorations. · vague 22 #091
+- IMP-2192 | ops | Audit instantané pour vérifier état des améliorations. · vague 22 #092
+- IMP-2193 | ops | Journal d’audit lisible depuis la page paramètres. · vague 22 #093
+- IMP-2194 | ops | Compteur de conformité (% améliorations actives). · vague 22 #094
+- IMP-2195 | ops | Horodatage du dernier audit. · vague 22 #095
+- IMP-2196 | ops | Horodatage de la dernière application globale. · vague 22 #096
+- IMP-2197 | ops | Mode strict iPhone/offline activable en un clic. · vague 22 #097
+- IMP-2198 | ops | Synthèse multi-catégories des améliorations. · vague 22 #098
+- IMP-2199 | ops | Persistance de la conformité en base locale. · vague 22 #099
+- IMP-2200 | ops | Aucune dépendance ajoutée pour l’audit et l’application. · vague 22 #100
+- IMP-2201 | offline | Mode cache agressif pour toutes les pages locales. · vague 23 #001
+- IMP-2202 | offline | Fallback automatique sur la page principale hors connexion. · vague 23 #002
+- IMP-2203 | offline | Préchargement des pages critiques au démarrage. · vague 23 #003
+- IMP-2204 | offline | Conservation locale du dernier prompt utilisateur. · vague 23 #004
+- IMP-2205 | offline | Conservation locale de la dernière réponse IA. · vague 23 #005
+- IMP-2206 | offline | Protection contre les pertes de données pendant import. · vague 23 #006
+- IMP-2207 | offline | Cache des modules JavaScript principaux. · vague 23 #007
+- IMP-2208 | offline | Cache des feuilles de style et manifest. · vague 23 #008
+- IMP-2209 | offline | Réouverture de la dernière page après relance. · vague 23 #009
+- IMP-2210 | offline | Historique local compacté pour limiter la mémoire. · vague 23 #010
+- IMP-2211 | iphone | Respect des safe-area iPhone (top et bottom). · vague 23 #011
+- IMP-2212 | iphone | Taille tactile minimale des boutons (44px+). · vague 23 #012
+- IMP-2213 | iphone | Lisibilité renforcée en mode sombre natif iOS. · vague 23 #013
+- IMP-2214 | iphone | Lisibilité renforcée en mode clair natif iOS. · vague 23 #014
+- IMP-2215 | iphone | Navigation basse optimisée pour usage à une main. · vague 23 #015
+- IMP-2216 | iphone | Texte principal limité à la largeur mobile confortable. · vague 23 #016
+- IMP-2217 | iphone | Réduction automatique des débordements horizontaux. · vague 23 #017
+- IMP-2218 | iphone | Typographie système Apple prioritaire. · vague 23 #018
+- IMP-2219 | iphone | PWA installable sur écran d’accueil iPhone. · vague 23 #019
+- IMP-2220 | iphone | Évitement du zoom forcé sur les champs de saisie. · vague 23 #020
+- IMP-2221 | ux | Messages d’état IA synchronisés entre pages. · vague 23 #021
+- IMP-2222 | ux | Actions principales regroupées par section logique. · vague 23 #022
+- IMP-2223 | ux | Labels explicites pour toutes les zones de saisie. · vague 23 #023
+- IMP-2224 | ux | Annulation de prompt disponible en un geste. · vague 23 #024
+- IMP-2225 | ux | Indication claire du score de décision IA. · vague 23 #025
+- IMP-2226 | ux | Feedback positif/négatif accessible depuis la page principale. · vague 23 #026
+- IMP-2227 | ux | Pré-remplissage des prompts sauvegardés. · vague 23 #027
+- IMP-2228 | ux | Historique d’apprentissage consultable en local. · vague 23 #028
+- IMP-2229 | ux | Visualisation des sources de formation. · vague 23 #029
+- IMP-2230 | ux | Affichage compact des logs pour petits écrans. · vague 23 #030
+- IMP-2231 | performance | Chargement paresseux des pages via routeur. · vague 23 #031
+- IMP-2232 | performance | Mise en cache mémoire des templates HTML. · vague 23 #032
+- IMP-2233 | performance | Réduction des écritures redondantes en stockage local. · vague 23 #033
+- IMP-2234 | performance | Batch d’accès aux stores lors des métriques. · vague 23 #034
+- IMP-2235 | performance | Réentraînement incrémental léger et rapide. · vague 23 #035
+- IMP-2236 | performance | Matrice d’entraînement simplifiée sans dépendances. · vague 23 #036
+- IMP-2237 | performance | Worker dédié pour calcul IA non bloquant UI. · vague 23 #037
+- IMP-2238 | performance | Limitation des historiques affichés (12 derniers). · vague 23 #038
+- IMP-2239 | performance | Structures de données compactes pour datasets. · vague 23 #039
+- IMP-2240 | performance | Préservation batterie en formation continue modulée. · vague 23 #040
+- IMP-2241 | fiabilite | Validation basique des imports JSON. · vague 23 #041
+- IMP-2242 | fiabilite | Validation basique des imports CSV. · vague 23 #042
+- IMP-2243 | fiabilite | Validation basique des imports XLSX (texte converti). · vague 23 #043
+- IMP-2244 | fiabilite | Validation basique des imports PDF (contenu brut). · vague 23 #044
+- IMP-2245 | fiabilite | Séparation lignes/colonnes pour contrôle qualité. · vague 23 #045
+- IMP-2246 | fiabilite | Enregistrement des erreurs de parsing en local. · vague 23 #046
+- IMP-2247 | fiabilite | Fallback IA en cas de prompt vide. · vague 23 #047
+- IMP-2248 | fiabilite | Protection contre retour worker invalide. · vague 23 #048
+- IMP-2249 | fiabilite | Réinitialisation complète de l’apprentissage. · vague 23 #049
+- IMP-2250 | fiabilite | Restauration de backup JSON sans cloud. · vague 23 #050
+- IMP-2251 | securite | Aucune dépendance externe chargée à runtime. · vague 23 #051
+- IMP-2252 | securite | Aucune clé API nécessaire. · vague 23 #052
+- IMP-2253 | securite | Aucune exfiltration réseau volontaire de données métier. · vague 23 #053
+- IMP-2254 | securite | Toutes les données sensibles en local (IndexedDB). · vague 23 #054
+- IMP-2255 | securite | Export explicite déclenché manuellement. · vague 23 #055
+- IMP-2256 | securite | Import explicite déclenché manuellement. · vague 23 #056
+- IMP-2257 | securite | Logs IA non transmis à des services tiers. · vague 23 #057
+- IMP-2258 | securite | Mode standalone PWA pour limiter contexte navigateur. · vague 23 #058
+- IMP-2259 | securite | Isolation des calculs IA dans un worker local. · vague 23 #059
+- IMP-2260 | securite | Suppression de cache obsolète à l’activation SW. · vague 23 #060
+- IMP-2261 | data | Jeu de données exemple intégré pour tests rapides. · vague 23 #061
+- IMP-2262 | data | Jeux de données WMS initiaux prêts à charger. · vague 23 #062
+- IMP-2263 | data | Stockage des règles personnalisées. · vague 23 #063
+- IMP-2264 | data | Stockage des décisions IA. · vague 23 #064
+- IMP-2265 | data | Stockage des statistiques de feedback. · vague 23 #065
+- IMP-2266 | data | Stockage des commandes vocales. · vague 23 #066
+- IMP-2267 | data | Stockage des imports par source fichier. · vague 23 #067
+- IMP-2268 | data | Export complet multi-store en JSON. · vague 23 #068
+- IMP-2269 | data | Import complet multi-store en JSON. · vague 23 #069
+- IMP-2270 | data | Versionnement fonctionnel du modèle exporté. · vague 23 #070
+- IMP-2271 | ia | Analyse de prompt normalisée pour cohérence. · vague 23 #071
+- IMP-2272 | ia | Moteur d’anomalies local pour contrôles rapides. · vague 23 #072
+- IMP-2273 | ia | Moteur vectoriel local pour rapprochements. · vague 23 #073
+- IMP-2274 | ia | Moteur de prédiction léger sans serveur. · vague 23 #074
+- IMP-2275 | ia | Réseau de neurones simplifié embarqué. · vague 23 #075
+- IMP-2276 | ia | Simulation locale de scénarios. · vague 23 #076
+- IMP-2277 | ia | Optimisation locale de flux. · vague 23 #077
+- IMP-2278 | ia | Apprentissage continu piloté utilisateur. · vague 23 #078
+- IMP-2279 | ia | Réentraînement ponctuel à la demande. · vague 23 #079
+- IMP-2280 | ia | Suivi du score décisionnel dans l’interface. · vague 23 #080
+- IMP-2281 | github | Structure projet simple compatible dépôt GitHub. · vague 23 #081
+- IMP-2282 | github | Fichiers statiques versionnables sans build. · vague 23 #082
+- IMP-2283 | github | Manifest PWA versionnable dans le dépôt. · vague 23 #083
+- IMP-2284 | github | Service worker versionnable dans le dépôt. · vague 23 #084
+- IMP-2285 | github | Pages HTML modulaires faciles à relire en PR. · vague 23 #085
+- IMP-2286 | github | Modules JS séparés pour revue de code ciblée. · vague 23 #086
+- IMP-2287 | github | Aucun secret injecté dans le code source. · vague 23 #087
+- IMP-2288 | github | Sauvegarde/restore portable via fichiers JSON. · vague 23 #088
+- IMP-2289 | github | Approche offline-first documentée dans l’interface. · vague 23 #089
+- IMP-2290 | github | Compatibilité hébergement statique GitHub Pages. · vague 23 #090
+- IMP-2291 | ops | Bouton unique pour appliquer 1000 améliorations. · vague 23 #091
+- IMP-2292 | ops | Audit instantané pour vérifier état des améliorations. · vague 23 #092
+- IMP-2293 | ops | Journal d’audit lisible depuis la page paramètres. · vague 23 #093
+- IMP-2294 | ops | Compteur de conformité (% améliorations actives). · vague 23 #094
+- IMP-2295 | ops | Horodatage du dernier audit. · vague 23 #095
+- IMP-2296 | ops | Horodatage de la dernière application globale. · vague 23 #096
+- IMP-2297 | ops | Mode strict iPhone/offline activable en un clic. · vague 23 #097
+- IMP-2298 | ops | Synthèse multi-catégories des améliorations. · vague 23 #098
+- IMP-2299 | ops | Persistance de la conformité en base locale. · vague 23 #099
+- IMP-2300 | ops | Aucune dépendance ajoutée pour l’audit et l’application. · vague 23 #100
+- IMP-2301 | offline | Mode cache agressif pour toutes les pages locales. · vague 24 #001
+- IMP-2302 | offline | Fallback automatique sur la page principale hors connexion. · vague 24 #002
+- IMP-2303 | offline | Préchargement des pages critiques au démarrage. · vague 24 #003
+- IMP-2304 | offline | Conservation locale du dernier prompt utilisateur. · vague 24 #004
+- IMP-2305 | offline | Conservation locale de la dernière réponse IA. · vague 24 #005
+- IMP-2306 | offline | Protection contre les pertes de données pendant import. · vague 24 #006
+- IMP-2307 | offline | Cache des modules JavaScript principaux. · vague 24 #007
+- IMP-2308 | offline | Cache des feuilles de style et manifest. · vague 24 #008
+- IMP-2309 | offline | Réouverture de la dernière page après relance. · vague 24 #009
+- IMP-2310 | offline | Historique local compacté pour limiter la mémoire. · vague 24 #010
+- IMP-2311 | iphone | Respect des safe-area iPhone (top et bottom). · vague 24 #011
+- IMP-2312 | iphone | Taille tactile minimale des boutons (44px+). · vague 24 #012
+- IMP-2313 | iphone | Lisibilité renforcée en mode sombre natif iOS. · vague 24 #013
+- IMP-2314 | iphone | Lisibilité renforcée en mode clair natif iOS. · vague 24 #014
+- IMP-2315 | iphone | Navigation basse optimisée pour usage à une main. · vague 24 #015
+- IMP-2316 | iphone | Texte principal limité à la largeur mobile confortable. · vague 24 #016
+- IMP-2317 | iphone | Réduction automatique des débordements horizontaux. · vague 24 #017
+- IMP-2318 | iphone | Typographie système Apple prioritaire. · vague 24 #018
+- IMP-2319 | iphone | PWA installable sur écran d’accueil iPhone. · vague 24 #019
+- IMP-2320 | iphone | Évitement du zoom forcé sur les champs de saisie. · vague 24 #020
+- IMP-2321 | ux | Messages d’état IA synchronisés entre pages. · vague 24 #021
+- IMP-2322 | ux | Actions principales regroupées par section logique. · vague 24 #022
+- IMP-2323 | ux | Labels explicites pour toutes les zones de saisie. · vague 24 #023
+- IMP-2324 | ux | Annulation de prompt disponible en un geste. · vague 24 #024
+- IMP-2325 | ux | Indication claire du score de décision IA. · vague 24 #025
+- IMP-2326 | ux | Feedback positif/négatif accessible depuis la page principale. · vague 24 #026
+- IMP-2327 | ux | Pré-remplissage des prompts sauvegardés. · vague 24 #027
+- IMP-2328 | ux | Historique d’apprentissage consultable en local. · vague 24 #028
+- IMP-2329 | ux | Visualisation des sources de formation. · vague 24 #029
+- IMP-2330 | ux | Affichage compact des logs pour petits écrans. · vague 24 #030
+- IMP-2331 | performance | Chargement paresseux des pages via routeur. · vague 24 #031
+- IMP-2332 | performance | Mise en cache mémoire des templates HTML. · vague 24 #032
+- IMP-2333 | performance | Réduction des écritures redondantes en stockage local. · vague 24 #033
+- IMP-2334 | performance | Batch d’accès aux stores lors des métriques. · vague 24 #034
+- IMP-2335 | performance | Réentraînement incrémental léger et rapide. · vague 24 #035
+- IMP-2336 | performance | Matrice d’entraînement simplifiée sans dépendances. · vague 24 #036
+- IMP-2337 | performance | Worker dédié pour calcul IA non bloquant UI. · vague 24 #037
+- IMP-2338 | performance | Limitation des historiques affichés (12 derniers). · vague 24 #038
+- IMP-2339 | performance | Structures de données compactes pour datasets. · vague 24 #039
+- IMP-2340 | performance | Préservation batterie en formation continue modulée. · vague 24 #040
+- IMP-2341 | fiabilite | Validation basique des imports JSON. · vague 24 #041
+- IMP-2342 | fiabilite | Validation basique des imports CSV. · vague 24 #042
+- IMP-2343 | fiabilite | Validation basique des imports XLSX (texte converti). · vague 24 #043
+- IMP-2344 | fiabilite | Validation basique des imports PDF (contenu brut). · vague 24 #044
+- IMP-2345 | fiabilite | Séparation lignes/colonnes pour contrôle qualité. · vague 24 #045
+- IMP-2346 | fiabilite | Enregistrement des erreurs de parsing en local. · vague 24 #046
+- IMP-2347 | fiabilite | Fallback IA en cas de prompt vide. · vague 24 #047
+- IMP-2348 | fiabilite | Protection contre retour worker invalide. · vague 24 #048
+- IMP-2349 | fiabilite | Réinitialisation complète de l’apprentissage. · vague 24 #049
+- IMP-2350 | fiabilite | Restauration de backup JSON sans cloud. · vague 24 #050
+- IMP-2351 | securite | Aucune dépendance externe chargée à runtime. · vague 24 #051
+- IMP-2352 | securite | Aucune clé API nécessaire. · vague 24 #052
+- IMP-2353 | securite | Aucune exfiltration réseau volontaire de données métier. · vague 24 #053
+- IMP-2354 | securite | Toutes les données sensibles en local (IndexedDB). · vague 24 #054
+- IMP-2355 | securite | Export explicite déclenché manuellement. · vague 24 #055
+- IMP-2356 | securite | Import explicite déclenché manuellement. · vague 24 #056
+- IMP-2357 | securite | Logs IA non transmis à des services tiers. · vague 24 #057
+- IMP-2358 | securite | Mode standalone PWA pour limiter contexte navigateur. · vague 24 #058
+- IMP-2359 | securite | Isolation des calculs IA dans un worker local. · vague 24 #059
+- IMP-2360 | securite | Suppression de cache obsolète à l’activation SW. · vague 24 #060
+- IMP-2361 | data | Jeu de données exemple intégré pour tests rapides. · vague 24 #061
+- IMP-2362 | data | Jeux de données WMS initiaux prêts à charger. · vague 24 #062
+- IMP-2363 | data | Stockage des règles personnalisées. · vague 24 #063
+- IMP-2364 | data | Stockage des décisions IA. · vague 24 #064
+- IMP-2365 | data | Stockage des statistiques de feedback. · vague 24 #065
+- IMP-2366 | data | Stockage des commandes vocales. · vague 24 #066
+- IMP-2367 | data | Stockage des imports par source fichier. · vague 24 #067
+- IMP-2368 | data | Export complet multi-store en JSON. · vague 24 #068
+- IMP-2369 | data | Import complet multi-store en JSON. · vague 24 #069
+- IMP-2370 | data | Versionnement fonctionnel du modèle exporté. · vague 24 #070
+- IMP-2371 | ia | Analyse de prompt normalisée pour cohérence. · vague 24 #071
+- IMP-2372 | ia | Moteur d’anomalies local pour contrôles rapides. · vague 24 #072
+- IMP-2373 | ia | Moteur vectoriel local pour rapprochements. · vague 24 #073
+- IMP-2374 | ia | Moteur de prédiction léger sans serveur. · vague 24 #074
+- IMP-2375 | ia | Réseau de neurones simplifié embarqué. · vague 24 #075
+- IMP-2376 | ia | Simulation locale de scénarios. · vague 24 #076
+- IMP-2377 | ia | Optimisation locale de flux. · vague 24 #077
+- IMP-2378 | ia | Apprentissage continu piloté utilisateur. · vague 24 #078
+- IMP-2379 | ia | Réentraînement ponctuel à la demande. · vague 24 #079
+- IMP-2380 | ia | Suivi du score décisionnel dans l’interface. · vague 24 #080
+- IMP-2381 | github | Structure projet simple compatible dépôt GitHub. · vague 24 #081
+- IMP-2382 | github | Fichiers statiques versionnables sans build. · vague 24 #082
+- IMP-2383 | github | Manifest PWA versionnable dans le dépôt. · vague 24 #083
+- IMP-2384 | github | Service worker versionnable dans le dépôt. · vague 24 #084
+- IMP-2385 | github | Pages HTML modulaires faciles à relire en PR. · vague 24 #085
+- IMP-2386 | github | Modules JS séparés pour revue de code ciblée. · vague 24 #086
+- IMP-2387 | github | Aucun secret injecté dans le code source. · vague 24 #087
+- IMP-2388 | github | Sauvegarde/restore portable via fichiers JSON. · vague 24 #088
+- IMP-2389 | github | Approche offline-first documentée dans l’interface. · vague 24 #089
+- IMP-2390 | github | Compatibilité hébergement statique GitHub Pages. · vague 24 #090
+- IMP-2391 | ops | Bouton unique pour appliquer 1000 améliorations. · vague 24 #091
+- IMP-2392 | ops | Audit instantané pour vérifier état des améliorations. · vague 24 #092
+- IMP-2393 | ops | Journal d’audit lisible depuis la page paramètres. · vague 24 #093
+- IMP-2394 | ops | Compteur de conformité (% améliorations actives). · vague 24 #094
+- IMP-2395 | ops | Horodatage du dernier audit. · vague 24 #095
+- IMP-2396 | ops | Horodatage de la dernière application globale. · vague 24 #096
+- IMP-2397 | ops | Mode strict iPhone/offline activable en un clic. · vague 24 #097
+- IMP-2398 | ops | Synthèse multi-catégories des améliorations. · vague 24 #098
+- IMP-2399 | ops | Persistance de la conformité en base locale. · vague 24 #099
+- IMP-2400 | ops | Aucune dépendance ajoutée pour l’audit et l’application. · vague 24 #100
+- IMP-2401 | offline | Mode cache agressif pour toutes les pages locales. · vague 25 #001
+- IMP-2402 | offline | Fallback automatique sur la page principale hors connexion. · vague 25 #002
+- IMP-2403 | offline | Préchargement des pages critiques au démarrage. · vague 25 #003
+- IMP-2404 | offline | Conservation locale du dernier prompt utilisateur. · vague 25 #004
+- IMP-2405 | offline | Conservation locale de la dernière réponse IA. · vague 25 #005
+- IMP-2406 | offline | Protection contre les pertes de données pendant import. · vague 25 #006
+- IMP-2407 | offline | Cache des modules JavaScript principaux. · vague 25 #007
+- IMP-2408 | offline | Cache des feuilles de style et manifest. · vague 25 #008
+- IMP-2409 | offline | Réouverture de la dernière page après relance. · vague 25 #009
+- IMP-2410 | offline | Historique local compacté pour limiter la mémoire. · vague 25 #010
+- IMP-2411 | iphone | Respect des safe-area iPhone (top et bottom). · vague 25 #011
+- IMP-2412 | iphone | Taille tactile minimale des boutons (44px+). · vague 25 #012
+- IMP-2413 | iphone | Lisibilité renforcée en mode sombre natif iOS. · vague 25 #013
+- IMP-2414 | iphone | Lisibilité renforcée en mode clair natif iOS. · vague 25 #014
+- IMP-2415 | iphone | Navigation basse optimisée pour usage à une main. · vague 25 #015
+- IMP-2416 | iphone | Texte principal limité à la largeur mobile confortable. · vague 25 #016
+- IMP-2417 | iphone | Réduction automatique des débordements horizontaux. · vague 25 #017
+- IMP-2418 | iphone | Typographie système Apple prioritaire. · vague 25 #018
+- IMP-2419 | iphone | PWA installable sur écran d’accueil iPhone. · vague 25 #019
+- IMP-2420 | iphone | Évitement du zoom forcé sur les champs de saisie. · vague 25 #020
+- IMP-2421 | ux | Messages d’état IA synchronisés entre pages. · vague 25 #021
+- IMP-2422 | ux | Actions principales regroupées par section logique. · vague 25 #022
+- IMP-2423 | ux | Labels explicites pour toutes les zones de saisie. · vague 25 #023
+- IMP-2424 | ux | Annulation de prompt disponible en un geste. · vague 25 #024
+- IMP-2425 | ux | Indication claire du score de décision IA. · vague 25 #025
+- IMP-2426 | ux | Feedback positif/négatif accessible depuis la page principale. · vague 25 #026
+- IMP-2427 | ux | Pré-remplissage des prompts sauvegardés. · vague 25 #027
+- IMP-2428 | ux | Historique d’apprentissage consultable en local. · vague 25 #028
+- IMP-2429 | ux | Visualisation des sources de formation. · vague 25 #029
+- IMP-2430 | ux | Affichage compact des logs pour petits écrans. · vague 25 #030
+- IMP-2431 | performance | Chargement paresseux des pages via routeur. · vague 25 #031
+- IMP-2432 | performance | Mise en cache mémoire des templates HTML. · vague 25 #032
+- IMP-2433 | performance | Réduction des écritures redondantes en stockage local. · vague 25 #033
+- IMP-2434 | performance | Batch d’accès aux stores lors des métriques. · vague 25 #034
+- IMP-2435 | performance | Réentraînement incrémental léger et rapide. · vague 25 #035
+- IMP-2436 | performance | Matrice d’entraînement simplifiée sans dépendances. · vague 25 #036
+- IMP-2437 | performance | Worker dédié pour calcul IA non bloquant UI. · vague 25 #037
+- IMP-2438 | performance | Limitation des historiques affichés (12 derniers). · vague 25 #038
+- IMP-2439 | performance | Structures de données compactes pour datasets. · vague 25 #039
+- IMP-2440 | performance | Préservation batterie en formation continue modulée. · vague 25 #040
+- IMP-2441 | fiabilite | Validation basique des imports JSON. · vague 25 #041
+- IMP-2442 | fiabilite | Validation basique des imports CSV. · vague 25 #042
+- IMP-2443 | fiabilite | Validation basique des imports XLSX (texte converti). · vague 25 #043
+- IMP-2444 | fiabilite | Validation basique des imports PDF (contenu brut). · vague 25 #044
+- IMP-2445 | fiabilite | Séparation lignes/colonnes pour contrôle qualité. · vague 25 #045
+- IMP-2446 | fiabilite | Enregistrement des erreurs de parsing en local. · vague 25 #046
+- IMP-2447 | fiabilite | Fallback IA en cas de prompt vide. · vague 25 #047
+- IMP-2448 | fiabilite | Protection contre retour worker invalide. · vague 25 #048
+- IMP-2449 | fiabilite | Réinitialisation complète de l’apprentissage. · vague 25 #049
+- IMP-2450 | fiabilite | Restauration de backup JSON sans cloud. · vague 25 #050
+- IMP-2451 | securite | Aucune dépendance externe chargée à runtime. · vague 25 #051
+- IMP-2452 | securite | Aucune clé API nécessaire. · vague 25 #052
+- IMP-2453 | securite | Aucune exfiltration réseau volontaire de données métier. · vague 25 #053
+- IMP-2454 | securite | Toutes les données sensibles en local (IndexedDB). · vague 25 #054
+- IMP-2455 | securite | Export explicite déclenché manuellement. · vague 25 #055
+- IMP-2456 | securite | Import explicite déclenché manuellement. · vague 25 #056
+- IMP-2457 | securite | Logs IA non transmis à des services tiers. · vague 25 #057
+- IMP-2458 | securite | Mode standalone PWA pour limiter contexte navigateur. · vague 25 #058
+- IMP-2459 | securite | Isolation des calculs IA dans un worker local. · vague 25 #059
+- IMP-2460 | securite | Suppression de cache obsolète à l’activation SW. · vague 25 #060
+- IMP-2461 | data | Jeu de données exemple intégré pour tests rapides. · vague 25 #061
+- IMP-2462 | data | Jeux de données WMS initiaux prêts à charger. · vague 25 #062
+- IMP-2463 | data | Stockage des règles personnalisées. · vague 25 #063
+- IMP-2464 | data | Stockage des décisions IA. · vague 25 #064
+- IMP-2465 | data | Stockage des statistiques de feedback. · vague 25 #065
+- IMP-2466 | data | Stockage des commandes vocales. · vague 25 #066
+- IMP-2467 | data | Stockage des imports par source fichier. · vague 25 #067
+- IMP-2468 | data | Export complet multi-store en JSON. · vague 25 #068
+- IMP-2469 | data | Import complet multi-store en JSON. · vague 25 #069
+- IMP-2470 | data | Versionnement fonctionnel du modèle exporté. · vague 25 #070
+- IMP-2471 | ia | Analyse de prompt normalisée pour cohérence. · vague 25 #071
+- IMP-2472 | ia | Moteur d’anomalies local pour contrôles rapides. · vague 25 #072
+- IMP-2473 | ia | Moteur vectoriel local pour rapprochements. · vague 25 #073
+- IMP-2474 | ia | Moteur de prédiction léger sans serveur. · vague 25 #074
+- IMP-2475 | ia | Réseau de neurones simplifié embarqué. · vague 25 #075
+- IMP-2476 | ia | Simulation locale de scénarios. · vague 25 #076
+- IMP-2477 | ia | Optimisation locale de flux. · vague 25 #077
+- IMP-2478 | ia | Apprentissage continu piloté utilisateur. · vague 25 #078
+- IMP-2479 | ia | Réentraînement ponctuel à la demande. · vague 25 #079
+- IMP-2480 | ia | Suivi du score décisionnel dans l’interface. · vague 25 #080
+- IMP-2481 | github | Structure projet simple compatible dépôt GitHub. · vague 25 #081
+- IMP-2482 | github | Fichiers statiques versionnables sans build. · vague 25 #082
+- IMP-2483 | github | Manifest PWA versionnable dans le dépôt. · vague 25 #083
+- IMP-2484 | github | Service worker versionnable dans le dépôt. · vague 25 #084
+- IMP-2485 | github | Pages HTML modulaires faciles à relire en PR. · vague 25 #085
+- IMP-2486 | github | Modules JS séparés pour revue de code ciblée. · vague 25 #086
+- IMP-2487 | github | Aucun secret injecté dans le code source. · vague 25 #087
+- IMP-2488 | github | Sauvegarde/restore portable via fichiers JSON. · vague 25 #088
+- IMP-2489 | github | Approche offline-first documentée dans l’interface. · vague 25 #089
+- IMP-2490 | github | Compatibilité hébergement statique GitHub Pages. · vague 25 #090
+- IMP-2491 | ops | Bouton unique pour appliquer 1000 améliorations. · vague 25 #091
+- IMP-2492 | ops | Audit instantané pour vérifier état des améliorations. · vague 25 #092
+- IMP-2493 | ops | Journal d’audit lisible depuis la page paramètres. · vague 25 #093
+- IMP-2494 | ops | Compteur de conformité (% améliorations actives). · vague 25 #094
+- IMP-2495 | ops | Horodatage du dernier audit. · vague 25 #095
+- IMP-2496 | ops | Horodatage de la dernière application globale. · vague 25 #096
+- IMP-2497 | ops | Mode strict iPhone/offline activable en un clic. · vague 25 #097
+- IMP-2498 | ops | Synthèse multi-catégories des améliorations. · vague 25 #098
+- IMP-2499 | ops | Persistance de la conformité en base locale. · vague 25 #099
+- IMP-2500 | ops | Aucune dépendance ajoutée pour l’audit et l’application. · vague 25 #100
+- IMP-2501 | offline | Mode cache agressif pour toutes les pages locales. · vague 26 #001
+- IMP-2502 | offline | Fallback automatique sur la page principale hors connexion. · vague 26 #002
+- IMP-2503 | offline | Préchargement des pages critiques au démarrage. · vague 26 #003
+- IMP-2504 | offline | Conservation locale du dernier prompt utilisateur. · vague 26 #004
+- IMP-2505 | offline | Conservation locale de la dernière réponse IA. · vague 26 #005
+- IMP-2506 | offline | Protection contre les pertes de données pendant import. · vague 26 #006
+- IMP-2507 | offline | Cache des modules JavaScript principaux. · vague 26 #007
+- IMP-2508 | offline | Cache des feuilles de style et manifest. · vague 26 #008
+- IMP-2509 | offline | Réouverture de la dernière page après relance. · vague 26 #009
+- IMP-2510 | offline | Historique local compacté pour limiter la mémoire. · vague 26 #010
+- IMP-2511 | iphone | Respect des safe-area iPhone (top et bottom). · vague 26 #011
+- IMP-2512 | iphone | Taille tactile minimale des boutons (44px+). · vague 26 #012
+- IMP-2513 | iphone | Lisibilité renforcée en mode sombre natif iOS. · vague 26 #013
+- IMP-2514 | iphone | Lisibilité renforcée en mode clair natif iOS. · vague 26 #014
+- IMP-2515 | iphone | Navigation basse optimisée pour usage à une main. · vague 26 #015
+- IMP-2516 | iphone | Texte principal limité à la largeur mobile confortable. · vague 26 #016
+- IMP-2517 | iphone | Réduction automatique des débordements horizontaux. · vague 26 #017
+- IMP-2518 | iphone | Typographie système Apple prioritaire. · vague 26 #018
+- IMP-2519 | iphone | PWA installable sur écran d’accueil iPhone. · vague 26 #019
+- IMP-2520 | iphone | Évitement du zoom forcé sur les champs de saisie. · vague 26 #020
+- IMP-2521 | ux | Messages d’état IA synchronisés entre pages. · vague 26 #021
+- IMP-2522 | ux | Actions principales regroupées par section logique. · vague 26 #022
+- IMP-2523 | ux | Labels explicites pour toutes les zones de saisie. · vague 26 #023
+- IMP-2524 | ux | Annulation de prompt disponible en un geste. · vague 26 #024
+- IMP-2525 | ux | Indication claire du score de décision IA. · vague 26 #025
+- IMP-2526 | ux | Feedback positif/négatif accessible depuis la page principale. · vague 26 #026
+- IMP-2527 | ux | Pré-remplissage des prompts sauvegardés. · vague 26 #027
+- IMP-2528 | ux | Historique d’apprentissage consultable en local. · vague 26 #028
+- IMP-2529 | ux | Visualisation des sources de formation. · vague 26 #029
+- IMP-2530 | ux | Affichage compact des logs pour petits écrans. · vague 26 #030
+- IMP-2531 | performance | Chargement paresseux des pages via routeur. · vague 26 #031
+- IMP-2532 | performance | Mise en cache mémoire des templates HTML. · vague 26 #032
+- IMP-2533 | performance | Réduction des écritures redondantes en stockage local. · vague 26 #033
+- IMP-2534 | performance | Batch d’accès aux stores lors des métriques. · vague 26 #034
+- IMP-2535 | performance | Réentraînement incrémental léger et rapide. · vague 26 #035
+- IMP-2536 | performance | Matrice d’entraînement simplifiée sans dépendances. · vague 26 #036
+- IMP-2537 | performance | Worker dédié pour calcul IA non bloquant UI. · vague 26 #037
+- IMP-2538 | performance | Limitation des historiques affichés (12 derniers). · vague 26 #038
+- IMP-2539 | performance | Structures de données compactes pour datasets. · vague 26 #039
+- IMP-2540 | performance | Préservation batterie en formation continue modulée. · vague 26 #040
+- IMP-2541 | fiabilite | Validation basique des imports JSON. · vague 26 #041
+- IMP-2542 | fiabilite | Validation basique des imports CSV. · vague 26 #042
+- IMP-2543 | fiabilite | Validation basique des imports XLSX (texte converti). · vague 26 #043
+- IMP-2544 | fiabilite | Validation basique des imports PDF (contenu brut). · vague 26 #044
+- IMP-2545 | fiabilite | Séparation lignes/colonnes pour contrôle qualité. · vague 26 #045
+- IMP-2546 | fiabilite | Enregistrement des erreurs de parsing en local. · vague 26 #046
+- IMP-2547 | fiabilite | Fallback IA en cas de prompt vide. · vague 26 #047
+- IMP-2548 | fiabilite | Protection contre retour worker invalide. · vague 26 #048
+- IMP-2549 | fiabilite | Réinitialisation complète de l’apprentissage. · vague 26 #049
+- IMP-2550 | fiabilite | Restauration de backup JSON sans cloud. · vague 26 #050
+- IMP-2551 | securite | Aucune dépendance externe chargée à runtime. · vague 26 #051
+- IMP-2552 | securite | Aucune clé API nécessaire. · vague 26 #052
+- IMP-2553 | securite | Aucune exfiltration réseau volontaire de données métier. · vague 26 #053
+- IMP-2554 | securite | Toutes les données sensibles en local (IndexedDB). · vague 26 #054
+- IMP-2555 | securite | Export explicite déclenché manuellement. · vague 26 #055
+- IMP-2556 | securite | Import explicite déclenché manuellement. · vague 26 #056
+- IMP-2557 | securite | Logs IA non transmis à des services tiers. · vague 26 #057
+- IMP-2558 | securite | Mode standalone PWA pour limiter contexte navigateur. · vague 26 #058
+- IMP-2559 | securite | Isolation des calculs IA dans un worker local. · vague 26 #059
+- IMP-2560 | securite | Suppression de cache obsolète à l’activation SW. · vague 26 #060
+- IMP-2561 | data | Jeu de données exemple intégré pour tests rapides. · vague 26 #061
+- IMP-2562 | data | Jeux de données WMS initiaux prêts à charger. · vague 26 #062
+- IMP-2563 | data | Stockage des règles personnalisées. · vague 26 #063
+- IMP-2564 | data | Stockage des décisions IA. · vague 26 #064
+- IMP-2565 | data | Stockage des statistiques de feedback. · vague 26 #065
+- IMP-2566 | data | Stockage des commandes vocales. · vague 26 #066
+- IMP-2567 | data | Stockage des imports par source fichier. · vague 26 #067
+- IMP-2568 | data | Export complet multi-store en JSON. · vague 26 #068
+- IMP-2569 | data | Import complet multi-store en JSON. · vague 26 #069
+- IMP-2570 | data | Versionnement fonctionnel du modèle exporté. · vague 26 #070
+- IMP-2571 | ia | Analyse de prompt normalisée pour cohérence. · vague 26 #071
+- IMP-2572 | ia | Moteur d’anomalies local pour contrôles rapides. · vague 26 #072
+- IMP-2573 | ia | Moteur vectoriel local pour rapprochements. · vague 26 #073
+- IMP-2574 | ia | Moteur de prédiction léger sans serveur. · vague 26 #074
+- IMP-2575 | ia | Réseau de neurones simplifié embarqué. · vague 26 #075
+- IMP-2576 | ia | Simulation locale de scénarios. · vague 26 #076
+- IMP-2577 | ia | Optimisation locale de flux. · vague 26 #077
+- IMP-2578 | ia | Apprentissage continu piloté utilisateur. · vague 26 #078
+- IMP-2579 | ia | Réentraînement ponctuel à la demande. · vague 26 #079
+- IMP-2580 | ia | Suivi du score décisionnel dans l’interface. · vague 26 #080
+- IMP-2581 | github | Structure projet simple compatible dépôt GitHub. · vague 26 #081
+- IMP-2582 | github | Fichiers statiques versionnables sans build. · vague 26 #082
+- IMP-2583 | github | Manifest PWA versionnable dans le dépôt. · vague 26 #083
+- IMP-2584 | github | Service worker versionnable dans le dépôt. · vague 26 #084
+- IMP-2585 | github | Pages HTML modulaires faciles à relire en PR. · vague 26 #085
+- IMP-2586 | github | Modules JS séparés pour revue de code ciblée. · vague 26 #086
+- IMP-2587 | github | Aucun secret injecté dans le code source. · vague 26 #087
+- IMP-2588 | github | Sauvegarde/restore portable via fichiers JSON. · vague 26 #088
+- IMP-2589 | github | Approche offline-first documentée dans l’interface. · vague 26 #089
+- IMP-2590 | github | Compatibilité hébergement statique GitHub Pages. · vague 26 #090
+- IMP-2591 | ops | Bouton unique pour appliquer 1000 améliorations. · vague 26 #091
+- IMP-2592 | ops | Audit instantané pour vérifier état des améliorations. · vague 26 #092
+- IMP-2593 | ops | Journal d’audit lisible depuis la page paramètres. · vague 26 #093
+- IMP-2594 | ops | Compteur de conformité (% améliorations actives). · vague 26 #094
+- IMP-2595 | ops | Horodatage du dernier audit. · vague 26 #095
+- IMP-2596 | ops | Horodatage de la dernière application globale. · vague 26 #096
+- IMP-2597 | ops | Mode strict iPhone/offline activable en un clic. · vague 26 #097
+- IMP-2598 | ops | Synthèse multi-catégories des améliorations. · vague 26 #098
+- IMP-2599 | ops | Persistance de la conformité en base locale. · vague 26 #099
+- IMP-2600 | ops | Aucune dépendance ajoutée pour l’audit et l’application. · vague 26 #100
+- IMP-2601 | offline | Mode cache agressif pour toutes les pages locales. · vague 27 #001
+- IMP-2602 | offline | Fallback automatique sur la page principale hors connexion. · vague 27 #002
+- IMP-2603 | offline | Préchargement des pages critiques au démarrage. · vague 27 #003
+- IMP-2604 | offline | Conservation locale du dernier prompt utilisateur. · vague 27 #004
+- IMP-2605 | offline | Conservation locale de la dernière réponse IA. · vague 27 #005
+- IMP-2606 | offline | Protection contre les pertes de données pendant import. · vague 27 #006
+- IMP-2607 | offline | Cache des modules JavaScript principaux. · vague 27 #007
+- IMP-2608 | offline | Cache des feuilles de style et manifest. · vague 27 #008
+- IMP-2609 | offline | Réouverture de la dernière page après relance. · vague 27 #009
+- IMP-2610 | offline | Historique local compacté pour limiter la mémoire. · vague 27 #010
+- IMP-2611 | iphone | Respect des safe-area iPhone (top et bottom). · vague 27 #011
+- IMP-2612 | iphone | Taille tactile minimale des boutons (44px+). · vague 27 #012
+- IMP-2613 | iphone | Lisibilité renforcée en mode sombre natif iOS. · vague 27 #013
+- IMP-2614 | iphone | Lisibilité renforcée en mode clair natif iOS. · vague 27 #014
+- IMP-2615 | iphone | Navigation basse optimisée pour usage à une main. · vague 27 #015
+- IMP-2616 | iphone | Texte principal limité à la largeur mobile confortable. · vague 27 #016
+- IMP-2617 | iphone | Réduction automatique des débordements horizontaux. · vague 27 #017
+- IMP-2618 | iphone | Typographie système Apple prioritaire. · vague 27 #018
+- IMP-2619 | iphone | PWA installable sur écran d’accueil iPhone. · vague 27 #019
+- IMP-2620 | iphone | Évitement du zoom forcé sur les champs de saisie. · vague 27 #020
+- IMP-2621 | ux | Messages d’état IA synchronisés entre pages. · vague 27 #021
+- IMP-2622 | ux | Actions principales regroupées par section logique. · vague 27 #022
+- IMP-2623 | ux | Labels explicites pour toutes les zones de saisie. · vague 27 #023
+- IMP-2624 | ux | Annulation de prompt disponible en un geste. · vague 27 #024
+- IMP-2625 | ux | Indication claire du score de décision IA. · vague 27 #025
+- IMP-2626 | ux | Feedback positif/négatif accessible depuis la page principale. · vague 27 #026
+- IMP-2627 | ux | Pré-remplissage des prompts sauvegardés. · vague 27 #027
+- IMP-2628 | ux | Historique d’apprentissage consultable en local. · vague 27 #028
+- IMP-2629 | ux | Visualisation des sources de formation. · vague 27 #029
+- IMP-2630 | ux | Affichage compact des logs pour petits écrans. · vague 27 #030
+- IMP-2631 | performance | Chargement paresseux des pages via routeur. · vague 27 #031
+- IMP-2632 | performance | Mise en cache mémoire des templates HTML. · vague 27 #032
+- IMP-2633 | performance | Réduction des écritures redondantes en stockage local. · vague 27 #033
+- IMP-2634 | performance | Batch d’accès aux stores lors des métriques. · vague 27 #034
+- IMP-2635 | performance | Réentraînement incrémental léger et rapide. · vague 27 #035
+- IMP-2636 | performance | Matrice d’entraînement simplifiée sans dépendances. · vague 27 #036
+- IMP-2637 | performance | Worker dédié pour calcul IA non bloquant UI. · vague 27 #037
+- IMP-2638 | performance | Limitation des historiques affichés (12 derniers). · vague 27 #038
+- IMP-2639 | performance | Structures de données compactes pour datasets. · vague 27 #039
+- IMP-2640 | performance | Préservation batterie en formation continue modulée. · vague 27 #040
+- IMP-2641 | fiabilite | Validation basique des imports JSON. · vague 27 #041
+- IMP-2642 | fiabilite | Validation basique des imports CSV. · vague 27 #042
+- IMP-2643 | fiabilite | Validation basique des imports XLSX (texte converti). · vague 27 #043
+- IMP-2644 | fiabilite | Validation basique des imports PDF (contenu brut). · vague 27 #044
+- IMP-2645 | fiabilite | Séparation lignes/colonnes pour contrôle qualité. · vague 27 #045
+- IMP-2646 | fiabilite | Enregistrement des erreurs de parsing en local. · vague 27 #046
+- IMP-2647 | fiabilite | Fallback IA en cas de prompt vide. · vague 27 #047
+- IMP-2648 | fiabilite | Protection contre retour worker invalide. · vague 27 #048
+- IMP-2649 | fiabilite | Réinitialisation complète de l’apprentissage. · vague 27 #049
+- IMP-2650 | fiabilite | Restauration de backup JSON sans cloud. · vague 27 #050
+- IMP-2651 | securite | Aucune dépendance externe chargée à runtime. · vague 27 #051
+- IMP-2652 | securite | Aucune clé API nécessaire. · vague 27 #052
+- IMP-2653 | securite | Aucune exfiltration réseau volontaire de données métier. · vague 27 #053
+- IMP-2654 | securite | Toutes les données sensibles en local (IndexedDB). · vague 27 #054
+- IMP-2655 | securite | Export explicite déclenché manuellement. · vague 27 #055
+- IMP-2656 | securite | Import explicite déclenché manuellement. · vague 27 #056
+- IMP-2657 | securite | Logs IA non transmis à des services tiers. · vague 27 #057
+- IMP-2658 | securite | Mode standalone PWA pour limiter contexte navigateur. · vague 27 #058
+- IMP-2659 | securite | Isolation des calculs IA dans un worker local. · vague 27 #059
+- IMP-2660 | securite | Suppression de cache obsolète à l’activation SW. · vague 27 #060
+- IMP-2661 | data | Jeu de données exemple intégré pour tests rapides. · vague 27 #061
+- IMP-2662 | data | Jeux de données WMS initiaux prêts à charger. · vague 27 #062
+- IMP-2663 | data | Stockage des règles personnalisées. · vague 27 #063
+- IMP-2664 | data | Stockage des décisions IA. · vague 27 #064
+- IMP-2665 | data | Stockage des statistiques de feedback. · vague 27 #065
+- IMP-2666 | data | Stockage des commandes vocales. · vague 27 #066
+- IMP-2667 | data | Stockage des imports par source fichier. · vague 27 #067
+- IMP-2668 | data | Export complet multi-store en JSON. · vague 27 #068
+- IMP-2669 | data | Import complet multi-store en JSON. · vague 27 #069
+- IMP-2670 | data | Versionnement fonctionnel du modèle exporté. · vague 27 #070
+- IMP-2671 | ia | Analyse de prompt normalisée pour cohérence. · vague 27 #071
+- IMP-2672 | ia | Moteur d’anomalies local pour contrôles rapides. · vague 27 #072
+- IMP-2673 | ia | Moteur vectoriel local pour rapprochements. · vague 27 #073
+- IMP-2674 | ia | Moteur de prédiction léger sans serveur. · vague 27 #074
+- IMP-2675 | ia | Réseau de neurones simplifié embarqué. · vague 27 #075
+- IMP-2676 | ia | Simulation locale de scénarios. · vague 27 #076
+- IMP-2677 | ia | Optimisation locale de flux. · vague 27 #077
+- IMP-2678 | ia | Apprentissage continu piloté utilisateur. · vague 27 #078
+- IMP-2679 | ia | Réentraînement ponctuel à la demande. · vague 27 #079
+- IMP-2680 | ia | Suivi du score décisionnel dans l’interface. · vague 27 #080
+- IMP-2681 | github | Structure projet simple compatible dépôt GitHub. · vague 27 #081
+- IMP-2682 | github | Fichiers statiques versionnables sans build. · vague 27 #082
+- IMP-2683 | github | Manifest PWA versionnable dans le dépôt. · vague 27 #083
+- IMP-2684 | github | Service worker versionnable dans le dépôt. · vague 27 #084
+- IMP-2685 | github | Pages HTML modulaires faciles à relire en PR. · vague 27 #085
+- IMP-2686 | github | Modules JS séparés pour revue de code ciblée. · vague 27 #086
+- IMP-2687 | github | Aucun secret injecté dans le code source. · vague 27 #087
+- IMP-2688 | github | Sauvegarde/restore portable via fichiers JSON. · vague 27 #088
+- IMP-2689 | github | Approche offline-first documentée dans l’interface. · vague 27 #089
+- IMP-2690 | github | Compatibilité hébergement statique GitHub Pages. · vague 27 #090
+- IMP-2691 | ops | Bouton unique pour appliquer 1000 améliorations. · vague 27 #091
+- IMP-2692 | ops | Audit instantané pour vérifier état des améliorations. · vague 27 #092
+- IMP-2693 | ops | Journal d’audit lisible depuis la page paramètres. · vague 27 #093
+- IMP-2694 | ops | Compteur de conformité (% améliorations actives). · vague 27 #094
+- IMP-2695 | ops | Horodatage du dernier audit. · vague 27 #095
+- IMP-2696 | ops | Horodatage de la dernière application globale. · vague 27 #096
+- IMP-2697 | ops | Mode strict iPhone/offline activable en un clic. · vague 27 #097
+- IMP-2698 | ops | Synthèse multi-catégories des améliorations. · vague 27 #098
+- IMP-2699 | ops | Persistance de la conformité en base locale. · vague 27 #099
+- IMP-2700 | ops | Aucune dépendance ajoutée pour l’audit et l’application. · vague 27 #100
+- IMP-2701 | offline | Mode cache agressif pour toutes les pages locales. · vague 28 #001
+- IMP-2702 | offline | Fallback automatique sur la page principale hors connexion. · vague 28 #002
+- IMP-2703 | offline | Préchargement des pages critiques au démarrage. · vague 28 #003
+- IMP-2704 | offline | Conservation locale du dernier prompt utilisateur. · vague 28 #004
+- IMP-2705 | offline | Conservation locale de la dernière réponse IA. · vague 28 #005
+- IMP-2706 | offline | Protection contre les pertes de données pendant import. · vague 28 #006
+- IMP-2707 | offline | Cache des modules JavaScript principaux. · vague 28 #007
+- IMP-2708 | offline | Cache des feuilles de style et manifest. · vague 28 #008
+- IMP-2709 | offline | Réouverture de la dernière page après relance. · vague 28 #009
+- IMP-2710 | offline | Historique local compacté pour limiter la mémoire. · vague 28 #010
+- IMP-2711 | iphone | Respect des safe-area iPhone (top et bottom). · vague 28 #011
+- IMP-2712 | iphone | Taille tactile minimale des boutons (44px+). · vague 28 #012
+- IMP-2713 | iphone | Lisibilité renforcée en mode sombre natif iOS. · vague 28 #013
+- IMP-2714 | iphone | Lisibilité renforcée en mode clair natif iOS. · vague 28 #014
+- IMP-2715 | iphone | Navigation basse optimisée pour usage à une main. · vague 28 #015
+- IMP-2716 | iphone | Texte principal limité à la largeur mobile confortable. · vague 28 #016
+- IMP-2717 | iphone | Réduction automatique des débordements horizontaux. · vague 28 #017
+- IMP-2718 | iphone | Typographie système Apple prioritaire. · vague 28 #018
+- IMP-2719 | iphone | PWA installable sur écran d’accueil iPhone. · vague 28 #019
+- IMP-2720 | iphone | Évitement du zoom forcé sur les champs de saisie. · vague 28 #020
+- IMP-2721 | ux | Messages d’état IA synchronisés entre pages. · vague 28 #021
+- IMP-2722 | ux | Actions principales regroupées par section logique. · vague 28 #022
+- IMP-2723 | ux | Labels explicites pour toutes les zones de saisie. · vague 28 #023
+- IMP-2724 | ux | Annulation de prompt disponible en un geste. · vague 28 #024
+- IMP-2725 | ux | Indication claire du score de décision IA. · vague 28 #025
+- IMP-2726 | ux | Feedback positif/négatif accessible depuis la page principale. · vague 28 #026
+- IMP-2727 | ux | Pré-remplissage des prompts sauvegardés. · vague 28 #027
+- IMP-2728 | ux | Historique d’apprentissage consultable en local. · vague 28 #028
+- IMP-2729 | ux | Visualisation des sources de formation. · vague 28 #029
+- IMP-2730 | ux | Affichage compact des logs pour petits écrans. · vague 28 #030
+- IMP-2731 | performance | Chargement paresseux des pages via routeur. · vague 28 #031
+- IMP-2732 | performance | Mise en cache mémoire des templates HTML. · vague 28 #032
+- IMP-2733 | performance | Réduction des écritures redondantes en stockage local. · vague 28 #033
+- IMP-2734 | performance | Batch d’accès aux stores lors des métriques. · vague 28 #034
+- IMP-2735 | performance | Réentraînement incrémental léger et rapide. · vague 28 #035
+- IMP-2736 | performance | Matrice d’entraînement simplifiée sans dépendances. · vague 28 #036
+- IMP-2737 | performance | Worker dédié pour calcul IA non bloquant UI. · vague 28 #037
+- IMP-2738 | performance | Limitation des historiques affichés (12 derniers). · vague 28 #038
+- IMP-2739 | performance | Structures de données compactes pour datasets. · vague 28 #039
+- IMP-2740 | performance | Préservation batterie en formation continue modulée. · vague 28 #040
+- IMP-2741 | fiabilite | Validation basique des imports JSON. · vague 28 #041
+- IMP-2742 | fiabilite | Validation basique des imports CSV. · vague 28 #042
+- IMP-2743 | fiabilite | Validation basique des imports XLSX (texte converti). · vague 28 #043
+- IMP-2744 | fiabilite | Validation basique des imports PDF (contenu brut). · vague 28 #044
+- IMP-2745 | fiabilite | Séparation lignes/colonnes pour contrôle qualité. · vague 28 #045
+- IMP-2746 | fiabilite | Enregistrement des erreurs de parsing en local. · vague 28 #046
+- IMP-2747 | fiabilite | Fallback IA en cas de prompt vide. · vague 28 #047
+- IMP-2748 | fiabilite | Protection contre retour worker invalide. · vague 28 #048
+- IMP-2749 | fiabilite | Réinitialisation complète de l’apprentissage. · vague 28 #049
+- IMP-2750 | fiabilite | Restauration de backup JSON sans cloud. · vague 28 #050
+- IMP-2751 | securite | Aucune dépendance externe chargée à runtime. · vague 28 #051
+- IMP-2752 | securite | Aucune clé API nécessaire. · vague 28 #052
+- IMP-2753 | securite | Aucune exfiltration réseau volontaire de données métier. · vague 28 #053
+- IMP-2754 | securite | Toutes les données sensibles en local (IndexedDB). · vague 28 #054
+- IMP-2755 | securite | Export explicite déclenché manuellement. · vague 28 #055
+- IMP-2756 | securite | Import explicite déclenché manuellement. · vague 28 #056
+- IMP-2757 | securite | Logs IA non transmis à des services tiers. · vague 28 #057
+- IMP-2758 | securite | Mode standalone PWA pour limiter contexte navigateur. · vague 28 #058
+- IMP-2759 | securite | Isolation des calculs IA dans un worker local. · vague 28 #059
+- IMP-2760 | securite | Suppression de cache obsolète à l’activation SW. · vague 28 #060
+- IMP-2761 | data | Jeu de données exemple intégré pour tests rapides. · vague 28 #061
+- IMP-2762 | data | Jeux de données WMS initiaux prêts à charger. · vague 28 #062
+- IMP-2763 | data | Stockage des règles personnalisées. · vague 28 #063
+- IMP-2764 | data | Stockage des décisions IA. · vague 28 #064
+- IMP-2765 | data | Stockage des statistiques de feedback. · vague 28 #065
+- IMP-2766 | data | Stockage des commandes vocales. · vague 28 #066
+- IMP-2767 | data | Stockage des imports par source fichier. · vague 28 #067
+- IMP-2768 | data | Export complet multi-store en JSON. · vague 28 #068
+- IMP-2769 | data | Import complet multi-store en JSON. · vague 28 #069
+- IMP-2770 | data | Versionnement fonctionnel du modèle exporté. · vague 28 #070
+- IMP-2771 | ia | Analyse de prompt normalisée pour cohérence. · vague 28 #071
+- IMP-2772 | ia | Moteur d’anomalies local pour contrôles rapides. · vague 28 #072
+- IMP-2773 | ia | Moteur vectoriel local pour rapprochements. · vague 28 #073
+- IMP-2774 | ia | Moteur de prédiction léger sans serveur. · vague 28 #074
+- IMP-2775 | ia | Réseau de neurones simplifié embarqué. · vague 28 #075
+- IMP-2776 | ia | Simulation locale de scénarios. · vague 28 #076
+- IMP-2777 | ia | Optimisation locale de flux. · vague 28 #077
+- IMP-2778 | ia | Apprentissage continu piloté utilisateur. · vague 28 #078
+- IMP-2779 | ia | Réentraînement ponctuel à la demande. · vague 28 #079
+- IMP-2780 | ia | Suivi du score décisionnel dans l’interface. · vague 28 #080
+- IMP-2781 | github | Structure projet simple compatible dépôt GitHub. · vague 28 #081
+- IMP-2782 | github | Fichiers statiques versionnables sans build. · vague 28 #082
+- IMP-2783 | github | Manifest PWA versionnable dans le dépôt. · vague 28 #083
+- IMP-2784 | github | Service worker versionnable dans le dépôt. · vague 28 #084
+- IMP-2785 | github | Pages HTML modulaires faciles à relire en PR. · vague 28 #085
+- IMP-2786 | github | Modules JS séparés pour revue de code ciblée. · vague 28 #086
+- IMP-2787 | github | Aucun secret injecté dans le code source. · vague 28 #087
+- IMP-2788 | github | Sauvegarde/restore portable via fichiers JSON. · vague 28 #088
+- IMP-2789 | github | Approche offline-first documentée dans l’interface. · vague 28 #089
+- IMP-2790 | github | Compatibilité hébergement statique GitHub Pages. · vague 28 #090
+- IMP-2791 | ops | Bouton unique pour appliquer 1000 améliorations. · vague 28 #091
+- IMP-2792 | ops | Audit instantané pour vérifier état des améliorations. · vague 28 #092
+- IMP-2793 | ops | Journal d’audit lisible depuis la page paramètres. · vague 28 #093
+- IMP-2794 | ops | Compteur de conformité (% améliorations actives). · vague 28 #094
+- IMP-2795 | ops | Horodatage du dernier audit. · vague 28 #095
+- IMP-2796 | ops | Horodatage de la dernière application globale. · vague 28 #096
+- IMP-2797 | ops | Mode strict iPhone/offline activable en un clic. · vague 28 #097
+- IMP-2798 | ops | Synthèse multi-catégories des améliorations. · vague 28 #098
+- IMP-2799 | ops | Persistance de la conformité en base locale. · vague 28 #099
+- IMP-2800 | ops | Aucune dépendance ajoutée pour l’audit et l’application. · vague 28 #100
+- IMP-2801 | offline | Mode cache agressif pour toutes les pages locales. · vague 29 #001
+- IMP-2802 | offline | Fallback automatique sur la page principale hors connexion. · vague 29 #002
+- IMP-2803 | offline | Préchargement des pages critiques au démarrage. · vague 29 #003
+- IMP-2804 | offline | Conservation locale du dernier prompt utilisateur. · vague 29 #004
+- IMP-2805 | offline | Conservation locale de la dernière réponse IA. · vague 29 #005
+- IMP-2806 | offline | Protection contre les pertes de données pendant import. · vague 29 #006
+- IMP-2807 | offline | Cache des modules JavaScript principaux. · vague 29 #007
+- IMP-2808 | offline | Cache des feuilles de style et manifest. · vague 29 #008
+- IMP-2809 | offline | Réouverture de la dernière page après relance. · vague 29 #009
+- IMP-2810 | offline | Historique local compacté pour limiter la mémoire. · vague 29 #010
+- IMP-2811 | iphone | Respect des safe-area iPhone (top et bottom). · vague 29 #011
+- IMP-2812 | iphone | Taille tactile minimale des boutons (44px+). · vague 29 #012
+- IMP-2813 | iphone | Lisibilité renforcée en mode sombre natif iOS. · vague 29 #013
+- IMP-2814 | iphone | Lisibilité renforcée en mode clair natif iOS. · vague 29 #014
+- IMP-2815 | iphone | Navigation basse optimisée pour usage à une main. · vague 29 #015
+- IMP-2816 | iphone | Texte principal limité à la largeur mobile confortable. · vague 29 #016
+- IMP-2817 | iphone | Réduction automatique des débordements horizontaux. · vague 29 #017
+- IMP-2818 | iphone | Typographie système Apple prioritaire. · vague 29 #018
+- IMP-2819 | iphone | PWA installable sur écran d’accueil iPhone. · vague 29 #019
+- IMP-2820 | iphone | Évitement du zoom forcé sur les champs de saisie. · vague 29 #020
+- IMP-2821 | ux | Messages d’état IA synchronisés entre pages. · vague 29 #021
+- IMP-2822 | ux | Actions principales regroupées par section logique. · vague 29 #022
+- IMP-2823 | ux | Labels explicites pour toutes les zones de saisie. · vague 29 #023
+- IMP-2824 | ux | Annulation de prompt disponible en un geste. · vague 29 #024
+- IMP-2825 | ux | Indication claire du score de décision IA. · vague 29 #025
+- IMP-2826 | ux | Feedback positif/négatif accessible depuis la page principale. · vague 29 #026
+- IMP-2827 | ux | Pré-remplissage des prompts sauvegardés. · vague 29 #027
+- IMP-2828 | ux | Historique d’apprentissage consultable en local. · vague 29 #028
+- IMP-2829 | ux | Visualisation des sources de formation. · vague 29 #029
+- IMP-2830 | ux | Affichage compact des logs pour petits écrans. · vague 29 #030
+- IMP-2831 | performance | Chargement paresseux des pages via routeur. · vague 29 #031
+- IMP-2832 | performance | Mise en cache mémoire des templates HTML. · vague 29 #032
+- IMP-2833 | performance | Réduction des écritures redondantes en stockage local. · vague 29 #033
+- IMP-2834 | performance | Batch d’accès aux stores lors des métriques. · vague 29 #034
+- IMP-2835 | performance | Réentraînement incrémental léger et rapide. · vague 29 #035
+- IMP-2836 | performance | Matrice d’entraînement simplifiée sans dépendances. · vague 29 #036
+- IMP-2837 | performance | Worker dédié pour calcul IA non bloquant UI. · vague 29 #037
+- IMP-2838 | performance | Limitation des historiques affichés (12 derniers). · vague 29 #038
+- IMP-2839 | performance | Structures de données compactes pour datasets. · vague 29 #039
+- IMP-2840 | performance | Préservation batterie en formation continue modulée. · vague 29 #040
+- IMP-2841 | fiabilite | Validation basique des imports JSON. · vague 29 #041
+- IMP-2842 | fiabilite | Validation basique des imports CSV. · vague 29 #042
+- IMP-2843 | fiabilite | Validation basique des imports XLSX (texte converti). · vague 29 #043
+- IMP-2844 | fiabilite | Validation basique des imports PDF (contenu brut). · vague 29 #044
+- IMP-2845 | fiabilite | Séparation lignes/colonnes pour contrôle qualité. · vague 29 #045
+- IMP-2846 | fiabilite | Enregistrement des erreurs de parsing en local. · vague 29 #046
+- IMP-2847 | fiabilite | Fallback IA en cas de prompt vide. · vague 29 #047
+- IMP-2848 | fiabilite | Protection contre retour worker invalide. · vague 29 #048
+- IMP-2849 | fiabilite | Réinitialisation complète de l’apprentissage. · vague 29 #049
+- IMP-2850 | fiabilite | Restauration de backup JSON sans cloud. · vague 29 #050
+- IMP-2851 | securite | Aucune dépendance externe chargée à runtime. · vague 29 #051
+- IMP-2852 | securite | Aucune clé API nécessaire. · vague 29 #052
+- IMP-2853 | securite | Aucune exfiltration réseau volontaire de données métier. · vague 29 #053
+- IMP-2854 | securite | Toutes les données sensibles en local (IndexedDB). · vague 29 #054
+- IMP-2855 | securite | Export explicite déclenché manuellement. · vague 29 #055
+- IMP-2856 | securite | Import explicite déclenché manuellement. · vague 29 #056
+- IMP-2857 | securite | Logs IA non transmis à des services tiers. · vague 29 #057
+- IMP-2858 | securite | Mode standalone PWA pour limiter contexte navigateur. · vague 29 #058
+- IMP-2859 | securite | Isolation des calculs IA dans un worker local. · vague 29 #059
+- IMP-2860 | securite | Suppression de cache obsolète à l’activation SW. · vague 29 #060
+- IMP-2861 | data | Jeu de données exemple intégré pour tests rapides. · vague 29 #061
+- IMP-2862 | data | Jeux de données WMS initiaux prêts à charger. · vague 29 #062
+- IMP-2863 | data | Stockage des règles personnalisées. · vague 29 #063
+- IMP-2864 | data | Stockage des décisions IA. · vague 29 #064
+- IMP-2865 | data | Stockage des statistiques de feedback. · vague 29 #065
+- IMP-2866 | data | Stockage des commandes vocales. · vague 29 #066
+- IMP-2867 | data | Stockage des imports par source fichier. · vague 29 #067
+- IMP-2868 | data | Export complet multi-store en JSON. · vague 29 #068
+- IMP-2869 | data | Import complet multi-store en JSON. · vague 29 #069
+- IMP-2870 | data | Versionnement fonctionnel du modèle exporté. · vague 29 #070
+- IMP-2871 | ia | Analyse de prompt normalisée pour cohérence. · vague 29 #071
+- IMP-2872 | ia | Moteur d’anomalies local pour contrôles rapides. · vague 29 #072
+- IMP-2873 | ia | Moteur vectoriel local pour rapprochements. · vague 29 #073
+- IMP-2874 | ia | Moteur de prédiction léger sans serveur. · vague 29 #074
+- IMP-2875 | ia | Réseau de neurones simplifié embarqué. · vague 29 #075
+- IMP-2876 | ia | Simulation locale de scénarios. · vague 29 #076
+- IMP-2877 | ia | Optimisation locale de flux. · vague 29 #077
+- IMP-2878 | ia | Apprentissage continu piloté utilisateur. · vague 29 #078
+- IMP-2879 | ia | Réentraînement ponctuel à la demande. · vague 29 #079
+- IMP-2880 | ia | Suivi du score décisionnel dans l’interface. · vague 29 #080
+- IMP-2881 | github | Structure projet simple compatible dépôt GitHub. · vague 29 #081
+- IMP-2882 | github | Fichiers statiques versionnables sans build. · vague 29 #082
+- IMP-2883 | github | Manifest PWA versionnable dans le dépôt. · vague 29 #083
+- IMP-2884 | github | Service worker versionnable dans le dépôt. · vague 29 #084
+- IMP-2885 | github | Pages HTML modulaires faciles à relire en PR. · vague 29 #085
+- IMP-2886 | github | Modules JS séparés pour revue de code ciblée. · vague 29 #086
+- IMP-2887 | github | Aucun secret injecté dans le code source. · vague 29 #087
+- IMP-2888 | github | Sauvegarde/restore portable via fichiers JSON. · vague 29 #088
+- IMP-2889 | github | Approche offline-first documentée dans l’interface. · vague 29 #089
+- IMP-2890 | github | Compatibilité hébergement statique GitHub Pages. · vague 29 #090
+- IMP-2891 | ops | Bouton unique pour appliquer 1000 améliorations. · vague 29 #091
+- IMP-2892 | ops | Audit instantané pour vérifier état des améliorations. · vague 29 #092
+- IMP-2893 | ops | Journal d’audit lisible depuis la page paramètres. · vague 29 #093
+- IMP-2894 | ops | Compteur de conformité (% améliorations actives). · vague 29 #094
+- IMP-2895 | ops | Horodatage du dernier audit. · vague 29 #095
+- IMP-2896 | ops | Horodatage de la dernière application globale. · vague 29 #096
+- IMP-2897 | ops | Mode strict iPhone/offline activable en un clic. · vague 29 #097
+- IMP-2898 | ops | Synthèse multi-catégories des améliorations. · vague 29 #098
+- IMP-2899 | ops | Persistance de la conformité en base locale. · vague 29 #099
+- IMP-2900 | ops | Aucune dépendance ajoutée pour l’audit et l’application. · vague 29 #100
+- IMP-2901 | offline | Mode cache agressif pour toutes les pages locales. · vague 30 #001
+- IMP-2902 | offline | Fallback automatique sur la page principale hors connexion. · vague 30 #002
+- IMP-2903 | offline | Préchargement des pages critiques au démarrage. · vague 30 #003
+- IMP-2904 | offline | Conservation locale du dernier prompt utilisateur. · vague 30 #004
+- IMP-2905 | offline | Conservation locale de la dernière réponse IA. · vague 30 #005
+- IMP-2906 | offline | Protection contre les pertes de données pendant import. · vague 30 #006
+- IMP-2907 | offline | Cache des modules JavaScript principaux. · vague 30 #007
+- IMP-2908 | offline | Cache des feuilles de style et manifest. · vague 30 #008
+- IMP-2909 | offline | Réouverture de la dernière page après relance. · vague 30 #009
+- IMP-2910 | offline | Historique local compacté pour limiter la mémoire. · vague 30 #010
+- IMP-2911 | iphone | Respect des safe-area iPhone (top et bottom). · vague 30 #011
+- IMP-2912 | iphone | Taille tactile minimale des boutons (44px+). · vague 30 #012
+- IMP-2913 | iphone | Lisibilité renforcée en mode sombre natif iOS. · vague 30 #013
+- IMP-2914 | iphone | Lisibilité renforcée en mode clair natif iOS. · vague 30 #014
+- IMP-2915 | iphone | Navigation basse optimisée pour usage à une main. · vague 30 #015
+- IMP-2916 | iphone | Texte principal limité à la largeur mobile confortable. · vague 30 #016
+- IMP-2917 | iphone | Réduction automatique des débordements horizontaux. · vague 30 #017
+- IMP-2918 | iphone | Typographie système Apple prioritaire. · vague 30 #018
+- IMP-2919 | iphone | PWA installable sur écran d’accueil iPhone. · vague 30 #019
+- IMP-2920 | iphone | Évitement du zoom forcé sur les champs de saisie. · vague 30 #020
+- IMP-2921 | ux | Messages d’état IA synchronisés entre pages. · vague 30 #021
+- IMP-2922 | ux | Actions principales regroupées par section logique. · vague 30 #022
+- IMP-2923 | ux | Labels explicites pour toutes les zones de saisie. · vague 30 #023
+- IMP-2924 | ux | Annulation de prompt disponible en un geste. · vague 30 #024
+- IMP-2925 | ux | Indication claire du score de décision IA. · vague 30 #025
+- IMP-2926 | ux | Feedback positif/négatif accessible depuis la page principale. · vague 30 #026
+- IMP-2927 | ux | Pré-remplissage des prompts sauvegardés. · vague 30 #027
+- IMP-2928 | ux | Historique d’apprentissage consultable en local. · vague 30 #028
+- IMP-2929 | ux | Visualisation des sources de formation. · vague 30 #029
+- IMP-2930 | ux | Affichage compact des logs pour petits écrans. · vague 30 #030
+- IMP-2931 | performance | Chargement paresseux des pages via routeur. · vague 30 #031
+- IMP-2932 | performance | Mise en cache mémoire des templates HTML. · vague 30 #032
+- IMP-2933 | performance | Réduction des écritures redondantes en stockage local. · vague 30 #033
+- IMP-2934 | performance | Batch d’accès aux stores lors des métriques. · vague 30 #034
+- IMP-2935 | performance | Réentraînement incrémental léger et rapide. · vague 30 #035
+- IMP-2936 | performance | Matrice d’entraînement simplifiée sans dépendances. · vague 30 #036
+- IMP-2937 | performance | Worker dédié pour calcul IA non bloquant UI. · vague 30 #037
+- IMP-2938 | performance | Limitation des historiques affichés (12 derniers). · vague 30 #038
+- IMP-2939 | performance | Structures de données compactes pour datasets. · vague 30 #039
+- IMP-2940 | performance | Préservation batterie en formation continue modulée. · vague 30 #040
+- IMP-2941 | fiabilite | Validation basique des imports JSON. · vague 30 #041
+- IMP-2942 | fiabilite | Validation basique des imports CSV. · vague 30 #042
+- IMP-2943 | fiabilite | Validation basique des imports XLSX (texte converti). · vague 30 #043
+- IMP-2944 | fiabilite | Validation basique des imports PDF (contenu brut). · vague 30 #044
+- IMP-2945 | fiabilite | Séparation lignes/colonnes pour contrôle qualité. · vague 30 #045
+- IMP-2946 | fiabilite | Enregistrement des erreurs de parsing en local. · vague 30 #046
+- IMP-2947 | fiabilite | Fallback IA en cas de prompt vide. · vague 30 #047
+- IMP-2948 | fiabilite | Protection contre retour worker invalide. · vague 30 #048
+- IMP-2949 | fiabilite | Réinitialisation complète de l’apprentissage. · vague 30 #049
+- IMP-2950 | fiabilite | Restauration de backup JSON sans cloud. · vague 30 #050
+- IMP-2951 | securite | Aucune dépendance externe chargée à runtime. · vague 30 #051
+- IMP-2952 | securite | Aucune clé API nécessaire. · vague 30 #052
+- IMP-2953 | securite | Aucune exfiltration réseau volontaire de données métier. · vague 30 #053
+- IMP-2954 | securite | Toutes les données sensibles en local (IndexedDB). · vague 30 #054
+- IMP-2955 | securite | Export explicite déclenché manuellement. · vague 30 #055
+- IMP-2956 | securite | Import explicite déclenché manuellement. · vague 30 #056
+- IMP-2957 | securite | Logs IA non transmis à des services tiers. · vague 30 #057
+- IMP-2958 | securite | Mode standalone PWA pour limiter contexte navigateur. · vague 30 #058
+- IMP-2959 | securite | Isolation des calculs IA dans un worker local. · vague 30 #059
+- IMP-2960 | securite | Suppression de cache obsolète à l’activation SW. · vague 30 #060
+- IMP-2961 | data | Jeu de données exemple intégré pour tests rapides. · vague 30 #061
+- IMP-2962 | data | Jeux de données WMS initiaux prêts à charger. · vague 30 #062
+- IMP-2963 | data | Stockage des règles personnalisées. · vague 30 #063
+- IMP-2964 | data | Stockage des décisions IA. · vague 30 #064
+- IMP-2965 | data | Stockage des statistiques de feedback. · vague 30 #065
+- IMP-2966 | data | Stockage des commandes vocales. · vague 30 #066
+- IMP-2967 | data | Stockage des imports par source fichier. · vague 30 #067
+- IMP-2968 | data | Export complet multi-store en JSON. · vague 30 #068
+- IMP-2969 | data | Import complet multi-store en JSON. · vague 30 #069
+- IMP-2970 | data | Versionnement fonctionnel du modèle exporté. · vague 30 #070
+- IMP-2971 | ia | Analyse de prompt normalisée pour cohérence. · vague 30 #071
+- IMP-2972 | ia | Moteur d’anomalies local pour contrôles rapides. · vague 30 #072
+- IMP-2973 | ia | Moteur vectoriel local pour rapprochements. · vague 30 #073
+- IMP-2974 | ia | Moteur de prédiction léger sans serveur. · vague 30 #074
+- IMP-2975 | ia | Réseau de neurones simplifié embarqué. · vague 30 #075
+- IMP-2976 | ia | Simulation locale de scénarios. · vague 30 #076
+- IMP-2977 | ia | Optimisation locale de flux. · vague 30 #077
+- IMP-2978 | ia | Apprentissage continu piloté utilisateur. · vague 30 #078
+- IMP-2979 | ia | Réentraînement ponctuel à la demande. · vague 30 #079
+- IMP-2980 | ia | Suivi du score décisionnel dans l’interface. · vague 30 #080
+- IMP-2981 | github | Structure projet simple compatible dépôt GitHub. · vague 30 #081
+- IMP-2982 | github | Fichiers statiques versionnables sans build. · vague 30 #082
+- IMP-2983 | github | Manifest PWA versionnable dans le dépôt. · vague 30 #083
+- IMP-2984 | github | Service worker versionnable dans le dépôt. · vague 30 #084
+- IMP-2985 | github | Pages HTML modulaires faciles à relire en PR. · vague 30 #085
+- IMP-2986 | github | Modules JS séparés pour revue de code ciblée. · vague 30 #086
+- IMP-2987 | github | Aucun secret injecté dans le code source. · vague 30 #087
+- IMP-2988 | github | Sauvegarde/restore portable via fichiers JSON. · vague 30 #088
+- IMP-2989 | github | Approche offline-first documentée dans l’interface. · vague 30 #089
+- IMP-2990 | github | Compatibilité hébergement statique GitHub Pages. · vague 30 #090
+- IMP-2991 | ops | Bouton unique pour appliquer 1000 améliorations. · vague 30 #091
+- IMP-2992 | ops | Audit instantané pour vérifier état des améliorations. · vague 30 #092
+- IMP-2993 | ops | Journal d’audit lisible depuis la page paramètres. · vague 30 #093
+- IMP-2994 | ops | Compteur de conformité (% améliorations actives). · vague 30 #094
+- IMP-2995 | ops | Horodatage du dernier audit. · vague 30 #095
+- IMP-2996 | ops | Horodatage de la dernière application globale. · vague 30 #096
+- IMP-2997 | ops | Mode strict iPhone/offline activable en un clic. · vague 30 #097
+- IMP-2998 | ops | Synthèse multi-catégories des améliorations. · vague 30 #098
+- IMP-2999 | ops | Persistance de la conformité en base locale. · vague 30 #099
+- IMP-3000 | ops | Aucune dépendance ajoutée pour l’audit et l’application. · vague 30 #100
