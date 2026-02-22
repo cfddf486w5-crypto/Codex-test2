@@ -1,42 +1,173 @@
-<!doctype html>
-<html lang="fr" data-theme="dark" data-ui-version="2026.02-ui1000">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" content="#0b1020" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <link rel="manifest" href="manifest.json" />
-    <link rel="stylesheet" href="assets/style.css" />
-    <link rel="stylesheet" href="assets/app.css" />
-    <link rel="stylesheet" href="assets/print.css" media="print" />
-    <title>DL.WMS IA Ultimate</title>
-  </head>
-  <body class="app-frame">
-    <a class="skip-link" href="#app">Aller au contenu</a>
-    <header class="topbar app-header" role="banner">
-      <div class="stack">
-        <h1>DL.WMS IA Ultimate</h1>
-        <p class="muted topbar-subtitle">Offline · Sans dépendance externe</p>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WMS Tools - Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="phone">
+    <div class="screen">
+      <header class="header">
+        <div class="header-top">
+          <a class="icon-btn" href="settings.html" aria-label="Paramètres">⚙️</a>
+          <div class="title">Logo / DL Logistique <strong>©</strong></div>
+          <div class="bell-wrap">
+            <button class="icon-btn" aria-label="Notifications">🔔</button>
+            <div class="badge">3</div>
+          </div>
+        </div>
+      </header>
+      <div class="top-shortcuts" aria-label="Menu haut">
+        <a href="settings.html">Paramètres</a>
+        <a href="history-updates.html">Historique des mises à jour</a>
+        <a href="help.html">Aide & support</a>
       </div>
-      <div class="top-actions">
-        <span id="networkBadge" class="status-badge" aria-live="polite">Connexion…</span>
-        <a href="ia_auto.html" class="ghost btn-xs" style="text-decoration:none;">IA Auto</a>
-        <button id="installBtn" class="ghost btn-xs hidden" aria-label="Installer l'application">Installer</button>
-      </div>
-    </header>
 
-    <main id="app" class="app-shell app-content" aria-live="polite"></main>
+      <main class="content">
+        <section class="tiles">
+          <a class="tile" id="tile-dashboard" href="consolidation.html">
+            <div class="tile-icon icon-consolidation artwork-icon">
+              <img src="assets/icons/consolidation-ios-dark.png" alt="Consolidation" />
+            </div>
+            <div class="label">Consolidation</div>
+          </a>
+          <a class="tile" id="tile-stock" href="stock.html">
+            <div class="tile-icon blue">📋</div>
+            <div class="label">Inventaire</div>
+          </a>
+          <a class="tile" id="tile-tasks" href="tasks.html">
+            <div class="tile-icon icon-shipping artwork-icon">
+              <img src="assets/icons/suivi-expedition-ios-dark.png" alt="Suivi Expédition" />
+            </div>
+            <div class="label">Suivi Expédition</div>
+          </a>
+          <a class="tile" href="remise.html">
+            <div class="tile-icon artwork-icon">
+              <img src="assets/icons/remise-ios-dark.png" alt="Remise en stock" />
+            </div>
+            <div class="label">Remise en Stock</div>
+          </a>
+          <a class="tile" id="tile-more" href="layout.html">
+            <div class="tile-icon artwork-icon">
+              <img src="assets/icons/layout-ios-dark.png" alt="Layout" />
+            </div>
+            <div class="label">Layout</div>
+          </a>
+          <a class="tile" href="reception.html">
+            <div class="tile-icon artwork-icon">
+              <img src="assets/icons/receiving-ios-dark.png" alt="Réception ASN" />
+            </div>
+            <div class="label">Réception ASN</div>
+          </a>
+        </section>
 
-    <nav class="bottom-nav" aria-label="Navigation principale" role="navigation">
-      <button data-route="ai-center" class="active" aria-current="page" aria-label="Principal">Principal</button>
-      <button data-route="prompt" aria-label="Prompts">Prompts</button>
-      <button data-route="parametres" aria-label="Paramètres">Paramètres</button>
-      <button data-route="monitoring" aria-label="Vision IA">Vision IA</button>
-      <button data-route="ui-frame" aria-label="UI Frame">UI Frame</button>
-    </nav>
+        <section class="report">
+          <h3>Rapport entrepôt</h3>
+          <div class="report-grid single-chart">
+            <div class="chart pie-card">
+              <h4 id="chart-title">Commande et Expédition - Laval</h4>
+              <div class="pie-wrap">
+                <div class="pie" id="dashboard-pie"></div>
+                <ul class="legend" id="dashboard-legend"></ul>
+              </div>
+              <p class="warning-count" id="warning-count"></p>
+            </div>
+            <div class="location-strip" aria-label="Sites">
+              <button class="location-pill active" type="button" data-site="laval">Laval</button>
+              <button class="location-pill" type="button" data-site="5995">5995</button>
+              <button class="location-pill" type="button" data-site="jarry">Jarry</button>
+              <button class="location-pill" type="button" data-site="langelier">Langelier</button>
+            </div>
+          </div>
 
-    <script type="module" src="app/core.js"></script>
-    <script type="module" src="ai/ai_ui.js"></script>
-  </body>
+          <div class="mini-strip" aria-hidden="true">
+            <div class="mini-card">🌍</div>
+            <div class="mini-card">📦📦</div>
+            <div class="mini-card">📈</div>
+          </div>
+        </section>
+      </main>
+
+      <nav class="tabbar" aria-label="Navigation principale">
+        <a href="index.html" class="tab active"><span class="i">🏠</span><span>Dashboard</span></a>
+        <a href="consolidation.html" class="tab"><span class="i tab-icon"><img src="assets/icons/consolidation-ios-dark.png" alt="" aria-hidden="true"></span><span>Consol.</span></a>
+        <a href="tasks.html" class="tab"><span class="i tab-icon"><img src="assets/icons/suivi-expedition-ios-dark.png" alt="" aria-hidden="true"></span><span>Suivi</span></a>
+        <a href="remise.html" class="tab"><span class="i tab-icon"><img src="assets/icons/remise-ios-dark.png" alt="" aria-hidden="true"></span><span>Remise</span></a>
+        <a href="layout.html" class="tab"><span class="i tab-icon"><img src="assets/icons/layout-ios-dark.png" alt="" aria-hidden="true"></span><span>Layout</span></a>
+        <a href="reception.html" class="tab"><span class="i tab-icon"><img src="assets/icons/receiving-ios-dark.png" alt="" aria-hidden="true"></span><span>Réception</span></a>
+      </nav>
+    </div>
+  </div>
+
+  <script>
+    const siteData = {
+      laval: {
+        title: 'Commande et Expédition - Laval',
+        values: [13, 5, 12],
+        labels: ['Tn Transit', 'Consolidé', 'PRÉ'],
+        lowStock: 8,
+      },
+      '5995': {
+        title: 'Commande et Expédition - 5995',
+        values: [9, 6, 14],
+        labels: ['Tn Transit', 'Consolidé', 'PRÉ'],
+        lowStock: 5,
+      },
+      jarry: {
+        title: 'Commande et Expédition - Jarry',
+        values: [7, 10, 11],
+        labels: ['Tn Transit', 'Consolidé', 'PRÉ'],
+        lowStock: 11,
+      },
+      langelier: {
+        title: 'Commande et Expédition - Langelier',
+        values: [15, 4, 8],
+        labels: ['Tn Transit', 'Consolidé', 'PRÉ'],
+        lowStock: 3,
+      },
+    };
+
+    const colors = ['#64b94e', '#f0b336', '#2175cb'];
+    const titleEl = document.getElementById('chart-title');
+    const pieEl = document.getElementById('dashboard-pie');
+    const legendEl = document.getElementById('dashboard-legend');
+    const warningEl = document.getElementById('warning-count');
+    const siteButtons = document.querySelectorAll('.location-pill');
+
+    function renderChart(siteKey) {
+      const data = siteData[siteKey];
+      if (!data) return;
+
+      titleEl.textContent = data.title;
+      const total = data.values.reduce((sum, value) => sum + value, 0);
+      let currentPercent = 0;
+      const parts = data.values.map((value, index) => {
+        const portion = (value / total) * 100;
+        const start = currentPercent;
+        const end = currentPercent + portion;
+        currentPercent = end;
+        return `${colors[index]} ${start}% ${end}%`;
+      });
+      pieEl.style.background = `conic-gradient(${parts.join(', ')})`;
+
+      legendEl.innerHTML = data.values
+        .map((value, index) => `<li><span class="dot" style="background:${colors[index]}"></span>${value} ${data.labels[index]}</li>`)
+        .join('');
+
+      warningEl.innerHTML = `<strong>${data.lowStock}</strong> Produits &lt; 20`;
+
+      siteButtons.forEach((button) => {
+        button.classList.toggle('active', button.dataset.site === siteKey);
+      });
+    }
+
+    siteButtons.forEach((button) => {
+      button.addEventListener('click', () => renderChart(button.dataset.site));
+    });
+
+    renderChart('laval');
+  </script>
+</body>
 </html>
