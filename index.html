@@ -1,175 +1,59 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WMS Tools - Dashboard</title>
-  <link rel="stylesheet" href="assets/app.css" />
-</head>
-<body>
-  <div class="phone">
-    <div class="screen">
-      <header class="header">
-        <div class="header-top">
-          <a class="icon-btn" href="pages/parametres.html" aria-label="Paramètres">⚙️</a>
-          <div class="title">Logo / DL Logistique <strong>©</strong></div>
-          <div class="bell-wrap">
-            <button class="icon-btn" aria-label="Notifications">🔔</button>
-            <div class="badge">3</div>
-          </div>
-        </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Dashboard | DL Logistique</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <button class="icon-button" type="button" aria-label="Paramètres">
+          <span id="leftTopIcon" aria-hidden="true">⚙︎</span>
+        </button>
+        <p class="brand">Logo / DL Logistique ©</p>
+        <button class="icon-button bell-button" type="button" aria-label="Notifications">
+          <span aria-hidden="true">🔔</span>
+          <span class="badge">3</span>
+        </button>
       </header>
-      <div class="top-shortcuts" aria-label="Menu haut">
-        <a href="pages/parametres.html">Paramètres</a>
-        <a href="pages/ui-self-test.html">Historique des mises à jour</a>
-        <a href="pages/prompt.html">Aide & support</a>
-      </div>
 
       <main class="content">
-        <section class="tiles">
-          <a class="tile" id="tile-dashboard" href="pages/consolidation.html">
-            <div class="tile-icon icon-consolidation artwork-icon">
-              <img src="consolidation-ios-dark.png" alt="Consolidation" />
-            </div>
-            <div class="label">Consolidation</div>
-          </a>
-          <a class="tile" id="tile-ia" href="ai-index.html">
-            <div class="tile-icon artwork-icon">
-              <img src="assets/icons/ia-center-icon.svg" alt="IA Center" />
-            </div>
-            <div class="label">IA Center</div>
-          </a>
-          <a class="tile" id="tile-tasks" href="pages/monitoring.html">
-            <div class="tile-icon icon-shipping artwork-icon">
-              <img src="suivi-expedition-ios-dark.png" alt="Suivi Expédition" />
-            </div>
-            <div class="label">Suivi Expédition</div>
-          </a>
-          <a class="tile" href="pages/remise.html">
-            <div class="tile-icon artwork-icon">
-              <img src="remise-ios-dark.png" alt="Remise en stock" />
-            </div>
-            <div class="label">Remise en Stock</div>
-          </a>
-          <a class="tile" id="tile-more" href="pages/layout.html">
-            <div class="tile-icon artwork-icon">
-              <img src="layout-ios-dark.png" alt="Layout" />
-            </div>
-            <div class="label">Layout</div>
-          </a>
-          <a class="tile" href="pages/reception.html">
-            <div class="tile-icon artwork-icon">
-              <img src="receiving-ios-dark.png" alt="Réception ASN" />
-            </div>
-            <div class="label">Réception ASN</div>
-          </a>
+        <section class="pill-zone" aria-label="Actions rapides">
+          <button class="pill" data-action="settings">Paramètres</button>
+          <button class="pill" data-action="history">Historique des mises à jour</button>
+          <button class="pill" data-action="support">Aide &amp; support</button>
         </section>
 
-        <section class="report">
-          <h3>Rapport entrepôt</h3>
-          <div class="report-grid single-chart">
-            <div class="chart pie-card">
-              <h4 id="chart-title">Commande et Expédition - Laval</h4>
-              <div class="pie-wrap">
-                <div class="pie" id="dashboard-pie"></div>
-                <ul class="legend" id="dashboard-legend"></ul>
-              </div>
-              <p class="warning-count" id="warning-count"></p>
-            </div>
-            <div class="location-strip" aria-label="Sites">
-              <button class="location-pill active" type="button" data-site="laval">Laval</button>
-              <button class="location-pill" type="button" data-site="5995">5995</button>
-              <button class="location-pill" type="button" data-site="jarry">Jarry</button>
-              <button class="location-pill" type="button" data-site="langelier">Langelier</button>
-            </div>
-          </div>
+        <section class="cards-grid" id="cardsGrid" aria-label="Pages principales"></section>
 
-          <div class="mini-strip" aria-hidden="true">
-            <div class="mini-card">🌍</div>
-            <div class="mini-card">📦📦</div>
-            <div class="mini-card">📈</div>
+        <section class="report-card" aria-label="Rapport entrepôt">
+          <h2>Rapport entrepôt</h2>
+          <div class="report-switch">
+            <button class="report-pill active">Commande et Expédition - Langelier</button>
+            <button class="report-pill">Laval</button>
+          </div>
+          <div class="chart-wrap">
+            <canvas id="donutChart" width="220" height="220" aria-label="Graphique circulaire"></canvas>
+            <ul id="chartLegend" class="legend"></ul>
           </div>
         </section>
       </main>
 
-      <nav class="tabbar" aria-label="Navigation principale">
-        <a href="index.html" class="tab active"><span class="i">🏠</span><span>Dashboard</span></a>
-        <a href="pages/consolidation.html" class="tab"><span class="i tab-icon"><img src="consolidation-ios-dark.png" alt="" aria-hidden="true"></span><span>Consol.</span></a>
-        <a href="pages/monitoring.html" class="tab"><span class="i tab-icon"><img src="suivi-expedition-ios-dark.png" alt="" aria-hidden="true"></span><span>Suivi</span></a>
-        <a href="pages/remise.html" class="tab"><span class="i tab-icon"><img src="remise-ios-dark.png" alt="" aria-hidden="true"></span><span>Remise</span></a>
-        <a href="pages/layout.html" class="tab"><span class="i tab-icon"><img src="layout-ios-dark.png" alt="" aria-hidden="true"></span><span>Layout</span></a>
-        <a href="pages/reception.html" class="tab"><span class="i tab-icon"><img src="receiving-ios-dark.png" alt="" aria-hidden="true"></span><span>Réception</span></a>
-      </nav>
+      <nav class="tabbar" aria-label="Navigation du bas" id="tabbar"></nav>
     </div>
-  </div>
 
-  <script>
-    const siteData = {
-      laval: {
-        title: 'Commande et Expédition - Laval',
-        values: [13, 5, 12],
-        labels: ['Tn Transit', 'Consolidé', 'PRÉ'],
-        lowStock: 8,
-      },
-      '5995': {
-        title: 'Commande et Expédition - 5995',
-        values: [9, 6, 14],
-        labels: ['Tn Transit', 'Consolidé', 'PRÉ'],
-        lowStock: 5,
-      },
-      jarry: {
-        title: 'Commande et Expédition - Jarry',
-        values: [7, 10, 11],
-        labels: ['Tn Transit', 'Consolidé', 'PRÉ'],
-        lowStock: 11,
-      },
-      langelier: {
-        title: 'Commande et Expédition - Langelier',
-        values: [15, 4, 8],
-        labels: ['Tn Transit', 'Consolidé', 'PRÉ'],
-        lowStock: 3,
-      },
-    };
+    <dialog id="appModal" class="app-modal">
+      <div class="modal-content">
+        <h3 id="modalTitle">Page</h3>
+        <p id="modalText"></p>
+        <button id="closeModal" class="pill">Fermer</button>
+      </div>
+    </dialog>
 
-    const colors = ['#64b94e', '#f0b336', '#2175cb'];
-    const titleEl = document.getElementById('chart-title');
-    const pieEl = document.getElementById('dashboard-pie');
-    const legendEl = document.getElementById('dashboard-legend');
-    const warningEl = document.getElementById('warning-count');
-    const siteButtons = document.querySelectorAll('.location-pill');
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-    function renderChart(siteKey) {
-      const data = siteData[siteKey];
-      if (!data) return;
-
-      titleEl.textContent = data.title;
-      const total = data.values.reduce((sum, value) => sum + value, 0);
-      let currentPercent = 0;
-      const parts = data.values.map((value, index) => {
-        const portion = (value / total) * 100;
-        const start = currentPercent;
-        const end = currentPercent + portion;
-        currentPercent = end;
-        return `${colors[index]} ${start}% ${end}%`;
-      });
-      pieEl.style.background = `conic-gradient(${parts.join(', ')})`;
-
-      legendEl.innerHTML = data.values
-        .map((value, index) => `<li><span class="dot" style="background:${colors[index]}"></span>${value} ${data.labels[index]}</li>`)
-        .join('');
-
-      warningEl.innerHTML = `<strong>${data.lowStock}</strong> Produits &lt; 20`;
-
-      siteButtons.forEach((button) => {
-        button.classList.toggle('active', button.dataset.site === siteKey);
-      });
-    }
-
-    siteButtons.forEach((button) => {
-      button.addEventListener('click', () => renderChart(button.dataset.site));
-    });
-
-    renderChart('laval');
-  </script>
-</body>
+    <script src="app.js"></script>
+  </body>
 </html>
