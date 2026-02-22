@@ -1,18 +1,26 @@
 const DB_NAME = 'dlwms_ai_db';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 const FALLBACK_KEY = 'dlwms_ai_fallback';
 
-const STORES = ['rules', 'sops', 'faqs', 'examples', 'docs', 'chunks', 'feedback', 'chat_history', 'datasets', 'meta'];
+export const STORES = [
+  'rules',
+  'sops',
+  'faqs',
+  'examples',
+  'docs',
+  'chunks',
+  'feedback',
+  'chat_history',
+  'datasets',
+  'meta',
+  'debug_logs',
+];
 
 let dbPromise;
 
-function canUseIndexedDB() {
-  return typeof indexedDB !== 'undefined';
-}
-
-function nowIso() {
-  return new Date().toISOString();
-}
+const canUseIndexedDB = () => typeof indexedDB !== 'undefined';
+const nowIso = () => new Date().toISOString();
+const makeId = () => (globalThis.crypto?.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`);
 
 function loadFallback() {
   try {
@@ -52,7 +60,7 @@ async function withStore(storeName, mode = 'readonly') {
 
 export async function putEntity(store, entity) {
   const record = { createdAt: nowIso(), updatedAt: nowIso(), ...entity };
-  if (!record.id) record.id = crypto.randomUUID();
+  if (!record.id) record.id = makeId();
   if (!canUseIndexedDB()) {
     const fallback = loadFallback();
     fallback[store] = fallback[store] || {};
@@ -75,7 +83,7 @@ export async function getAllEntities(store) {
     return Object.values(fallback[store] || {});
   }
   const objectStore = await withStore(store);
-  return await new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     const req = objectStore.getAll();
     req.onsuccess = () => resolve(req.result || []);
     req.onerror = () => reject(req.error);

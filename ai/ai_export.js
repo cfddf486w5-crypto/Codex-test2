@@ -1,10 +1,9 @@
 import { getAllEntities } from './ai_store.js';
 
-function download(content, filename, type = 'application/json') {
-  const blob = new Blob([content], { type });
+function download(name, text, type = 'application/json') {
   const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = filename;
+  a.href = URL.createObjectURL(new Blob([text], { type }));
+  a.download = name;
   a.click();
   URL.revokeObjectURL(a.href);
 }
@@ -12,26 +11,24 @@ function download(content, filename, type = 'application/json') {
 export async function exportKnowledgeJson() {
   const payload = {
     rules: await getAllEntities('rules'),
-    sops: await getAllEntities('sops'),
     faqs: await getAllEntities('faqs'),
-    examples: await getAllEntities('examples'),
+    sops: await getAllEntities('sops'),
     docs: await getAllEntities('docs'),
+    chunksMeta: (await getAllEntities('chunks')).map((c) => ({ id: c.id, source: c.source, section: c.section })),
+    examples: await getAllEntities('examples'),
+    feedback: await getAllEntities('feedback'),
   };
-  download(JSON.stringify(payload, null, 2), 'dlwms_knowledge.json');
+  download('dlwms_knowledge.json', JSON.stringify(payload, null, 2));
 }
 
 export async function exportRulesFaqCsv() {
-  const rules = await getAllEntities('rules');
-  const faqs = await getAllEntities('faqs');
-  const rows = ['type,title,question,answer,tags,priority'];
-  rules.forEach((r) => rows.push(`rule,"${r.title || ''}",,"${(r.description || '').replaceAll('"', '""')}","${(r.tags || []).join('|')}",${r.priority || ''}`));
-  faqs.forEach((f) => rows.push(`faq,,"${(f.question || '').replaceAll('"', '""')}","${(f.answer || '').replaceAll('"', '""')}","${(f.tags || []).join('|')}",`));
-  download(rows.join('\n'), 'dlwms_rules_faq.csv', 'text/csv');
+  const rows = [...await getAllEntities('rules'), ...await getAllEntities('faqs')];
+  const csv = ['type;title;content', ...rows.map((r) => `${r.conditions ? 'rule' : 'faq'};"${r.title || r.question || ''}";"${(r.actions?.join(' ') || r.answer || '').replaceAll('"', '""')}"`)].join('\n');
+  download('dlwms_rules_faq.csv', csv, 'text/csv');
 }
 
 export async function exportFeedbackDataset() {
-  const examples = await getAllEntities('examples');
-  const rows = ['question,validated_answer,why'];
-  examples.forEach((e) => rows.push(`"${(e.question || '').replaceAll('"', '""')}","${(e.answer || '').replaceAll('"', '""')}","${(e.why || '').replaceAll('"', '""')}"`));
-  download(rows.join('\n'), 'dlwms_feedback_dataset.csv', 'text/csv');
+  const rows = await getAllEntities('examples');
+  const jsonl = rows.map((r) => JSON.stringify(r)).join('\n');
+  download('dlwms_examples.jsonl', jsonl, 'application/x-ndjson');
 }
