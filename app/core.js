@@ -409,11 +409,19 @@ async function bindSharedActions() {
 
   document.getElementById('importBackup')?.addEventListener('click', async () => {
     const [file] = document.getElementById('fileInput').files;
-    if (!file) return;
-    const json = JSON.parse(await file.text());
-    await importAllData(json);
-    updateAiPanels('Backup importé.', 'Les données locales ont été restaurées.');
-    await hydrateSettingsMetrics();
+    if (!file) {
+      showToast('Sélectionnez un fichier backup JSON avant import.', 'warning');
+      return;
+    }
+    try {
+      const json = JSON.parse(await file.text());
+      await importAllData(json);
+      updateAiPanels('Backup importé.', 'Les données locales ont été restaurées.');
+      showToast('Backup importé avec succès.', 'success');
+      await hydrateSettingsMetrics();
+    } catch {
+      showToast('Import impossible: fichier JSON invalide.', 'error');
+    }
   });
 
 
@@ -582,6 +590,10 @@ async function ensureKnowledgeFloor(targetPercent) {
 function bindImportInput(inputId, sourceLabel) {
   document.getElementById(inputId)?.addEventListener('change', async (event) => {
     const files = [...event.target.files];
+    if (!files.length) {
+      showToast(`Aucun fichier ${sourceLabel} sélectionné.`, 'warning');
+      return;
+    }
     for (const file of files) {
       const parsed = await parseImportFile(file);
       const rows = Array.isArray(parsed) ? parsed : [];
