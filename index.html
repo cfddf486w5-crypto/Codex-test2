@@ -3,14 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>Dashboard | DL Logistique</title>
+    <title>DL WMS Offline</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <div class="app-shell">
       <header class="topbar">
-        <button class="icon-button" type="button" aria-label="Paramètres">
-          <span id="leftTopIcon" aria-hidden="true">⚙︎</span>
+        <button class="icon-button" type="button" aria-label="Menu">
+          <span aria-hidden="true">☰</span>
         </button>
         <p class="brand">Logo / DL Logistique ©</p>
         <button class="icon-button bell-button" type="button" aria-label="Notifications">
@@ -19,41 +19,74 @@
         </button>
       </header>
 
-      <main class="content">
-        <section class="pill-zone" aria-label="Actions rapides">
-          <button class="pill" data-action="settings">Paramètres</button>
-          <button class="pill" data-action="history">Historique des mises à jour</button>
-          <button class="pill" data-action="support">Aide &amp; support</button>
-        </section>
+      <main id="appView" class="content" aria-live="polite"></main>
 
-        <section class="cards-grid" id="cardsGrid" aria-label="Pages principales"></section>
-
-        <section class="report-card" aria-label="Rapport entrepôt">
-          <h2>Rapport entrepôt</h2>
-          <div class="report-switch">
-            <button class="report-pill active">Commande et Expédition - Langelier</button>
-            <button class="report-pill">Laval</button>
-          </div>
-          <div class="chart-wrap">
-            <canvas id="donutChart" width="220" height="220" aria-label="Graphique circulaire"></canvas>
-            <ul id="chartLegend" class="legend"></ul>
-          </div>
-        </section>
-      </main>
-
-      <nav class="tabbar" aria-label="Navigation du bas" id="tabbar"></nav>
+      <nav class="tabbar" aria-label="Navigation" id="tabbar"></nav>
     </div>
 
-    <dialog id="appModal" class="app-modal">
-      <div class="modal-content">
-        <h3 id="modalTitle">Page</h3>
-        <p id="modalText"></p>
-        <button id="closeModal" class="pill">Fermer</button>
-      </div>
-    </dialog>
+    <template id="dashboard-template">
+      <section class="pill-zone" aria-label="Actions rapides">
+        <button class="pill">Paramètres</button>
+        <button class="pill">Historique des mises à jour</button>
+        <button class="pill">Aide &amp; support</button>
+      </section>
+
+      <section class="cards-grid" id="cardsGrid"></section>
+
+      <section class="report-card" aria-label="Rapport entrepôt">
+        <h2>Rapport entrepôt</h2>
+        <div class="chart-wrap">
+          <canvas id="donutChart" width="220" height="220"></canvas>
+          <ul id="chartLegend" class="legend"></ul>
+        </div>
+      </section>
+    </template>
+
+    <template id="ia-template">
+      <section class="panel">
+        <div class="section-head">
+          <h1>Assistant IA</h1>
+          <div class="inline-actions">
+            <button class="small-btn" id="kbToggle">Base de connaissances</button>
+            <button class="small-btn danger" id="iaReset">Effacer</button>
+          </div>
+        </div>
+
+        <div class="chat-box" id="chatBox"></div>
+        <form id="chatForm" class="chat-form">
+          <input id="chatInput" type="text" placeholder="Pose une question WMS..." autocomplete="off" required />
+          <button type="submit" class="small-btn">Envoyer</button>
+        </form>
+      </section>
+
+      <section class="panel hidden" id="kbPanel">
+        <h2>Connaissances</h2>
+        <form id="kbForm" class="kb-form">
+          <input name="title" type="text" placeholder="Titre" required />
+          <textarea name="content" rows="3" placeholder="Règle / note" required></textarea>
+          <input name="tags" type="text" placeholder="tags, séparés, par, virgule" />
+          <button class="small-btn" type="submit">Ajouter</button>
+        </form>
+        <ul id="kbList" class="simple-list"></ul>
+      </section>
+    </template>
+
+    <template id="consolidation-template">
+      <section class="panel">
+        <h1>Consolidation</h1>
+        <div class="action-bar">
+          <label class="small-btn">Importer Inventaire (CSV)<input type="file" id="inventoryFile" accept=".csv" hidden /></label>
+          <label class="small-btn">Importer Réception (CSV)<input type="file" id="receivingFile" accept=".csv" hidden /></label>
+          <button class="small-btn" id="exportPdf">Exporter PDF</button>
+          <button class="small-btn" id="exportCsv">Exporter Excel/CSV</button>
+          <button class="small-btn" id="recomputeBtn">Rafraîchir / Recalculer</button>
+        </div>
+      </section>
+
+      <section class="accordion-group" id="consolidationAccordions"></section>
+    </template>
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
-
     <script src="app.js"></script>
   </body>
 </html>
