@@ -1,0 +1,20 @@
+[
+  {
+    "title": "Priorité pièces critiques atelier",
+    "description": "Toute pièce liée à un véhicule immobilisé doit être traitée avant les commandes standards.",
+    "example": "Freinage sécurité > commande client non urgente",
+    "tags": ["priorite", "atelier"],
+    "priority": "Haute",
+    "sites": ["Laval", "Langelier"],
+    "date": "2026-02-01"
+  },
+  {
+    "title": "Cross-dock urgent",
+    "description": "Si réception prévue < 4h et demande atelier ouverte, éviter mise en stock et diriger vers zone cross-dock.",
+    "example": "Commande atelier #AT-1192",
+    "tags": ["cross-dock", "reception"],
+    "priority": "Moyenne",
+    "sites": ["Laval2"],
+    "date": "2026-02-10"
+  }
+]
