@@ -11,6 +11,7 @@ const appNode = document.getElementById('app');
 const nav = document.querySelector('.bottom-nav');
 const worker = new Worker('./app/ai-worker.js', { type: 'module' });
 const LIA_GUIDE_PATH = './docs/formation-lia.md';
+const COMPLETE_AI_SEED_PATH = './data/ai_complete_seed.json';
 let deferredPrompt;
 let lastDecisionId;
 let continuousTrainingTimer;
@@ -391,8 +392,13 @@ async function bindSharedActions() {
   });
 
   document.getElementById('loadWarehouseData')?.addEventListener('click', async () => {
-    for (const dataset of WAREHOUSE_DATASETS) await putRecord('datasets', dataset);
-    updateAiPanels('Bases entrepôt chargées.', `${WAREHOUSE_DATASETS.length} datasets disponibles.`);
+    const loaded = await loadCompleteAISeed();
+    if (loaded) {
+      updateAiPanels('Base IA complète chargée.', loaded);
+    } else {
+      for (const dataset of WAREHOUSE_DATASETS) await putRecord('datasets', dataset);
+      updateAiPanels('Bases entrepôt chargées.', `${WAREHOUSE_DATASETS.length} datasets disponibles (mode secours).`);
+    }
     await hydrateSettingsMetrics();
   });
 
@@ -442,6 +448,25 @@ async function bindSharedActions() {
       updateAiPanels('Commande vocale enregistrée.', 'Aucune action associée trouvée.');
     }
   });
+}
+
+async function loadCompleteAISeed() {
+  try {
+    const response = await fetch(COMPLETE_AI_SEED_PATH);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const seed = await response.json();
+    const datasets = Array.isArray(seed.datasets) ? seed.datasets : [];
+    const rules = Array.isArray(seed.rules) ? seed.rules : [];
+    const thresholds = Array.isArray(seed.thresholds) ? seed.thresholds : [];
+
+    for (const dataset of datasets) await putRecord('datasets', dataset);
+    for (const rule of rules) await putRecord('rules', rule);
+    for (const threshold of thresholds) await putRecord('thresholds', threshold);
+
+    return `${datasets.length} datasets, ${rules.length} règles et ${thresholds.length} seuils injectés.`;
+  } catch {
+    return null;
+  }
 }
 
 async function setFeedback(success) {

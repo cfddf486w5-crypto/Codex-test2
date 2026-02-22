@@ -1,0 +1,72 @@
+{
+  "datasets": [
+    {
+      "name": "warehouse-stock-master",
+      "rows": 12,
+      "sample": [
+        { "sku": "BRAKE-PAD-001", "category": "freinage", "site": "PARIS", "qty": 340, "min": 120, "max": 500, "criticality": "A", "rotation": "fast" },
+        { "sku": "FILTER-OIL-004", "category": "filtration", "site": "LYON", "qty": 180, "min": 90, "max": 260, "criticality": "A", "rotation": "fast" },
+        { "sku": "BATTERY-12V-045", "category": "electrique", "site": "LILLE", "qty": 74, "min": 60, "max": 140, "criticality": "A", "rotation": "medium" },
+        { "sku": "SHOCK-ABS-210", "category": "suspension", "site": "MARSEILLE", "qty": 92, "min": 45, "max": 150, "criticality": "B", "rotation": "medium" }
+      ]
+    },
+    {
+      "name": "supplier-leadtime-quality",
+      "rows": 10,
+      "sample": [
+        { "supplier": "EURO PARTS", "avgLeadTimeDays": 4.2, "lateRate": 0.03, "qualityDefectRate": 0.01, "preferred": true },
+        { "supplier": "NORD LOG", "avgLeadTimeDays": 6.8, "lateRate": 0.07, "qualityDefectRate": 0.03, "preferred": false },
+        { "supplier": "ASIA DIRECT", "avgLeadTimeDays": 18.5, "lateRate": 0.14, "qualityDefectRate": 0.05, "preferred": false }
+      ]
+    },
+    {
+      "name": "demand-forecast-rolling-12w",
+      "rows": 12,
+      "sample": [
+        { "week": "2026-W01", "sku": "BRAKE-PAD-001", "forecast": 64, "actual": 59, "mape": 0.08 },
+        { "week": "2026-W01", "sku": "FILTER-OIL-004", "forecast": 41, "actual": 44, "mape": 0.07 },
+        { "week": "2026-W01", "sku": "BATTERY-12V-045", "forecast": 18, "actual": 20, "mape": 0.11 }
+      ]
+    },
+    {
+      "name": "container-reception-plan",
+      "rows": 8,
+      "sample": [
+        { "eta": "2026-03-03", "container": "CONT-7845", "dock": "D2", "supplier": "ASIA DIRECT", "risk": "high", "action": "renfort equipe + precontrole" },
+        { "eta": "2026-03-04", "container": "CONT-7850", "dock": "D1", "supplier": "EURO PARTS", "risk": "low", "action": "flux standard" },
+        { "eta": "2026-03-06", "container": "CONT-7857", "dock": "D3", "supplier": "NORD LOG", "risk": "medium", "action": "controle qualite cible" }
+      ]
+    },
+    {
+      "name": "workshop-priority-sla",
+      "rows": 9,
+      "sample": [
+        { "wo": "AT-12054", "vehicleImmobilized": true, "slaHours": 6, "missingSku": "BATTERY-12V-045", "priority": "P1" },
+        { "wo": "AT-12058", "vehicleImmobilized": false, "slaHours": 24, "missingSku": "FILTER-OIL-004", "priority": "P2" },
+        { "wo": "AT-12072", "vehicleImmobilized": true, "slaHours": 8, "missingSku": "BRAKE-PAD-001", "priority": "P1" }
+      ]
+    },
+    {
+      "name": "quality-nonconformities",
+      "rows": 7,
+      "sample": [
+        { "ncId": "NC-2026-001", "sku": "BRAKE-PAD-001", "defect": "epaisseur hors tolerance", "severity": "major", "supplier": "NORD LOG", "status": "open" },
+        { "ncId": "NC-2026-004", "sku": "SHOCK-ABS-210", "defect": "marquage incomplet", "severity": "minor", "supplier": "EURO PARTS", "status": "closed" }
+      ]
+    }
+  ],
+  "rules": [
+    { "text": "Si stock < min et demande prévisionnelle à 2 semaines > 1.2x moyenne alors déclencher réappro urgent.", "priority": 2, "scope": "supply" },
+    { "text": "Si lateRate fournisseur > 10% alors augmenter stock sécurité des références critiques de +20%.", "priority": 2, "scope": "supplier" },
+    { "text": "Si véhicule immobilisé et pièce indisponible, prioriser transfert inter-site sous 2h.", "priority": 3, "scope": "workshop" },
+    { "text": "Si défaut qualité major détecté, bloquer lot complet et créer action corrective fournisseur.", "priority": 3, "scope": "quality" },
+    { "text": "Si variation forecast vs actual > 25% deux semaines de suite, déclencher recalibrage modèle.", "priority": 2, "scope": "forecast" }
+  ],
+  "thresholds": [
+    { "name": "otif_target", "value": 0.96 },
+    { "name": "fill_rate_target", "value": 0.95 },
+    { "name": "inventory_accuracy_target", "value": 0.985 },
+    { "name": "supplier_late_rate_alert", "value": 0.1 },
+    { "name": "quality_defect_rate_alert", "value": 0.03 }
+  ]
+}
