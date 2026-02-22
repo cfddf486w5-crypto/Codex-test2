@@ -308,6 +308,12 @@
     return { text: lines.join("\n"), sources, meta:{confidence:conf, topId:top.id} };
   }
 
+  function extractSourcesFromAnswer(answerText){
+    const match = String(answerText || "").match(/Sources:\s*(.+)$/m);
+    if(!match) return [];
+    return match[1].split(",").map((source)=>source.trim()).filter(Boolean);
+  }
+
   function switchTab(name){
     els.tabs.forEach(t=>{
       t.classList.toggle("active", t.dataset.tab===name);
@@ -487,20 +493,24 @@
     });
     els.btnCopyAnswer.addEventListener("click", ()=>Utils.copyToClipboard(els.answerBox.textContent||""));
     els.btnExportCSV.addEventListener("click", ()=>{
+      const answer = els.answerBox.textContent.trim();
+      if(!answer){ toast("Aucune réponse à exporter."); return; }
       ExportReport.exportCSVReport({
         title:"Rapport IA Automobile",
         question: els.qInput.value.trim(),
-        answer: els.answerBox.textContent.trim(),
-        sources: (els.answerBox.textContent.includes("Sources:") ? [] : []),
+        answer,
+        sources: extractSourcesFromAnswer(answer),
         meta: { kbCount: KB.items.length }
       });
     });
     els.btnExportPrintPack.addEventListener("click", ()=>{
+      const answer = els.answerBox.textContent.trim();
+      if(!answer){ toast("Aucune réponse à exporter."); return; }
       ExportReport.exportPrintPack({
         title:"Rapport IA Automobile",
         question: els.qInput.value.trim(),
-        answer: els.answerBox.textContent.trim(),
-        sources: [],
+        answer,
+        sources: extractSourcesFromAnswer(answer),
         meta: { kbCount: KB.items.length }
       });
     });
@@ -530,8 +540,10 @@
       els.kbStatus.textContent = `KB: ${info.source} • ${info.count} items`;
       toast("KB incluse active.");
     });
-    els.btnClearLocalKB.addEventListener("click", ()=>{
+    els.btnClearLocalKB.addEventListener("click", async ()=>{
       KBStore.clearLocalKB();
+      const info = await loadKB();
+      els.kbStatus.textContent = `KB: ${info.source} • ${info.count} items`;
       toast("KB locale supprimée.");
     });
 
