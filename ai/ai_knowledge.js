@@ -1,28 +1,14 @@
 import { getAllEntities, putEntity, removeEntity } from './ai_store.js';
+import { saveRule } from './ai_rules.js';
 
-const SITE_OPTIONS = ['Laval', 'Laval2', 'Langelier'];
+export const SITE_OPTIONS = ['GLOBAL', 'PARIS', 'LYON', 'MARSEILLE'];
 
-export { SITE_OPTIONS };
-
-export async function addRule(payload) {
-  return putEntity('rules', { type: 'rule', priority: 'Moyenne', sites: [], ...payload });
-}
-
-export async function addSop(payload) {
-  return putEntity('sops', { type: 'sop', steps: [], ...payload });
-}
-
-export async function addFaq(payload) {
-  return putEntity('faqs', { type: 'faq', ...payload });
-}
-
-export async function addValidatedExample(payload) {
-  return putEntity('examples', { type: 'validated_example', ...payload });
-}
-
-export async function addFeedback(payload) {
-  return putEntity('feedback', { type: 'feedback', ...payload });
-}
+export async function addRule(rule) { return saveRule(rule); }
+export async function deleteRule(id) { return removeEntity('rules', id); }
+export async function addFaq(faq) { return putEntity('faqs', faq); }
+export async function addSop(sop) { return putEntity('sops', sop); }
+export async function addValidatedExample(example) { return putEntity('examples', example); }
+export async function addFeedback(feedback) { return putEntity('feedback', feedback); }
 
 export async function listKnowledge() {
   const [rules, sops, faqs, examples] = await Promise.all([
@@ -32,10 +18,4 @@ export async function listKnowledge() {
     getAllEntities('examples'),
   ]);
   return { rules, sops, faqs, examples };
-}
-
-export async function deleteKnowledge(type, id) {
-  const map = { rule: 'rules', sop: 'sops', faq: 'faqs', example: 'examples' };
-  if (!map[type]) throw new Error('Type inconnu');
-  return removeEntity(map[type], id);
 }

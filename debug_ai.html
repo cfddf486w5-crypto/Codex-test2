@@ -8,9 +8,40 @@
 </head>
 <body>
   <main class="card">
-    <h1>Debug AI</h1>
-    <p>Utilisez le panneau IA (bouton 🤖) pour tester intents, RAG, outils et dataset.</p>
+    <h1>Debug AI Dashboard</h1>
+    <p id="score"></p>
+    <button id="runEval">Relancer évaluation</button>
+    <pre id="evalOut"></pre>
+    <h2>Prompt test</h2>
+    <input id="promptInput" placeholder="tester un prompt" /> <button id="runPrompt">Tester</button>
+    <pre id="promptOut"></pre>
+    <h2>Logs décisions</h2>
+    <pre id="logs"></pre>
   </main>
-  <script type="module" src="ai/ai_ui.js"></script>
+  <script type="module">
+    import { initStore, getAllEntities } from './ai/ai_store.js';
+    import { runAllEvaluations } from './ai/ai_eval.js';
+    import { askAi } from './ai/ai_engine.js';
+
+    await initStore();
+
+    async function refresh() {
+      const result = runAllEvaluations();
+      document.getElementById('score').textContent = `Score: ${result.score}`;
+      document.getElementById('evalOut').textContent = JSON.stringify(result.tests, null, 2);
+      const logs = await getAllEntities('debug_logs');
+      document.getElementById('logs').textContent = JSON.stringify(logs.slice(-20), null, 2);
+    }
+
+    document.getElementById('runEval').onclick = refresh;
+    document.getElementById('runPrompt').onclick = async () => {
+      const q = document.getElementById('promptInput').value;
+      const out = await askAi(q);
+      document.getElementById('promptOut').textContent = JSON.stringify(out, null, 2);
+      refresh();
+    };
+
+    refresh();
+  </script>
 </body>
 </html>

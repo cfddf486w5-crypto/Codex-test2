@@ -1,52 +1,77 @@
-function parseCsvRows(text) {
-  const lines = text.split(/\r?\n/).filter(Boolean);
-  if (!lines.length) return [];
-  const headers = lines[0].split(',').map((h) => h.trim());
-  return lines.slice(1).map((line) => {
-    const cols = line.split(',');
-    const obj = {};
-    headers.forEach((h, i) => { obj[h] = (cols[i] || '').trim(); });
-    return obj;
+import { putEntity, getAllEntities } from './ai_store.js';
+import { csvToRows, normalizeDatasetRows } from './ai_import.js';
+
+export function parseDatasetFromText(text) { return normalizeDatasetRows(csvToRows(text)); }
+
+function sumByItem(rows) {
+  const map = new Map();
+  rows.forEach((r) => {
+    const item = String(r.item).trim();
+    if (!map.has(item)) map.set(item, { qty: 0, bins: [] });
+    const curr = map.get(item);
+    curr.qty += Number(r.qty || 0);
+    curr.bins.push({ bin: r.bin || 'N/A', qty: Number(r.qty || 0) });
   });
+  return map;
 }
 
 export function aggregateInventory(inventoryRows = [], receptionRows = []) {
-  const merged = [...inventoryRows, ...receptionRows];
-  const byItem = new Map();
-  merged.forEach((row) => {
-    const item = row.item || row.Item || row.sku;
-    const bin = row.bin || row.Bin || 'N/A';
-    const qty = Number(row.qty || row.Qty || row.quantity || 0);
-    if (!item || Number.isNaN(qty)) return;
-
-    if (!byItem.has(item)) byItem.set(item, { item, total: 0, bins: [] });
-    const target = byItem.get(item);
-    target.total += qty;
-    target.bins.push({ bin, qty });
+  const inv = sumByItem(inventoryRows);
+  const rec = sumByItem(receptionRows);
+  const items = new Set([...inv.keys(), ...rec.keys()]);
+  const out = [];
+  items.forEach((item) => {
+    const i = inv.get(item) || { qty: 0, bins: [] };
+    const r = rec.get(item) || { qty: 0, bins: [] };
+    const total = i.qty + r.qty;
+    if (total === 0) return;
+    if (i.qty === 0 && r.qty === 0) return;
+    out.push({
+      item,
+      invQty: i.qty,
+      recQty: r.qty,
+      total,
+      invBins: i.bins,
+      recBins: r.bins,
+      bins: [...i.bins, ...r.bins],
+      recommandation: total < 20 ? 'Priorité réappro' : 'Stock OK',
+    });
   });
+  return out.sort((a, b) => a.total - b.total);
+}
 
-  return Array.from(byItem.values()).filter((x) => x.total !== 0).map((row) => ({
-    ...row,
-    recommandation: row.total < 20 ? 'Déplacement prioritaire' : 'Surveiller',
+export function itemsUnderThreshold(rows, threshold = 20) {
+  return rows.filter((r) => r.total < threshold);
+}
+
+export function generateMovesReport(rows) {
+  return rows.map((r) => ({
+    item: r.item,
+    total: r.total,
+    bins: r.bins.map((b) => `${b.bin}(${b.qty})`).join(' | '),
+    recommendation: r.recommandation,
   }));
 }
 
-export function itemsUnder20(rows) {
-  return rows.filter((r) => r.total < 20);
+export function toCsv(rows = []) {
+  if (!rows.length) return '';
+  const headers = Object.keys(rows[0]);
+  return [headers.join(';'), ...rows.map((r) => headers.map((h) => JSON.stringify(r[h] ?? '')).join(';'))].join('\n');
 }
 
-export function toCsv(rows) {
-  const header = 'item,total,recommandation,bins';
-  const lines = rows.map((r) => `${r.item},${r.total},${r.recommandation},"${r.bins.map((b) => `${b.bin}:${b.qty}`).join(' | ')}"`);
-  return [header, ...lines].join('\n');
+export function exportHtmlPrint(rows, title = 'Rapport WMS') {
+  const table = `<table border="1"><tr>${Object.keys(rows[0] || {}).map((h) => `<th>${h}</th>`).join('')}</tr>${rows.map((r) => `<tr>${Object.values(r).map((v) => `<td>${v}</td>`).join('')}</tr>`).join('')}</table>`;
+  return `<!doctype html><html><head><meta charset="utf-8"><title>${title}</title></head><body><h1>${title}</h1>${table}</body></html>`;
 }
 
-export function exportMovementPdf(rows) {
-  const content = rows.map((r) => `${r.item} - total ${r.total} - ${r.recommandation}`).join('\n');
-  const blob = new Blob([`DL WMS - Liste déplacements\n\n${content}`], { type: 'application/pdf' });
-  return URL.createObjectURL(blob);
+export async function saveDataset(kind, fileName, text) {
+  return putEntity('datasets', { kind, name: fileName, text });
 }
 
-export function parseDatasetFromText(text) {
-  return parseCsvRows(text);
+export async function loadMergedDataset() {
+  const datasets = await getAllEntities('datasets');
+  const inv = datasets.find((x) => x.kind === 'inventory');
+  const rec = datasets.find((x) => x.kind === 'reception');
+  if (!inv || !rec) throw new Error('Inventaire + réception requis');
+  return aggregateInventory(parseDatasetFromText(inv.text), parseDatasetFromText(rec.text));
 }

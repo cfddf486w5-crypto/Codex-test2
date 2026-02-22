@@ -1,62 +1,75 @@
-import { getAllEntities, putEntity } from './ai_store.js';
+import { getAllEntities, putEntity, removeEntity } from './ai_store.js';
 
-const STOPWORDS = new Set(['le', 'la', 'les', 'de', 'des', 'du', 'et', 'ou', 'un', 'une', 'a', 'au', 'aux', 'pour']);
-
-export function normalizeText(text = '') {
-  return text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9\s-]/g, ' ').replace(/\s+/g, ' ').trim();
+export function normalizeText(v) {
+  return String(v || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9\s_-]/g, ' ').replace(/\s+/g, ' ').trim();
 }
 
-function tokenize(text) {
-  return normalizeText(text).split(' ').filter((t) => t && !STOPWORDS.has(t));
-}
-
-export function splitIntoChunks(text, size = 420) {
-  const cleaned = String(text || '').replace(/\s+/g, ' ').trim();
-  if (!cleaned) return [];
+function chunkText(doc) {
+  const lines = doc.text.split(/\r?\n/);
   const chunks = [];
-  for (let i = 0; i < cleaned.length; i += size) chunks.push(cleaned.slice(i, i + size));
+  let section = 'root';
+  let bucket = [];
+  lines.forEach((line, idx) => {
+    if (/^#{1,3}\s|^[A-Z][^:]{2,}:$/.test(line.trim())) {
+      if (bucket.length) chunks.push({ section, text: bucket.join(' '), lineStart: idx - bucket.length + 1 });
+      section = line.replace(/^#+\s*/, '').trim();
+      bucket = [];
+    } else if (line.trim()) {
+      bucket.push(line.trim());
+      if (bucket.length >= 4) {
+        chunks.push({ section, text: bucket.join(' '), lineStart: idx - 3 });
+        bucket = [];
+      }
+    }
+  });
+  if (bucket.length) chunks.push({ section, text: bucket.join(' '), lineStart: Math.max(1, lines.length - bucket.length) });
   return chunks;
 }
 
-export async function indexDocument(doc) {
-  const chunks = splitIntoChunks(doc.text || '');
-  const records = [];
-  for (let i = 0; i < chunks.length; i += 1) {
-    const chunk = chunks[i];
-    const terms = tokenize(chunk);
-    const termFreq = terms.reduce((acc, t) => ((acc[t] = (acc[t] || 0) + 1), acc), {});
-    records.push(await putEntity('chunks', { docId: doc.id, position: i, text: chunk, terms: termFreq, source: doc.name }));
-  }
-  return records.length;
+function tokens(text) {
+  return normalizeText(text).split(' ').filter(Boolean);
 }
 
-export async function searchChunks(query, limit = 5) {
-  const qTerms = tokenize(query);
-  if (!qTerms.length) return [];
-  const chunks = await getAllEntities('chunks');
+function scoreChunk(query, chunk) {
+  const q = tokens(query);
+  const c = tokens(chunk.text);
+  const setC = new Set(c);
+  const overlap = q.filter((x) => setC.has(x)).length;
+  const tri = q.join(' ').includes(c.slice(0, 3).join(' ')) ? 1 : 0;
+  const tfidfApprox = overlap / Math.max(1, Math.sqrt(c.length));
+  return tfidfApprox + tri + (chunk.priorityBonus || 0);
+}
+
+export async function reindexDocuments({ onProgress = () => {}, shouldCancel = () => false } = {}) {
   const docs = await getAllEntities('docs');
+  const oldChunks = await getAllEntities('chunks');
+  await Promise.all(oldChunks.map((c) => removeEntity('chunks', c.id)));
+  let count = 0;
+  for (let i = 0; i < docs.length; i += 1) {
+    if (shouldCancel()) break;
+    const doc = docs[i];
+    const docChunks = chunkText(doc);
+    for (const [idx, c] of docChunks.entries()) {
+      await putEntity('chunks', {
+        docId: doc.id,
+        source: doc.name,
+        section: c.section,
+        lineStart: c.lineStart,
+        chunkId: `${doc.id}:${idx}`,
+        text: c.text,
+      });
+      count += 1;
+    }
+    onProgress({ current: i + 1, total: docs.length, chunks: count });
+  }
+  return { docs: docs.length, chunks: count };
+}
 
-  const docFreq = {};
-  chunks.forEach((chunk) => {
-    const uniq = new Set(Object.keys(chunk.terms || {}));
-    uniq.forEach((term) => { docFreq[term] = (docFreq[term] || 0) + 1; });
-  });
-
-  const total = Math.max(chunks.length, 1);
-  const scored = chunks.map((chunk) => {
-    const lengthNorm = Object.values(chunk.terms || {}).reduce((a, b) => a + b, 0) || 1;
-    let score = 0;
-    qTerms.forEach((term) => {
-      const tf = (chunk.terms || {})[term] || 0;
-      if (!tf) return;
-      const idf = Math.log(1 + total / (1 + (docFreq[term] || 0)));
-      score += (tf / lengthNorm) * idf;
-    });
-    return { ...chunk, score };
-  }).filter((x) => x.score > 0).sort((a, b) => b.score - a.score).slice(0, limit);
-
-  return scored.map((chunk) => ({
-    ...chunk,
-    doc: docs.find((d) => d.id === chunk.docId) || null,
-  }));
+export async function searchChunks(query, topK = 5) {
+  const all = await getAllEntities('chunks');
+  return all
+    .map((c) => ({ ...c, score: scoreChunk(query, c) }))
+    .filter((c) => c.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, topK);
 }

@@ -1,0 +1,5 @@
+[
+  {"q":"items < 20", "intent":"list_items_under_threshold"},
+  {"q":"générer rapport déplacement", "intent":"generate_moves_report"},
+  {"q":"export csv", "intent":"export_csv"}
+]

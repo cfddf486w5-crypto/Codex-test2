@@ -1,19 +1,25 @@
-import { initStore, putEntity } from './ai_store.js';
+import { initStore } from './ai_store.js';
 import { askAi, saveChatTurn, saveFeedback } from './ai_engine.js';
-import { addRule, addFaq, addSop, SITE_OPTIONS } from './ai_knowledge.js';
+import { addRule, SITE_OPTIONS } from './ai_knowledge.js';
 import { importFiles } from './ai_import.js';
 import { exportFeedbackDataset, exportKnowledgeJson, exportRulesFaqCsv } from './ai_export.js';
-import { getPrivacyMode, setPrivacyMode, PRIVACY_MODE } from './ai_privacy.js';
-import { toCsv, exportMovementPdf } from './ai_tools.js';
+import { reindexDocuments } from './ai_rag.js';
+import { saveDataset } from './ai_tools.js';
 
-const QUICK = ['Items < 20', 'Générer déplacements', 'Expliquer une règle', 'Créer une règle métier', 'Importer connaissances', 'Exporter knowledge + dataset'];
+const QUICK = [
+  ['Items < 20', 'items < 20'],
+  ['Rapport déplacements', 'générer rapport déplacement'],
+  ['Import connaissances', 'import connaissances'],
+  ['Ajouter règle', 'ajouter règle'],
+  ['Export knowledge + dataset', 'export knowledge'],
+];
 
-function el(tag, attrs = {}, html = '') {
+const el = (tag, attrs = {}, html = '') => {
   const node = document.createElement(tag);
   Object.entries(attrs).forEach(([k, v]) => node.setAttribute(k, v));
   if (html) node.innerHTML = html;
   return node;
-}
+};
 
 function downloadText(name, text, type = 'text/plain') {
   const a = document.createElement('a');
@@ -23,168 +29,122 @@ function downloadText(name, text, type = 'text/plain') {
   URL.revokeObjectURL(a.href);
 }
 
+function renderTable(rows = []) {
+  if (!rows.length) return '<em>Aucune ligne.</em>';
+  const headers = Object.keys(rows[0]);
+  return `<table class="ai-table"><thead><tr>${headers.map((h) => `<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.map((r) => `<tr>${headers.map((h) => `<td>${r[h] ?? ''}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+}
+
 async function onAsk(input, messages) {
   const q = input.value.trim();
   if (!q) return;
   input.value = '';
-  const qNode = el('div', { class: 'ai-msg user' }, q);
-  messages.append(qNode);
-
+  messages.append(el('div', { class: 'ai-msg user' }, q));
   const answer = await askAi(q);
-  const content = `${answer.summary}<br><small>${(answer.details || []).join('<br>')}</small>`;
-  const aNode = el('div', { class: 'ai-msg assistant' }, content);
+
+  const node = el('div', { class: 'ai-msg assistant' });
+  node.innerHTML = `<strong>${answer.summary}</strong>${renderTable(answer.table || [])}<div><small>Citations: ${(answer.citations || []).join(' | ') || 'Aucune'}</small></div>`;
 
   const actions = el('div', { class: 'ai-actions' });
   (answer.actions || []).forEach((action) => {
-    const btn = el('button', { class: 'ghost btn-xs' }, action);
-    btn.addEventListener('click', () => {
-      if (action === 'copy') navigator.clipboard?.writeText(`${answer.summary}\n${(answer.details || []).join('\n')}`);
-      if (action === 'export_csv' && answer.payload) downloadText('deplacements.csv', toCsv(answer.payload), 'text/csv');
-      if (action === 'export_pdf' && answer.payload) window.open(exportMovementPdf(answer.payload), '_blank');
-    });
-    actions.append(btn);
+    const b = el('button', { class: 'ghost btn-xs' }, action);
+    b.onclick = () => {
+      if (action === 'copy') navigator.clipboard?.writeText(JSON.stringify(answer.table || answer.summary));
+      if (action === 'export_csv') downloadText('wms_export.csv', answer.exports?.csv || '', 'text/csv');
+      if (action === 'export_pdf') downloadText('wms_export_print.html', answer.exports?.printHtml || '', 'text/html');
+    };
+    actions.append(b);
   });
-  aNode.append(actions);
+  node.append(actions);
 
   const fb = el('div', { class: 'ai-actions' });
   const up = el('button', { class: 'ghost btn-xs' }, '👍 utile');
-  up.addEventListener('click', async () => { await saveFeedback({ question: q, aiAnswer: answer.summary, helpful: true }); up.textContent = '✅ Merci'; });
+  up.onclick = async () => { await saveFeedback({ question: q, aiAnswer: answer.summary, helpful: true }); up.textContent = '✅ Merci'; };
   const down = el('button', { class: 'warn btn-xs' }, '👎 faux');
-  down.addEventListener('click', async () => {
+  down.onclick = async () => {
     const correction = prompt('Correction attendue');
     if (!correction) return;
     const why = prompt('Pourquoi ?') || '';
-    const markAsRule = confirm('Marquer aussi comme règle métier ?');
-    await saveFeedback({ question: q, aiAnswer: answer.summary, helpful: false, correction, why, markAsRule });
-    if (markAsRule) await addRule({ title: `Règle issue feedback: ${q.slice(0, 42)}`, description: correction, tags: ['feedback'] });
-    down.textContent = '✅ Corrigé';
-  });
+    const tags = (prompt('Tags (a,b)') || '').split(',').map((x) => x.trim()).filter(Boolean);
+    const site = prompt('Site', 'GLOBAL') || 'GLOBAL';
+    const markAsRule = confirm('Convertir en règle ?');
+    await saveFeedback({ question: q, aiAnswer: answer.summary, helpful: false, correction, why, markAsRule, tags, site });
+    down.textContent = '✅ enregistré';
+  };
   fb.append(up, down);
-  aNode.append(fb);
+  node.append(fb);
 
-  messages.append(aNode);
+  messages.append(node);
   messages.scrollTop = messages.scrollHeight;
   await saveChatTurn(q, answer.summary);
-}
-
-async function bindKnowledgeModal(root) {
-  const formRule = root.querySelector('#aiRuleForm');
-  const formFaq = root.querySelector('#aiFaqForm');
-  const formSop = root.querySelector('#aiSopForm');
-  const inputFiles = root.querySelector('#aiImportFiles');
-
-  formRule?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const fd = new FormData(formRule);
-    await addRule({
-      title: fd.get('title'),
-      description: fd.get('description'),
-      example: fd.get('example'),
-      tags: String(fd.get('tags') || '').split(',').map((x) => x.trim()).filter(Boolean),
-      priority: fd.get('priority'),
-      sites: fd.getAll('sites'),
-      date: fd.get('date'),
-    });
-    formRule.reset();
-    alert('Règle ajoutée');
-  });
-
-  formFaq?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const fd = new FormData(formFaq);
-    await addFaq({ question: fd.get('question'), answer: fd.get('answer'), tags: String(fd.get('tags') || '').split(',') });
-    formFaq.reset();
-    alert('FAQ ajoutée');
-  });
-
-  formSop?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const fd = new FormData(formSop);
-    await addSop({ title: fd.get('title'), steps: String(fd.get('steps') || '').split('\n').filter(Boolean) });
-    formSop.reset();
-    alert('SOP ajoutée');
-  });
-
-  inputFiles?.addEventListener('change', async () => {
-    const results = await importFiles(Array.from(inputFiles.files || []));
-    alert(results.map((r) => `${r.name}: ${r.ok ? 'OK' : r.reason}`).join('\n'));
-  });
-
-  root.querySelector('#aiDatasetInventory')?.addEventListener('change', async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const text = new TextDecoder('utf-8').decode(await file.arrayBuffer());
-    await putEntity('datasets', { kind: 'inventory', name: file.name, text });
-    alert('Inventaire importé');
-  });
-
-  root.querySelector('#aiDatasetReception')?.addEventListener('change', async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const text = new TextDecoder('utf-8').decode(await file.arrayBuffer());
-    await putEntity('datasets', { kind: 'reception', name: file.name, text });
-    alert('Réception importée');
-  });
 }
 
 export async function initAiUi() {
   await initStore();
   const panel = el('aside', { class: 'ai-panel', id: 'aiPanel' });
   panel.innerHTML = `
-    <button id="aiToggle" class="primary">🤖 IA</button>
-    <section class="ai-drawer" id="aiDrawer">
-      <header><strong>Assistant IA DL WMS</strong></header>
-      <div class="row"><label>Mode IA</label><select id="aiMode"><option value="offline">Offline</option><option value="hybrid">Hybride</option></select></div>
-      <div class="ai-quick" id="aiQuick"></div>
-      <div class="ai-messages" id="aiMessages"></div>
-      <div class="row"><input id="aiInput" placeholder="Posez une question métier" /><button id="aiSend">Envoyer</button></div>
-      <details><summary>Connaissances</summary>
-        <form id="aiRuleForm" class="stack">
-          <input name="title" placeholder="Titre règle" required />
-          <textarea name="description" placeholder="Description" required></textarea>
-          <input name="example" placeholder="Exemple" />
-          <input name="tags" placeholder="Tags (a,b,c)" />
-          <select name="priority"><option>Haute</option><option selected>Moyenne</option><option>Basse</option></select>
-          <div>${SITE_OPTIONS.map((s) => `<label><input type="checkbox" name="sites" value="${s}" />${s}</label>`).join('')}</div>
-          <input type="date" name="date" />
-          <button>Ajouter règle</button>
-        </form>
-        <form id="aiSopForm" class="stack"><input name="title" placeholder="Titre SOP" required /><textarea name="steps" placeholder="Étapes, une par ligne"></textarea><button>Ajouter SOP</button></form>
-        <form id="aiFaqForm" class="stack"><input name="question" placeholder="Question" required /><textarea name="answer" placeholder="Réponse" required></textarea><input name="tags" placeholder="Tags" /><button>Ajouter FAQ</button></form>
-        <label>Importer docs<input id="aiImportFiles" type="file" multiple /></label>
-        <label>Dataset inventaire (CSV)<input id="aiDatasetInventory" type="file" accept=".csv" /></label>
-        <label>Dataset réception (CSV)<input id="aiDatasetReception" type="file" accept=".csv" /></label>
-      </details>
-      <div class="row"><button id="aiExportAll">Exporter knowledge + dataset</button><button id="aiExportCsv">Exporter CSV règles/FAQ</button></div>
-    </section>`;
+  <button id="aiToggle" class="primary">Assistant IA</button>
+  <section class="ai-drawer" id="aiDrawer">
+    <header><strong>DL WMS Offline AI</strong></header>
+    <div class="ai-quick" id="aiQuick"></div>
+    <div class="ai-messages" id="aiMessages"></div>
+    <div class="row"><input id="aiInput" placeholder="Question métier"/><button id="aiSend">Envoyer</button></div>
+    <details><summary>Knowledge + règles</summary>
+      <form id="aiRuleForm" class="stack"><input name="title" placeholder="Titre" required/><input name="site" placeholder="Site" list="sites"/><input name="tags" placeholder="tags a,b"/><textarea name="action" placeholder="Action"></textarea><button>Ajouter règle</button></form>
+      <datalist id="sites">${SITE_OPTIONS.map((s) => `<option value="${s}"></option>`).join('')}</datalist>
+      <label>Importer docs<input id="aiImportFiles" type="file" multiple/></label>
+      <progress id="aiIndexProgress" max="100" value="0"></progress>
+      <label>Inventaire CSV<input id="aiDatasetInventory" type="file" accept=".csv,.txt"/></label>
+      <label>Réception CSV<input id="aiDatasetReception" type="file" accept=".csv,.txt"/></label>
+    </details>
+    <div class="row"><button id="aiExportAll">Exporter knowledge + dataset</button><button id="aiExportCsv">Exporter règles/FAQ</button></div>
+  </section>`;
   document.body.append(panel);
 
   const drawer = panel.querySelector('#aiDrawer');
-  panel.querySelector('#aiToggle').addEventListener('click', () => drawer.classList.toggle('open'));
-
-  const mode = panel.querySelector('#aiMode');
-  mode.value = await getPrivacyMode();
-  mode.addEventListener('change', () => setPrivacyMode(mode.value));
-
-  const input = panel.querySelector('#aiInput');
+  panel.querySelector('#aiToggle').onclick = () => drawer.classList.toggle('open');
   const messages = panel.querySelector('#aiMessages');
-  panel.querySelector('#aiSend').addEventListener('click', () => onAsk(input, messages));
-  input.addEventListener('keydown', (e) => { if (e.key === 'Enter') onAsk(input, messages); });
+  const input = panel.querySelector('#aiInput');
+  panel.querySelector('#aiSend').onclick = () => onAsk(input, messages);
+  input.addEventListener('keydown', (e) => e.key === 'Enter' && onAsk(input, messages));
 
-  const quickWrap = panel.querySelector('#aiQuick');
-  QUICK.forEach((txt) => {
-    const b = el('button', { class: 'ghost btn-xs' }, txt);
-    b.addEventListener('click', () => { input.value = txt; onAsk(input, messages); });
-    quickWrap.append(b);
+  const quick = panel.querySelector('#aiQuick');
+  QUICK.forEach(([label, prompt]) => {
+    const b = el('button', { class: 'ghost btn-xs' }, label);
+    b.onclick = () => { input.value = prompt; onAsk(input, messages); };
+    quick.append(b);
   });
 
-  panel.querySelector('#aiExportAll').addEventListener('click', async () => {
-    await exportKnowledgeJson();
-    await exportFeedbackDataset();
-  });
-  panel.querySelector('#aiExportCsv').addEventListener('click', exportRulesFaqCsv);
+  panel.querySelector('#aiRuleForm').onsubmit = async (e) => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    await addRule({ title: fd.get('title'), site: fd.get('site') || 'GLOBAL', tags: String(fd.get('tags') || '').split(',').filter(Boolean), actions: [fd.get('action')], conditions: [] });
+    e.target.reset();
+    alert('Règle ajoutée');
+  };
 
-  bindKnowledgeModal(panel);
+  panel.querySelector('#aiImportFiles').onchange = async (e) => {
+    const progress = panel.querySelector('#aiIndexProgress');
+    await importFiles(Array.from(e.target.files || []));
+    await reindexDocuments({ onProgress: (p) => { progress.value = Math.round((p.current / Math.max(1, p.total)) * 100); } });
+    alert('Documents importés + indexés');
+  };
+
+  panel.querySelector('#aiDatasetInventory').onchange = async (e) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    await saveDataset('inventory', f.name, new TextDecoder('utf-8').decode(await f.arrayBuffer()));
+    alert('Inventaire importé');
+  };
+  panel.querySelector('#aiDatasetReception').onchange = async (e) => {
+    const f = e.target.files?.[0];
+    if (!f) return;
+    await saveDataset('reception', f.name, new TextDecoder('utf-8').decode(await f.arrayBuffer()));
+    alert('Réception importée');
+  };
+
+  panel.querySelector('#aiExportAll').onclick = async () => { await exportKnowledgeJson(); await exportFeedbackDataset(); };
+  panel.querySelector('#aiExportCsv').onclick = exportRulesFaqCsv;
 }
 
 initAiUi();
