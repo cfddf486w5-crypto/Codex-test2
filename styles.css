@@ -113,3 +113,9 @@ button:active { transform: scale(0.97); }
   .panel, .accordion-item { box-shadow: none; border: 1px solid #bbb; background: #fff; }
   .accordion-body.hidden { display: block !important; }
 }
+
+
+#excelPasteInput { width: 100%; min-height: 240px; margin: 10px 0; }
+#pasteMappingPanel { display: grid; gap: 8px; margin-top: 10px; }
+#pasteMappingPanel label { display: grid; gap: 4px; font-size: 14px; }
+.error-text { color: #b42318; font-weight: 600; margin-top: 8px; }
