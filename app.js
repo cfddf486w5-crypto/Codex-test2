@@ -52,6 +52,22 @@ const TYPE_CAPACITY = { P1: 3, P2: 6, P3: 9, P4: 12, P5: 15, P6: 18, P7: 21 };
 const TYPE_ORDER = ["P1", "P2", "P3", "P4", "P5", "P6", "P7"];
 const TYPE_CRITICITY = { P7: 7, P6: 6, P5: 5, P4: 4, P3: 3, P2: 2, P1: 1 };
 
+const IMPORT_COLUMN_SPECS = {
+  inventory: {
+    item: { label: "item", required: true, aliases: ["Part #"] },
+    qty: { label: "qty", required: true, aliases: ["QtyOnHand"] },
+    bin: { label: "bin", required: true, aliases: ["Bin"] },
+    description: { label: "desc", required: true, aliases: ["Description"] },
+    type: { label: "type", required: false, aliases: ["Bin Type"] },
+  },
+  reception: {
+    item: { label: "item", required: true, aliases: ["Part #"] },
+    qty: { label: "qty", required: true, aliases: ["Qty", "QtyOnHand"] },
+    bin: { label: "bin", required: false, aliases: ["Bin"] },
+    description: { label: "desc", required: false, aliases: ["Description"] },
+  },
+};
+
 const DEFAULT_SETTINGS = {
   csvEncoding: "utf-8",
   csvFallbackEncoding: "iso-8859-1",
@@ -222,8 +238,10 @@ function renderConsolidation() {
   appView.innerHTML = `<section class="panel">
     <h1>Consolidation</h1>
     <div class="action-bar">
-      <label class="small-btn">Import Inventaire<input type="file" id="inventoryFile" accept=".csv,text/csv" hidden></label>
-      <label class="small-btn">Import Réception<input type="file" id="receivingFile" accept=".csv,text/csv" hidden></label>
+      <button class="small-btn" id="pasteInventoryBtn">Importer depuis Excel (Coller) — Inventaire</button>
+      <button class="small-btn" id="pasteReceptionBtn">Importer depuis Excel (Coller) — Réception</button>
+      <label class="small-btn">Import CSV Inventaire<input type="file" id="inventoryFile" accept=".csv,text/csv" hidden></label>
+      <label class="small-btn">Import CSV Réception<input type="file" id="receivingFile" accept=".csv,text/csv" hidden></label>
       <label class="small-btn">Import Bin Map (.xlsx/.csv)<input type="file" id="binMapFile" accept=".xlsx,.csv,text/csv" hidden></label>
       <button class="small-btn" id="recomputeBtn">Recalculer</button>
       <button class="small-btn" id="exportMovesBtn">Export CSV Moves</button>
@@ -232,6 +250,19 @@ function renderConsolidation() {
       <label class="small-btn">Import Annexes<input type="file" id="importAnnexesFile" accept="application/json,.json" hidden></label>
       <button class="small-btn" id="toggleSettingsBtn">Paramètres</button>
     </div>
+  </section>
+
+  <section class="panel hidden" id="excelPastePanel">
+    <h2>Import Indago — Coller depuis Excel (TSV)</h2>
+    <p>1) Ouvrir le .xlsx Indago • 2) Sélectionner le tableau complet (en-têtes inclus) • 3) Copier (Ctrl+C) • 4) Coller ici (Ctrl+V).</p>
+    <p id="pasteModeLabel"><strong>Mode:</strong> Inventaire</p>
+    <textarea id="excelPasteInput" rows="12" placeholder="Collez ici le tableau Excel..."></textarea>
+    <div class="action-bar">
+      <button class="small-btn" id="parsePasteBtn">Parser le collage</button>
+      <button class="small-btn" id="closePasteBtn">Fermer</button>
+    </div>
+    <div id="pasteMappingFeedback"></div>
+    <div id="pasteMappingPanel" class="hidden"></div>
   </section>
 
   <section class="panel hidden" id="settingsPanel">${renderSettings(state.settings, state.users, state.activeUser)}</section>
@@ -498,18 +529,59 @@ function bindConsolidationEvents(state, calc) {
     btn.addEventListener("click", () => btn.nextElementSibling.classList.toggle("hidden"));
   });
 
-  const onCsvImport = async (file, kind) => {
-    const rows = await parseCsvFile(file, state.settings);
-    const check = validateColumns(kind, rows);
-    if (!check.ok) {
-      showToast(check.message);
-      return;
-    }
+  const onNormalizedImport = (kind, rows, modeLabel) => {
     if (kind === "inventory") saveStorage("dlwms_inventory_rows", rows);
     if (kind === "reception") saveStorage("dlwms_reception_rows", rows);
-    showToast(`${rows.length} lignes importées (${kind})`);
+    showToast(`${rows.length} lignes importées (${kind}) via ${modeLabel}`);
     renderConsolidation();
   };
+
+  const runParsedImport = (kind, parsedRows, modeLabel) => {
+    const mapping = autoMapColumns(kind, parsedRows.headers);
+    const unresolved = missingRequiredColumns(kind, mapping);
+    if (unresolved.length) {
+      renderMappingPanel(kind, parsedRows, mapping, unresolved, modeLabel, onNormalizedImport);
+      const message = `Colonnes manquantes (${kind}): ${unresolved.join(", ")}. Sélectionnez le mapping manuel.`;
+      document.getElementById("pasteMappingFeedback").innerHTML = `<p class="error-text">${message}</p>`;
+      showToast(message);
+      return;
+    }
+    const rows = normalizeImportedRows(kind, parsedRows.rows, mapping);
+    onNormalizedImport(kind, rows, modeLabel);
+  };
+
+  const onCsvImport = async (file, kind) => {
+    const parsedRows = await parseCsvFile(file, state.settings);
+    runParsedImport(kind, parsedRows, "CSV");
+  };
+
+  let pasteKind = "inventory";
+  const pastePanel = document.getElementById("excelPastePanel");
+  const pasteModeLabel = document.getElementById("pasteModeLabel");
+  const pasteInput = document.getElementById("excelPasteInput");
+
+  const openPastePanel = (kind) => {
+    pasteKind = kind;
+    pasteModeLabel.innerHTML = `<strong>Mode:</strong> ${kind === "inventory" ? "Inventaire" : "Réception"}`;
+    document.getElementById("pasteMappingFeedback").innerHTML = "";
+    document.getElementById("pasteMappingPanel").innerHTML = "";
+    document.getElementById("pasteMappingPanel").classList.add("hidden");
+    pastePanel.classList.remove("hidden");
+    pasteInput.focus();
+  };
+
+  document.getElementById("pasteInventoryBtn").addEventListener("click", () => openPastePanel("inventory"));
+  document.getElementById("pasteReceptionBtn").addEventListener("click", () => openPastePanel("reception"));
+  document.getElementById("closePasteBtn").addEventListener("click", () => pastePanel.classList.add("hidden"));
+
+  document.getElementById("parsePasteBtn").addEventListener("click", () => {
+    const parsedRows = parseTsvText(pasteInput.value);
+    if (!parsedRows.rows.length) {
+      showToast("Collage vide ou invalide");
+      return;
+    }
+    runParsedImport(pasteKind, parsedRows, "Excel Coller (TSV)");
+  });
 
   document.getElementById("inventoryFile").addEventListener("change", async (e) => e.target.files[0] && onCsvImport(e.target.files[0], "inventory"));
   document.getElementById("receivingFile").addEventListener("change", async (e) => e.target.files[0] && onCsvImport(e.target.files[0], "reception"));
@@ -524,9 +596,9 @@ function bindConsolidationEvents(state, calc) {
         return;
       }
     }
-    const rows = await parseCsvFile(f, state.settings);
+    const parsed = await parseCsvFile(f, state.settings);
     const map = {};
-    rows.forEach((r) => {
+    parsed.rows.forEach((r) => {
       const bin = String(r.bin || r.BIN || r.col1 || "").trim().toUpperCase();
       const type = String(r.type || r.TYPE || r.col2 || "").trim().toUpperCase();
       if (bin && /^P[1-7]$/.test(type)) map[bin] = type;
@@ -690,32 +762,107 @@ async function parseCsvFile(file, settings) {
   let text = decodeBytes(bytes, enc);
   const weird = (text.match(/�/g) || []).length;
   if (weird > 3) text = decodeBytes(bytes, fallback);
-  const lines = text.replace(/\r\n/g, "\n").split("\n").filter(Boolean);
-  if (!lines.length) return [];
-  const delimiter = settings.csvDelimiter === "auto" ? detectDelimiter(lines[0]) : settings.csvDelimiter;
-  const headers = splitCsvLine(lines[0], delimiter).map((h, i) => normalizeHeader(h) || `col${i + 1}`);
-  return lines.slice(1).map((line) => {
+  return parseDelimitedText(text, settings.csvDelimiter || "auto");
+}
+
+function parseTsvText(text) {
+  return parseDelimitedText(text, "\t");
+}
+
+function parseDelimitedText(rawText, delimiterSetting) {
+  const lines = String(rawText || "").replace(/\r\n/g, "\n").split("\n").filter((line) => line.trim().length);
+  if (!lines.length) return { headers: [], rows: [] };
+  const delimiter = delimiterSetting === "auto" ? detectDelimiter(lines[0]) : delimiterSetting;
+  const rawHeaders = splitCsvLine(lines[0], delimiter).map((h, i) => normalizeHeader(h) || `col${i + 1}`);
+  const headers = dedupeHeaders(rawHeaders);
+  const rows = lines.slice(1).map((line) => {
     const cols = splitCsvLine(line, delimiter);
     const row = {};
     headers.forEach((h, i) => { row[h] = cols[i] ? cols[i].trim() : ""; });
-    if (row.qty) row.qty = Number(String(row.qty).replace(",", "."));
     return row;
   }).filter((r) => Object.values(r).some(Boolean));
+  return { headers, rows };
 }
 
-function validateColumns(kind, rows) {
-  if (!rows.length) return { ok: false, message: "Fichier vide" };
-  const first = rows[0];
-  const has = (key) => Object.prototype.hasOwnProperty.call(first, key);
-  if (kind === "inventory") {
-    const ok = has("item") && has("qty") && has("bin") && has("description");
-    return ok ? { ok: true } : { ok: false, message: "Inventaire attendu: item, qty, bin, description" };
-  }
-  if (kind === "reception") {
-    const ok = has("item") && has("qty") && has("bin");
-    return ok ? { ok: true } : { ok: false, message: "Réception attendue: item, qty, bin" };
-  }
-  return { ok: true };
+function dedupeHeaders(headers) {
+  const seen = new Map();
+  return headers.map((h) => {
+    const count = seen.get(h) || 0;
+    seen.set(h, count + 1);
+    return count ? `${h}_${count + 1}` : h;
+  });
+}
+
+function autoMapColumns(kind, headers) {
+  const spec = IMPORT_COLUMN_SPECS[kind] || {};
+  const index = new Map(headers.map((h) => [normalizeHeader(h), h]));
+  const mapping = {};
+  Object.entries(spec).forEach(([targetKey, cfg]) => {
+    const hit = cfg.aliases.map((alias) => index.get(normalizeHeader(alias))).find(Boolean);
+    if (hit) mapping[targetKey] = hit;
+  });
+  return mapping;
+}
+
+function missingRequiredColumns(kind, mapping) {
+  const spec = IMPORT_COLUMN_SPECS[kind] || {};
+  return Object.entries(spec)
+    .filter(([, cfg]) => cfg.required)
+    .filter(([targetKey]) => !mapping[targetKey])
+    .map(([, cfg]) => cfg.aliases.join(" / "));
+}
+
+function normalizeImportedRows(kind, rows, mapping) {
+  const grouped = new Map();
+  rows.forEach((raw) => {
+    const item = String(raw[mapping.item] || "").trim().toUpperCase();
+    const rawQty = String(raw[mapping.qty] || "").replace(/\s/g, "").replace(",", ".");
+    const qty = Number(rawQty);
+    const binRaw = mapping.bin ? String(raw[mapping.bin] || "") : "";
+    const bin = kind === "reception" && !binRaw.trim() ? "RECEPTION_STAGING" : binRaw.trim();
+    const description = mapping.description ? String(raw[mapping.description] || "").trim() : "";
+    const type = mapping.type ? String(raw[mapping.type] || "").trim() : "";
+    if (!item || !Number.isFinite(qty)) return;
+    const key = `${item}__${bin}`;
+    const prev = grouped.get(key) || { item, qty: 0, bin, description, type };
+    prev.qty += qty;
+    if (!prev.description && description) prev.description = description;
+    if (!prev.type && type) prev.type = type;
+    grouped.set(key, prev);
+  });
+  return [...grouped.values()];
+}
+
+function renderMappingPanel(kind, parsedRows, initialMapping, unresolved, modeLabel, onConfirm) {
+  const panel = document.getElementById("pasteMappingPanel");
+  panel.classList.remove("hidden");
+  const spec = IMPORT_COLUMN_SPECS[kind] || {};
+  const options = parsedRows.headers.map((h) => `<option value="${h}">${h}</option>`).join("");
+  panel.innerHTML = `<h3>Mapping manuel (${modeLabel})</h3>
+    <p>Colonnes manquantes: ${unresolved.join(", ")}</p>
+    ${Object.entries(spec).map(([targetKey, cfg]) => `<label>${cfg.label}${cfg.required ? " *" : ""}
+      <select data-target="${targetKey}"><option value="">-- choisir --</option>${options}</select>
+    </label>`).join("")}
+    <button class="small-btn" id="applyMappingBtn">Appliquer le mapping</button>`;
+
+  panel.querySelectorAll("select").forEach((select) => {
+    const key = select.dataset.target;
+    if (initialMapping[key]) select.value = initialMapping[key];
+  });
+
+  document.getElementById("applyMappingBtn")?.addEventListener("click", () => {
+    const mapping = { ...initialMapping };
+    panel.querySelectorAll("select").forEach((select) => {
+      if (select.value) mapping[select.dataset.target] = select.value;
+    });
+    const missing = missingRequiredColumns(kind, mapping);
+    if (missing.length) {
+      showToast(`Mapping incomplet: ${missing.join(", ")}`);
+      return;
+    }
+    const rows = normalizeImportedRows(kind, parsedRows.rows, mapping);
+    onConfirm(kind, rows, `${modeLabel} + mapping manuel`);
+  });
 }
 
 function decodeBytes(bytes, encoding) {
