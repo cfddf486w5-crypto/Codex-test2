@@ -76,6 +76,7 @@ button, input, textarea { font: inherit; }
 .panel { padding: 14px; margin-bottom: 14px; }
 .section-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
 .section-head h1, .panel h1 { margin: 0; font-size: 24px; }
+.muted { color: #54637f; font-size: 12px; margin: 4px 0 10px; }
 .inline-actions { display: flex; gap: 8px; }
 .small-btn {
   border: 1px solid var(--pill-border); background: var(--pill-bg); color: #1b4f8a; border-radius: 12px;
