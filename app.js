@@ -61,6 +61,9 @@ const DEFAULT_SETTINGS = {
   maxSourcesExport: 3,
   includePalletEstimate: true,
   zonePriority: ["L3", "L2", "L5"],
+  strictSingleSkuPerBin: true,
+  allowTypeFallback: false,
+  annexesVersion: "1.1.0",
 };
 
 const DEFAULT_USERS = ["Superviseur", "Cariste_A", "Cariste_B"];
@@ -381,7 +384,10 @@ function chooseTargets(sku, requiredType, state, binOccupancy, units, pallets) {
 
   if (free.length) {
     const [bin, type] = free[0];
-    return { targetBins: [bin], targetType: type, mode: "E", fallback: type !== requiredType };
+    const singleTypeCapacity = TYPE_CAPACITY[type] * units;
+    if (singleTypeCapacity >= capacityNeeded) {
+      return { targetBins: [bin], targetType: type, mode: "E", fallback: type !== requiredType };
+    }
   }
 
   const splitCandidates = free.slice(0, Math.max(2, state.settings.maxTargetBins));
@@ -409,7 +415,7 @@ function buildMoveRecommendation(sku, recommendation, report, requiredType, unit
     need -= qty;
   }
 
-  const freedBins = sources.filter((s) => s.bin !== target).map((s) => s.bin);
+  const freedBins = sources.filter((s) => s.bin !== target && s.qty > 0).map((s) => s.bin);
   if (!freedBins.length) return null;
 
   return {
@@ -459,6 +465,7 @@ function renderValidationSection(items) {
 
 function renderSettings(settings, users, activeUser) {
   return `<h2>Paramètres</h2>
+  <p class="muted">Sections repliables par catégorie. Tout est stocké offline dans les annexes.</p>
   <div class="settings-grid">
     <label>Recherche<input id="settingsSearch" placeholder="Filtrer"></label>
     <label>Encodage CSV<select id="setEncoding"><option value="utf-8" ${settings.csvEncoding === "utf-8" ? "selected" : ""}>UTF-8</option><option value="iso-8859-1" ${settings.csvEncoding === "iso-8859-1" ? "selected" : ""}>ISO-8859-1</option></select></label>
@@ -469,6 +476,7 @@ function renderSettings(settings, users, activeUser) {
     <label>max sources export<input type="number" id="setMaxSources" value="${settings.maxSourcesExport}" min="1" max="6"></label>
     <label>pallets_est export<input type="checkbox" id="setPalletEst" ${settings.includePalletEstimate ? "checked" : ""}></label>
     <label>Zone priority (csv)<input id="setZonePriority" value="${settings.zonePriority.join(",")}"></label>
+    <label>Version annexes<input id="setAnnexVersion" value="${settings.annexesVersion || "1.1.0"}"></label>
     <label>Utilisateur actif<select id="activeUserSelect">${users.map((u) => `<option ${u === activeUser ? "selected" : ""}>${u}</option>`).join("")}</select></label>
     <label>Ajouter utilisateur<input id="newUserInput" placeholder="Nom utilisateur"></label>
   </div>
@@ -492,6 +500,11 @@ function bindConsolidationEvents(state, calc) {
 
   const onCsvImport = async (file, kind) => {
     const rows = await parseCsvFile(file, state.settings);
+    const check = validateColumns(kind, rows);
+    if (!check.ok) {
+      showToast(check.message);
+      return;
+    }
     if (kind === "inventory") saveStorage("dlwms_inventory_rows", rows);
     if (kind === "reception") saveStorage("dlwms_reception_rows", rows);
     showToast(`${rows.length} lignes importées (${kind})`);
@@ -507,7 +520,7 @@ function bindConsolidationEvents(state, calc) {
     if (f.name.toLowerCase().endsWith(".xlsx")) {
       const bytes = new Uint8Array(await f.arrayBuffer());
       if (bytes[0] === 0x50 && bytes[1] === 0x4b) {
-        showToast(".xlsx détecté: exportez la feuille en CSV (A=bin,B=type) puis importez.");
+        showToast(".xlsx détecté: conversion CSV offline requise (voir docs/consolidation_xlsx_offline.md)");
         return;
       }
     }
@@ -533,7 +546,7 @@ function bindConsolidationEvents(state, calc) {
 
   document.getElementById("exportAnnexesBtn").addEventListener("click", () => {
     const payload = {
-      version: "1.0.0",
+      version: state.settings.annexesVersion || "1.1.0",
       exported_at: new Date().toISOString(),
       settings: getStorage("dlwms_settings", DEFAULT_SETTINGS),
       bin_map: getStorage("dlwms_bin_map", {}),
@@ -583,6 +596,7 @@ function bindConsolidationEvents(state, calc) {
       maxSourcesExport: Number(document.getElementById("setMaxSources").value) || 3,
       includePalletEstimate: document.getElementById("setPalletEst").checked,
       zonePriority: document.getElementById("setZonePriority").value.split(",").map((z) => z.trim()).filter(Boolean),
+      annexesVersion: document.getElementById("setAnnexVersion").value.trim() || "1.1.0",
     };
     saveStorage("dlwms_settings", settings);
     const users = [...state.users];
@@ -689,6 +703,21 @@ async function parseCsvFile(file, settings) {
   }).filter((r) => Object.values(r).some(Boolean));
 }
 
+function validateColumns(kind, rows) {
+  if (!rows.length) return { ok: false, message: "Fichier vide" };
+  const first = rows[0];
+  const has = (key) => Object.prototype.hasOwnProperty.call(first, key);
+  if (kind === "inventory") {
+    const ok = has("item") && has("qty") && has("bin") && has("description");
+    return ok ? { ok: true } : { ok: false, message: "Inventaire attendu: item, qty, bin, description" };
+  }
+  if (kind === "reception") {
+    const ok = has("item") && has("qty") && has("bin");
+    return ok ? { ok: true } : { ok: false, message: "Réception attendue: item, qty, bin" };
+  }
+  return { ok: true };
+}
+
 function decodeBytes(bytes, encoding) {
   try { return new TextDecoder(encoding).decode(bytes); }
   catch { return new TextDecoder("utf-8").decode(bytes); }
@@ -724,8 +753,17 @@ function extractDiameter(description) {
   const hits = [];
   const mags = [...text.matchAll(/\b(1[4-9]|2[0-6])\s*[Xx]\s*\d{1,2}(?:[\.,]\d+)?\b/g)].map((m) => Number(m[1]));
   hits.push(...mags);
-  const specific = [...text.matchAll(/\b(1[4-9]|2[0-6])\s*(?:"|PO|IN|R)\b/g)].map((m) => Number(m[1]));
+  const specific = [...text.matchAll(/\b(1[4-9]|2[0-6])\s*(?:"|PO|IN)\b/g)].map((m) => Number(m[1]));
   hits.push(...specific);
+  const withR = [...text.matchAll(/\bR\s*(1[4-9]|2[0-6])\b/g)]
+    .filter((m) => {
+      const idx = m.index ?? 0;
+      const prev = text[idx - 1] || " ";
+      const prev2 = text[idx - 2] || " ";
+      return !(prev === "/" || /\d/.test(prev2));
+    })
+    .map((m) => Number(m[1]));
+  hits.push(...withR);
   const fallback = [...text.matchAll(/\b(1[4-9]|2[0-6])\b/g)].map((m) => Number(m[1]));
   hits.push(...fallback);
   if (!hits.length) return null;
