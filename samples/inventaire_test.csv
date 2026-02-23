@@ -1,5 +1,6 @@
-item,bin,qty
-BRK-100,A-01,12
-BRK-100,A-02,5
-FLT-300,B-08,30
-OIL-1L,C-02,2
+item,qty,bin,description
+SKU-STAGE,10,L2A01,MAGS 19x7.0 noir satiné
+SKU-UNK,4,L2A02,Produit sans taille detectée
+SKU-SPLIT,60,L3H19A01,Mags R21 performance
+SKU-NOTARGET,40,L5C01,MAGS 24x10 offroad
+SKU-KEEP,3,L3toilette,Jante 16 PO argent

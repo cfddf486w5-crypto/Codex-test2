@@ -49,3 +49,11 @@ Pour générer l'archive livrable:
 ```bash
 zip -r dl-wms-offline-ai.zip index.html assets ai debug_ai.html tests samples README.md
 ```
+
+## Consolidation (spéc finale offline)
+- Page **Consolidation** implémentée avec action bar complète: imports inventaire/réception/bin map, recalcul, export CSV moves, impression, export/import annexes JSON.
+- Accordéons fermés par défaut: Règles, Tâches, Déplacements recommandés, Bins libres/vides, À valider.
+- IA locale intégrée dans la page (bouton **Pourquoi ?** + chat repliable), basée sur FAQ embarquée + notes KB en localStorage.
+- Annexes sauvegardées en localStorage: `settings`, `bin_map`, `diameter_overrides`, `users`, `active_user`, `tasks`, `move_logs`, `kb_notes`, `ai_chat_history`.
+- Import Bin Map `.xlsx`: alternative offline documentée (exporter la feuille en CSV A=bin, B=type P1..P7 puis importer).
+- Fichiers d'exemple de validation rapide: `samples/inventaire_test.csv`, `samples/reception_test.csv`, `samples/binmap_test.csv`.
