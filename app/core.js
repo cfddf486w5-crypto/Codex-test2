@@ -42,6 +42,7 @@ const RECEIPTS_DB_NAME = 'DLWMS_RECEIPTS_DB_V1';
 const RECEIPTS_STORE_NAME = 'photos';
 const PROMPT_DRAFT_KEY = 'dlwms_ai_prompt_draft_v1';
 const LAST_SENT_PROMPT_KEY = 'dlwms_ai_prompt_last_sent_v1';
+const AI_MEMORY_KEY = 'DLWMS_GLOBAL_AI_MEMORY_V1';
 const LIA_GUIDE_PATH = './docs/formation-lia.md';
 const COMPLETE_AI_SEED_PATH = './data/ai_complete_seed.json';
 let deferredPrompt;
@@ -129,6 +130,7 @@ async function boot() {
   bindInstall();
   bindNetworkBadge();
   bindNav();
+  bindGlobalAiAssistant();
   installReceptionFaqGlobals(navigate);
   // BEGIN PATCH: NAV
   window.DLWMS_navTo = async (route) => navigate(route);
@@ -273,6 +275,7 @@ async function navigate(route, options = {}) {
   bindScanInputs();
   bindHistoryPage(normalizedRoute);
   bindSettingsJumps(normalizedRoute);
+  bindSettingsAiMemory(normalizedRoute);
   bindHomePage(normalizedRoute);
   bindLayoutPage(normalizedRoute);
   bindModulePages(normalizedRoute);
@@ -280,6 +283,94 @@ async function navigate(route, options = {}) {
   if (normalizedRoute === 'parametres') await hydrateSettingsMetrics();
   if (normalizedRoute === 'monitoring') hydrateMonitoring();
   if (normalizedRoute === 'ui-self-test') bindUiSelfTest();
+}
+
+
+function readAiMemory() {
+  const fallback = { history: [] };
+  try {
+    const parsed = JSON.parse(localStorage.getItem(AI_MEMORY_KEY) || '');
+    return parsed && Array.isArray(parsed.history) ? parsed : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function writeAiMemory(payload) {
+  localStorage.setItem(AI_MEMORY_KEY, JSON.stringify(payload));
+}
+
+function bindGlobalAiAssistant() {
+  const toggle = document.getElementById('globalAiToggle');
+  const popup = document.getElementById('globalAiPopup');
+  const form = document.getElementById('globalAiForm');
+  const input = document.getElementById('globalAiInput');
+  const list = document.getElementById('globalAiMessages');
+  if (!toggle || !popup || !form || !input || !list) return;
+
+  const canned = [
+    { key: 'consolidation', answer: 'Ouvre Consolidation pour fusionner inventaire + réception puis vérifier les KPI.' },
+    { key: 'remise', answer: 'Pour Remise, valide le scan, l’état pièce, puis confirme la réintégration en stock.' },
+    { key: 'réception', answer: 'Utilise Réception preuve pour enregistrer photos et documents de réception complète.' },
+  ];
+
+  const render = () => {
+    const memory = readAiMemory();
+    const entries = memory.history.slice(-8);
+    list.innerHTML = entries.length
+      ? entries.map((item) => `<div class="ai-popup-msg ${item.role}">${item.text}</div>`).join('')
+      : '<div class="ai-popup-msg assistant">Bonjour 👋 Pose une question sur les modules.</div>';
+    list.scrollTop = list.scrollHeight;
+  };
+
+  toggle.addEventListener('click', () => {
+    const opening = popup.hasAttribute('hidden');
+    popup.toggleAttribute('hidden');
+    toggle.setAttribute('aria-expanded', String(opening));
+    if (opening) {
+      render();
+      input.focus();
+    }
+  });
+
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const question = input.value.trim();
+    if (!question) return;
+    const lower = question.toLowerCase();
+    const found = canned.find((item) => lower.includes(item.key));
+    const reply = found?.answer || 'Je peux guider vers Consolidation, Remise, Réception preuve, Inventaire et Paramètres.';
+    const memory = readAiMemory();
+    memory.history.push({ role: 'user', text: question, at: Date.now() });
+    memory.history.push({ role: 'assistant', text: reply, at: Date.now() });
+    writeAiMemory(memory);
+    input.value = '';
+    render();
+  });
+}
+
+function bindSettingsAiMemory(route) {
+  if (route !== 'parametres') return;
+  const textarea = document.getElementById('aiMemoryZone');
+  const saveBtn = document.getElementById('saveAiMemory');
+  const clearBtn = document.getElementById('clearAiMemory');
+  if (!textarea || !saveBtn || !clearBtn) return;
+
+  textarea.value = JSON.stringify(readAiMemory(), null, 2);
+  saveBtn.addEventListener('click', () => {
+    try {
+      const parsed = JSON.parse(textarea.value || '{"history":[]}');
+      writeAiMemory({ history: Array.isArray(parsed.history) ? parsed.history : [] });
+      showToast('Mémoire IA sauvegardée.', 'success');
+    } catch {
+      showToast('JSON mémoire invalide.', 'error');
+    }
+  });
+  clearBtn.addEventListener('click', () => {
+    writeAiMemory({ history: [] });
+    textarea.value = JSON.stringify({ history: [] }, null, 2);
+    showToast('Mémoire IA réinitialisée.', 'success');
+  });
 }
 
 

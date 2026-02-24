@@ -40,4 +40,18 @@
     </div>
   </div>
 </section>
+
+<section class="card" id="settings-ai-memory">
+  <button type="button" data-accordion-trigger aria-controls="settingsAiMemoryPanel" aria-expanded="false">IA · Mémoire / Entraînement</button>
+  <div id="settingsAiMemoryPanel" hidden>
+    <p class="muted">Toute la mémoire d'entraînement IA est centralisée ici.</p>
+    <label for="aiMemoryZone">Mémoire IA (JSON)</label>
+    <textarea id="aiMemoryZone" rows="10" class="input" placeholder='{"history":[]}'></textarea>
+    <div class="row">
+      <button id="saveAiMemory" class="btn btn-primary" type="button">Sauvegarder</button>
+      <button id="clearAiMemory" class="btn" type="button">Réinitialiser</button>
+    </div>
+  </div>
+</section>
+
 <!-- END PATCH: settings global centralisés -->

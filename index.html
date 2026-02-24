@@ -26,8 +26,21 @@
       <div class="row" style="justify-content:flex-end; min-width: fit-content;">
         <span id="networkBadge" class="status-badge" role="status" aria-live="polite">En ligne</span>
         <button id="installBtn" class="ghost hidden" type="button">Installer</button>
+        <button id="globalAiToggle" class="ai-fab" type="button" aria-label="Ouvrir l'assistant IA" aria-expanded="false">🤖</button>
       </div>
     </header>
+
+    <aside id="globalAiPopup" class="ai-popup" hidden aria-label="Assistant IA">
+      <div class="ai-popup-header">
+        <strong>Assistant IA</strong>
+        <small class="muted">Toujours disponible</small>
+      </div>
+      <div id="globalAiMessages" class="ai-popup-messages"></div>
+      <form id="globalAiForm" class="ai-popup-form">
+        <input id="globalAiInput" class="input" type="text" autocomplete="off" placeholder="Posez votre question..." />
+        <button type="submit" class="btn btn-primary">Envoyer</button>
+      </form>
+    </aside>
 
     <main id="app" class="app-shell" aria-live="polite"></main>
 

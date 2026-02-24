@@ -306,13 +306,13 @@ textarea::placeholder { color: color-mix(in oklab, var(--muted) 80%, transparent
   flex-direction: column;
   gap: 8px;
   text-align: left;
-  min-height: 220px;
+  min-height: 180px;
   overflow: hidden;
 }
 
 .module-card img {
   width: 100%;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 16 / 10;
   object-fit: cover;
   border-radius: 12px;
   border: 1px solid var(--stroke);
@@ -324,9 +324,48 @@ textarea::placeholder { color: color-mix(in oklab, var(--muted) 80%, transparent
 }
 
 @media (max-width: 430px) {
-  .module-grid {
-    grid-template-columns: 1fr;
-  }
+  .module-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .module-card { min-height: 162px; padding: 10px; }
+  .module-card-title { font-size: 0.9rem; }
+}
+
+.ai-fab {
+  width: 42px;
+  min-width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, var(--accent) 70%, white);
+  background: linear-gradient(180deg, color-mix(in oklab, var(--accent) 95%, white), color-mix(in oklab, var(--accent-strong) 88%, black));
+}
+
+.ai-popup {
+  position: fixed;
+  right: 12px;
+  top: calc(env(safe-area-inset-top) + 74px);
+  width: min(94vw, 360px);
+  max-height: 62vh;
+  z-index: 120;
+  padding: 12px;
+  border-radius: 16px;
+  background: color-mix(in oklab, var(--panel) 95%, black);
+  border: 1px solid var(--stroke);
+  box-shadow: var(--shadow-lg);
+}
+
+.ai-popup-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.ai-popup-messages { display: grid; gap: 6px; min-height: 100px; max-height: 34vh; overflow: auto; margin-bottom: 8px; }
+.ai-popup-msg { padding: 8px 10px; border-radius: 10px; font-size: 0.86rem; }
+.ai-popup-msg.user { background: #293f74; }
+.ai-popup-msg.assistant { background: #1a223d; }
+.ai-popup-form { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
+
+.mini-charts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.mini-charts article { border: 1px solid var(--stroke); border-radius: 12px; padding: 8px; }
+.mini-bars { display: flex; align-items: end; gap: 5px; height: 56px; }
+.mini-bars span { flex: 1; height: var(--v); border-radius: 6px 6px 2px 2px; background: linear-gradient(180deg, var(--accent), var(--accent-strong)); }
+
+@media (max-width: 430px) {
+  .mini-charts { grid-template-columns: 1fr; }
 }
 
 ::selection {
