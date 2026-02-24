@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Icône remise en stock">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6ea1ff"/>
+      <stop offset="1" stop-color="#1f57d5"/>
+    </linearGradient>
+  </defs>
+  <rect x="6" y="6" width="116" height="116" rx="22" fill="#edf3ff"/>
+  <rect x="12" y="12" width="104" height="104" rx="18" fill="url(#g)" opacity=".14"/>
+  <rect x="68" y="28" width="36" height="8" rx="4" fill="#1e4ba9"/>
+  <rect x="68" y="44" width="36" height="8" rx="4" fill="#1e4ba9"/>
+  <rect x="68" y="60" width="36" height="8" rx="4" fill="#1e4ba9"/>
+  <circle cx="44" cy="30" r="9" fill="#1f57d5"/>
+  <path d="M31 50c0-6 5-11 11-11h4c6 0 11 5 11 11v23H31z" fill="#2c64de"/>
+  <path d="M34 74h30l-4 20H37z" fill="#1e4ba9"/>
+  <path d="M62 84h27l7 11H55z" fill="#275bd0"/>
+  <circle cx="64" cy="100" r="6" fill="#1e4ba9"/>
+  <circle cx="88" cy="100" r="6" fill="#1e4ba9"/>
+  <path d="M69 32h-4" stroke="#1f57d5" stroke-width="4"/>
+</svg>

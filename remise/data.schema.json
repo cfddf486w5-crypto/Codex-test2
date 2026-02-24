@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DL.WMS Remise en stock local store",
+  "type": "object",
+  "required": ["users", "baskets", "remises", "scrapLogs", "settings", "kb_faq", "kb_notes"],
+  "properties": {
+    "users": { "type": "array", "items": { "$ref": "#/$defs/User" } },
+    "baskets": { "type": "array", "items": { "$ref": "#/$defs/Basket" } },
+    "draftGeneration": { "$ref": "#/$defs/DraftGeneration" },
+    "remises": { "type": "array", "items": { "$ref": "#/$defs/Remise" } },
+    "scrapLogs": { "type": "array", "items": { "$ref": "#/$defs/ScrapLog" } },
+    "settings": { "$ref": "#/$defs/Settings" },
+    "kb_faq": { "type": "array", "items": { "$ref": "#/$defs/QA" } },
+    "kb_notes": { "type": "array", "items": { "$ref": "#/$defs/QA" } }
+  },
+  "$defs": {
+    "User": {
+      "type": "object",
+      "required": ["id", "name", "active"],
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "active": { "type": "boolean" }
+      }
+    },
+    "Basket": {
+      "type": "object",
+      "required": ["id", "createdAt"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^LAVREMP\\d{2}$" },
+        "createdAt": { "type": "string" },
+        "notes": { "type": "string" }
+      }
+    },
+    "DraftGeneration": {
+      "type": "object",
+      "properties": {
+        "idTemp": { "type": "string" },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "sku": { "type": "string" },
+              "qty": { "type": "number" },
+              "actions": { "type": "array" }
+            }
+          }
+        }
+      }
+    },
+    "Remise": {
+      "type": "object",
+      "required": ["id", "status", "lines", "logs"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^LAVREM\\d{4}$" },
+        "basketId": { "type": "string" },
+        "status": { "enum": ["pending", "in_progress", "done"] },
+        "createdAt": { "type": "string" },
+        "startedAt": { "type": ["string", "null"] },
+        "doneAt": { "type": ["string", "null"] },
+        "createdByUserId": { "type": "string" },
+        "processedByUserId": { "type": ["string", "null"] },
+        "lines": { "type": "array", "items": { "$ref": "#/$defs/Line" } },
+        "logs": { "type": "array", "items": { "$ref": "#/$defs/Log" } }
+      }
+    },
+    "Line": {
+      "type": "object",
+      "properties": {
+        "sku": { "type": "string" },
+        "shortDesc": { "type": "string" },
+        "zone": { "type": "string" },
+        "aisle": { "type": "string" },
+        "bin": { "type": "string" },
+        "qtyTotal": { "type": "number" },
+        "qtyRemaining": { "type": "number" },
+        "rebox": { "type": "boolean" },
+        "scrapCount": { "type": "number" }
+      }
+    },
+    "Log": {
+      "type": "object",
+      "properties": {
+        "at": { "type": "string" },
+        "userId": { "type": "string" },
+        "type": { "type": "string" },
+        "message": { "type": "string" },
+        "data": { "type": "object" }
+      }
+    },
+    "ScrapLog": {
+      "type": "object",
+      "properties": {
+        "at": { "type": "string" },
+        "userId": { "type": "string" },
+        "sku": { "type": "string" },
+        "basketOrRemiseId": { "type": "string" },
+        "scrapBox": { "type": "string" },
+        "zone": { "type": "string" },
+        "bin": { "type": "string" },
+        "qty": { "type": "number" }
+      }
+    },
+    "Settings": {
+      "type": "object",
+      "properties": {
+        "scanDebounceMs": { "type": "number" },
+        "requireBinConfirm": { "type": "boolean" },
+        "zoneOrder": { "type": "array", "items": { "type": "string" } },
+        "includeReboxAtEnd": { "type": "boolean" }
+      }
+    },
+    "QA": {
+      "type": "object",
+      "properties": {
+        "q": { "type": "string" },
+        "a": { "type": "string" }
+      }
+    }
+  }
+}

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>DL.WMS — Remise en stock</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app" class="app-shell">
+    <header id="topHeader" class="top-header"></header>
+
+    <main id="routeView" class="route-view"></main>
+
+    <section class="ia-panel" id="iaPanel">
+      <button id="iaToggle" class="ia-toggle" aria-expanded="false">Assistant IA (offline)</button>
+      <div id="iaBody" class="ia-body hidden">
+        <div id="iaMessages" class="ia-messages" aria-live="polite"></div>
+        <div class="ia-input-row">
+          <input id="iaInput" type="text" placeholder="Posez une question…" />
+          <button id="iaAskBtn" class="btn primary">Demander</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div id="modalBackdrop" class="modal-backdrop hidden"></div>
+
+  <template id="tplActionPopover">
+    <div class="modal-card">
+      <h3>Action item</h3>
+      <p id="actionSkuText"></p>
+      <div class="action-grid">
+        <button data-action="scrap" class="btn danger">Briser</button>
+        <button data-action="rebox" class="btn warning">Rebox</button>
+        <button data-action="delete" class="btn">Supprimer</button>
+        <button data-action="cancel" class="btn ghost">Annuler</button>
+      </div>
+    </div>
+  </template>
+
+  <template id="tplPrompt">
+    <div class="modal-card">
+      <h3 id="promptTitle"></h3>
+      <p id="promptDesc"></p>
+      <input id="promptInput" class="input" type="text" />
+      <div class="row end gap">
+        <button data-act="cancel" class="btn ghost">Annuler</button>
+        <button data-act="ok" class="btn primary">Valider</button>
+      </div>
+    </div>
+  </template>
+
+  <template id="tplToast">
+    <div class="toast" id="toast"></div>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
