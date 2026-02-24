@@ -33,6 +33,8 @@ const MODULE_ROUTES = {
 };
 // END PATCH: NAV
 const worker = new Worker('./app/ai-worker.js', { type: 'module' });
+const PROMPT_DRAFT_KEY = 'dlwms_ai_prompt_draft_v1';
+const LAST_SENT_PROMPT_KEY = 'dlwms_ai_prompt_last_sent_v1';
 const LIA_GUIDE_PATH = './docs/formation-lia.md';
 const COMPLETE_AI_SEED_PATH = './data/ai_complete_seed.json';
 let deferredPrompt;
@@ -364,13 +366,64 @@ function bindUiSelfTest() {
 
 async function bindSharedActions() {
   const promptNode = document.getElementById('aiPrompt');
+  const draftStatusNode = document.getElementById('promptDraftStatus');
   const presetNode = document.getElementById('promptPreset');
   const categoryNode = document.getElementById('promptCategory');
 
+  const updateDraftStatus = (message) => {
+    if (!draftStatusNode) return;
+    draftStatusNode.textContent = `Brouillon local: ${message}`;
+  };
+
   if (promptNode) {
+    const storedDraft = localStorage.getItem(PROMPT_DRAFT_KEY);
     const storedPrompt = localStorage.getItem('selectedPromptPreset');
-    if (storedPrompt && !promptNode.value.trim()) promptNode.value = storedPrompt;
+    if (storedDraft && !promptNode.value.trim()) {
+      promptNode.value = storedDraft;
+      updateDraftStatus('restauré automatiquement (offline).');
+    } else if (storedPrompt && !promptNode.value.trim()) {
+      promptNode.value = storedPrompt;
+      updateDraftStatus('prérempli depuis le preset.');
+    } else {
+      updateDraftStatus('prêt. sauvegarde instantanée active.');
+    }
+
+    promptNode.addEventListener('input', debounce(() => {
+      const value = promptNode.value.trim();
+      if (!value) {
+        localStorage.removeItem(PROMPT_DRAFT_KEY);
+        updateDraftStatus('vide.');
+        return;
+      }
+      localStorage.setItem(PROMPT_DRAFT_KEY, value);
+      updateDraftStatus(`sauvegardé à ${new Date().toLocaleTimeString('fr-FR')}.`);
+    }, 180));
   }
+
+  document.getElementById('restorePromptDraft')?.addEventListener('click', () => {
+    if (!promptNode) return;
+    const draft = localStorage.getItem(PROMPT_DRAFT_KEY);
+    if (!draft) {
+      showToast('Aucun brouillon local disponible.', 'warning');
+      updateDraftStatus('aucune sauvegarde disponible.');
+      return;
+    }
+    promptNode.value = draft;
+    showToast('Brouillon restauré depuis le stockage local.', 'success');
+    updateDraftStatus('restauré manuellement.');
+  });
+
+  document.getElementById('insertLastPrompt')?.addEventListener('click', () => {
+    if (!promptNode) return;
+    const lastPrompt = localStorage.getItem(LAST_SENT_PROMPT_KEY);
+    if (!lastPrompt) {
+      showToast('Aucun prompt envoyé récemment.', 'warning');
+      return;
+    }
+    promptNode.value = lastPrompt;
+    localStorage.setItem(PROMPT_DRAFT_KEY, lastPrompt);
+    updateDraftStatus('dernier prompt restauré.');
+  });
 
   if (presetNode) {
     presetNode.innerHTML = '<option value="">Sélectionner un prompt...</option>';
@@ -440,6 +493,9 @@ async function bindSharedActions() {
   document.getElementById('runAi')?.addEventListener('click', async () => {
     const prompt = promptNode?.value.trim();
     if (!prompt) return;
+    localStorage.setItem(LAST_SENT_PROMPT_KEY, prompt);
+    localStorage.removeItem(PROMPT_DRAFT_KEY);
+    updateDraftStatus('envoyé et archivé localement.');
     await putRecord('requests', { channel: 'text', prompt, status: 'received' });
     const moves = [{ distance: 12 }, { distance: 8 }, { distance: 7 }];
     worker.postMessage({ type: 'batch-distance', payload: { moves } });
@@ -455,6 +511,8 @@ async function bindSharedActions() {
 
   document.getElementById('cancelPrompt')?.addEventListener('click', () => {
     if (promptNode) promptNode.value = '';
+    localStorage.removeItem(PROMPT_DRAFT_KEY);
+    updateDraftStatus('supprimé.');
     updateAiPanels('Demande annulée par utilisateur.', 'Aucune réponse envoyée.');
   });
 

@@ -38,10 +38,16 @@
 
   <label for="aiPrompt">Écrire la demande</label>
   <textarea id="aiPrompt" placeholder="Ex: Lis un PDF, réponds et renvoie en CSV."></textarea>
+  <p id="promptDraftStatus" class="muted">Brouillon local: inactif.</p>
 
   <div class="row">
     <button id="runAi" class="primary">Envoyer</button>
     <button id="cancelPrompt" class="warn">Cancel</button>
+  </div>
+
+  <div class="row">
+    <button id="restorePromptDraft" class="ghost">Restaurer brouillon</button>
+    <button id="insertLastPrompt" class="ghost">Reprendre dernier prompt envoyé</button>
   </div>
 
   <div class="row">
