@@ -8,20 +8,110 @@
   };
   const locale = 'fr';
 
-  const defaultFaq = [
-    { q: 'Combien vaut un scan item ?', a: 'Règle: 1 scan item = 1 pièce.' },
-    { q: 'Pourquoi confirmer le bin ?', a: 'Contrôle qualité: évite dépôt au mauvais emplacement.' },
-    { q: 'Pourquoi justification forcer ?', a: 'Traçabilité obligatoire si qty non scannée entièrement.' },
-    { q: 'Comment est triée la remise ?', a: 'Tri optimisé Zone → Allée → Bin.' }
+  const FAQ_FIXE = [
+    { q: 'C’est quoi le but de la page Remise en stock ?', a: 'Générer une remise puis la traiter avec un workflow contrôlé (scan item puis scan bin) avec historique complet.', tags: ['but', 'workflow', 'remise'], sources: ['Règle: génération 1 scan = 1 pièce', 'Règle: traitement item -> bin', 'Règle: historique/logs'] },
+    { q: 'Comment je génère une nouvelle remise ?', a: 'Accueil > Générer une remise, scanne chaque item (1 scan = 1 pièce), puis clique Compléter remise et scanne LAVREMPxx si demandé.', tags: ['générer', 'scan'], sources: ['Écran: Générer une remise', 'Règle: 1 scan = 1 pièce', 'Règle: Compléter remise -> archive + optimise'] },
+    { q: 'Pourquoi 1 scan = 1 pièce ?', a: 'Chaque scan représente une unité réelle pour réduire les erreurs de comptage.', tags: ['règle', 'scan', 'quantité'], sources: ['Règle: scan item (1 scan = 1 pièce)'] },
+    { q: 'Je peux entrer une quantité au lieu de scanner ?', a: 'Par défaut non, la saisie manuelle (✍️) est une exception et le scan reste prioritaire.', tags: ['manuel', 'quantité'], sources: ['Règle: entrée manuelle cachée derrière icône', 'Règle: scan prioritaire'] },
+    { q: 'Comment je supprime un item de la liste en génération ?', a: 'Tape sur l’item puis choisis Supprimer.', tags: ['supprimer', 'génération'], sources: ['Règle: tap item -> popup actions (Supprimer)'] },
+    { q: 'C’est quoi Briser ?', a: 'Briser envoie l’unité au flux Scrap avec scan item + ScrapBox obligatoires et log complet.', tags: ['briser', 'scrap'], sources: ['Règle: Briser -> Scrap + scans obligatoires + log'] },
+    { q: 'C’est quoi Rebox ?', a: 'Rebox marque l’unité pour ré-emballage et la traite en fin de parcours dans une zone dédiée.', tags: ['rebox', 'emballage'], sources: ['Règle: Rebox = zone fin parcours'] },
+    { q: 'Pourquoi Rebox est à la fin du parcours ?', a: 'Pour éviter les retours en arrière et réduire les déplacements.', tags: ['rebox', 'optimisation'], sources: ['Règle: Rebox en fin de parcours', 'Règle: tri/chemin optimisé'] },
+    { q: 'C’est quoi Compléter remise ?', a: 'Ça clôture la génération, archive le brouillon et crée une remise officielle LAVREMxxxx triée Zone→Allée→Bin.', tags: ['compléter', 'optimiser'], sources: ['Règle: Compléter -> archive + optimise + Prochaine remise'] },
+    { q: 'Quel format pour une remise ?', a: 'LAVREM0001 (sans tirets).', tags: ['format', 'lavrem'], sources: ['Règle: ID remise = LAVREM0001'] },
+    { q: 'Quel format pour un panier/palette ?', a: 'LAVREMP01 (sans tirets).', tags: ['format', 'lavremp'], sources: ['Règle: panier = LAVREMP01'] },
+    { q: 'Que faire si je scanne un ID invalide ?', a: 'Remise = LAVREM + 4 chiffres, Panier = LAVREMP + 2 chiffres. Corrige et rescane.', tags: ['erreur', 'format'], sources: ['Validation: ^LAVREM\\d{4}$', 'Validation: ^LAVREMP\\d{2}$'] },
+    { q: 'Comment je traite une remise ?', a: 'Accueil > Prochaine remise, puis scanne/sélectionne un ID LAVREMxxxx.', tags: ['traiter', 'prochaine'], sources: ['Écran: Prochaine remise', 'Écran: Traitement'] },
+    { q: 'Pourquoi scanner le bin ?', a: 'Pour valider le bon emplacement et éviter les erreurs d’inventaire.', tags: ['bin', 'qualité'], sources: ['Règle: confirmation bin', 'Pourquoi?: contrôle qualité'] },
+    { q: 'Confirmation bin seulement quand il reste 1 unité ?', a: 'Oui, à qty=1 l’app confirme le produit puis passe en mode confirmer bin.', tags: ['qty', 'bin'], sources: ['Règle: si qty=1 -> popup produit confirmé -> confirmer bin'] },
+    { q: 'Quand apparaît Produit confirmé ?', a: 'Quand tu scannes l’item de la dernière unité (qty restante = 1).', tags: ['popup', 'qty'], sources: ['Règle: qty=1 popup produit confirmé'] },
+    { q: 'Quand apparaît Remise complète ?', a: 'Après scan du bon bin en mode confirmer bin.', tags: ['popup', 'bin'], sources: ['Règle: scan bin -> popup remise complète -> next produit'] },
+    { q: 'Je peux revenir en arrière ?', a: 'Oui, Retour/Annuler restaure qty et mode de scan.', tags: ['annuler', 'undo'], sources: ['Règle: toujours offrir Annuler/Retour arrière'] },
+    { q: 'C’est quoi Forcer ?', a: 'Forcer complète une ligne en exception avec justification obligatoire et log tagué FORCED.', tags: ['forcer', 'override'], sources: ['Règle: Forcer + justification obligatoire + log'] },
+    { q: 'Pourquoi justification obligatoire en Forcer ?', a: 'Pour la traçabilité et les audits qualité.', tags: ['forcer', 'audit'], sources: ['Pourquoi?: Forcer = traçabilité + audit'] },
+    { q: 'Je peux forcer si qty restante = 1 ?', a: 'Normalement non, le flux doit confirmer item puis bin.', tags: ['forcer', 'qty'], sources: ['Règle: Forcer visible surtout si qty restante > 1'] },
+    { q: 'Le scan ne rentre pas, que faire ?', a: 'Vérifie le focus du champ scan, ferme les modals, puis utilise ✍️ en dernier recours.', tags: ['scan', 'dépannage'], sources: ['Règle: focus scan permanent', 'Règle: entrée manuelle cachée'] },
+    { q: 'Pourquoi un scan répété est ignoré ?', a: 'Anti double-scan: même valeur reçue trop vite (ex 300ms) ignorée.', tags: ['double-scan', 'debounce'], sources: ['Règle: anti double scan (300ms)'] },
+    { q: 'Comment l’ordre des produits est déterminé ?', a: 'Tri optimisé Zone→Allée→Bin selon l’ordre des zones des Paramètres.', tags: ['ordre', 'tri'], sources: ['Règle: tri Zone→Allée→Bin', 'Paramètres: ordre des zones'] },
+    { q: 'Je veux changer l’ordre des zones ?', a: 'Paramètres > Ordre des zones puis sauvegarde.', tags: ['zones', 'paramètres'], sources: ['Paramètres: zoneOrder editable'] },
+    { q: 'Ça fonctionne sans internet ?', a: 'Oui, données et IA sont locales (FAQ + KB + stockage local).', tags: ['offline', 'internet'], sources: ['Règle: offline-first', 'Règle: IA offline KB'] },
+    { q: 'Comment changer d’utilisateur ?', a: 'Paramètres > Utilisateurs puis sélectionne l’utilisateur actif.', tags: ['utilisateur'], sources: ['Règle: users persistés + user actif sur logs'] },
+    { q: 'Où voir l’historique ?', a: 'Accueil > Historique pour détails et logs des remises.', tags: ['historique'], sources: ['Écran: Historique'] },
+    { q: 'Je peux exporter les données ?', a: 'Oui, JSON complet et CSV remises/scrap depuis Historique.', tags: ['export', 'json', 'csv'], sources: ['Règle: export JSON', 'Règle: export CSV'] },
+    { q: 'Je peux importer des données ?', a: 'Oui via Paramètres > Import JSON avec fusion et dédoublonnage.', tags: ['import', 'merge'], sources: ['Règle: import JSON merge + dédoublonnage'] },
+    { q: 'Comment gérer le Scrap exactement ?', a: 'Tap item > Briser puis scan item + scan ScrapBox, ensuite log complet.', tags: ['scrap', 'scrapbox'], sources: ['Règle: Briser -> scans obligatoires + log'] },
+    { q: 'Qu’est-ce qu’un ScrapBox valide ?', a: 'SCRAPBOX + chiffre (ex SCRAPBOX1), sinon refus.', tags: ['scrapbox', 'validation'], sources: ['Validation ScrapBox: ^SCRAPBOX\\d+$'] },
+    { q: 'Item sans mapping zone/allée/bin, ça marche ?', a: 'Oui, la remise fonctionne même avec champs emplacement vides.', tags: ['mapping'], sources: ['Règle: mapping optionnel'] },
+    { q: 'C’est quoi le mapping CSV ?', a: 'Un fichier item -> description/zone/allée/bin pour guider et trier.', tags: ['csv', 'mapping'], sources: ['Import: CSV mapping items'] },
+    { q: 'Fin de remise, quoi faire ?', a: 'Choisir Prochaine remise ou Générer une remise.', tags: ['fin'], sources: ['Règle: fin => Prochaine remise ou Générer'] },
+    { q: 'Pourquoi revenir vers la zone Remise à la fin ?', a: 'Pour enchaîner sans déplacements inutiles.', tags: ['fin', 'organisation'], sources: ['Règle: opérateur revient proche zone remise'] },
+    { q: 'Bouton Compléter remise grisé, pourquoi ?', a: 'Liste vide ou action obligatoire incomplète (ex ScrapBox manquante).', tags: ['compléter', 'erreur'], sources: ['Règle: état valide requis pour complétion'] },
+    { q: 'Message format invalide, quoi vérifier ?', a: 'Type d’ID, longueur et zéros (LAVREM0001 / LAVREMP01).', tags: ['format', 'invalide'], sources: ['Validation ID remise/panier'] },
+    { q: 'Différence pending / in_progress / done ?', a: 'pending=créée, in_progress=démarrée, done=terminée.', tags: ['statut'], sources: ['Règle: status pending|in_progress|done'] },
+    { q: 'Comment l’IA répond sans internet ?', a: 'Avec FAQ fixe + notes KB + règles internes et sources locales.', tags: ['ia', 'offline'], sources: ['Règle: IA KB offline (FAQ + notes + règles)'] },
+    { q: 'Je peux ajouter mes réponses IA ?', a: 'Oui, Paramètres > KB pour notes Q/R locales exportables.', tags: ['ia', 'kb'], sources: ['Règle: KB notes éditables persistées + export/import'] },
+    { q: 'Erreur scan bin, que faire ?', a: 'Rescanner le bon bin attendu affiché sur la ligne.', tags: ['bin', 'erreur'], sources: ['Règle: confirmation bin obligatoire'] },
+    { q: 'Erreur scan item en traitement ?', a: 'Le SKU scanné doit correspondre à la ligne active.', tags: ['item', 'erreur'], sources: ['Règle: validation item attendu'] },
+    { q: 'Comment exporter seulement les remises ?', a: 'Historique > Export CSV remises.', tags: ['export', 'csv'], sources: ['Écran: Historique export remises'] },
+    { q: 'Comment exporter le log scrap ?', a: 'Historique > Export CSV scrap log.', tags: ['export', 'scrap'], sources: ['Écran: Historique export scrap'] },
+    { q: 'Comment importer un mapping CSV ?', a: 'Paramètres > Import mapping CSV puis sélectionner le fichier.', tags: ['import', 'csv'], sources: ['Écran: Paramètres import mapping CSV'] },
+    { q: 'Comment activer/désactiver confirmation bin ?', a: 'Paramètres > Exiger confirmation bin.', tags: ['paramètres', 'bin'], sources: ['Paramètres: requireBinConfirm'] },
+    { q: 'Comment régler anti double scan ?', a: 'Paramètres > Anti double-scan (ms).', tags: ['debounce', 'paramètres'], sources: ['Paramètres: scanDebounceMs'] },
+    { q: 'Comment reset debug ?', a: 'Paramètres > Debug > Reset local.', tags: ['reset', 'debug'], sources: ['Écran: Paramètres Debug'] },
+    { q: 'Comment utiliser mode embedded DL.WMS ?', a: 'Ajouter ?embedded=1 pour activer l’en-tête compact avec bouton Retour.', tags: ['embedded', 'mode'], sources: ['Règle: embedded mode via query param'] },
+    { q: 'Pourquoi tri Zone→Allée→Bin ?', a: 'Pour un chemin optimisé et moins de déplacements.', tags: ['pourquoi', 'tri'], sources: ['Pourquoi?: tri optimisé'] },
+    { q: 'Pourquoi confirmer bin ?', a: 'Assure la remise au bon emplacement.', tags: ['pourquoi', 'bin'], sources: ['Pourquoi?: contrôle qualité bin'] },
+    { q: 'Pourquoi Forcer est audité ?', a: 'Pour expliquer les écarts et limiter les pertes inventaire.', tags: ['pourquoi', 'forcer'], sources: ['Pourquoi?: traçabilité + audit'] },
+    { q: 'Pourquoi Rebox en fin ?', a: 'Évite les retours en arrière dans le parcours.', tags: ['pourquoi', 'rebox'], sources: ['Pourquoi?: Rebox en fin'] },
+    { q: 'Scan vide ?', a: 'Rien scanné, recommence.', tags: ['erreur', 'scan'], sources: ['Règle erreur: scan vide'] },
+    { q: 'Forcer sans justification ?', a: 'Refusé: ajoute une justification valide.', tags: ['erreur', 'forcer'], sources: ['Règle erreur: forcer sans justification'] },
+    { q: 'Scrap sans ScrapBox ?', a: 'Refusé: scan ScrapBox obligatoire.', tags: ['erreur', 'scrap'], sources: ['Règle erreur: scrap sans ScrapBox'] },
+    { q: 'Double scan rapide ?', a: 'Double scan ignoré (anti double-scan).', tags: ['erreur', 'double-scan'], sources: ['Règle erreur: anti double-scan'] },
+    { q: 'Comment ouvrir Prochaine remise rapidement ?', a: 'Depuis Accueil, clique Prochaine remise.', tags: ['navigation'], sources: ['Écran: Accueil'] },
+    { q: 'Comment ouvrir Générer une remise rapidement ?', a: 'Depuis Accueil, clique Générer une remise.', tags: ['navigation'], sources: ['Écran: Accueil'] },
+    { q: 'Comment annuler la dernière action en traitement ?', a: 'Utilise le bouton Annuler pour restaurer la quantité précédente.', tags: ['annuler', 'traitement'], sources: ['Règle: Annuler restaure état'] },
+    { q: 'Quand le bouton Forcer apparaît ?', a: 'Surtout quand qty restante > 1.', tags: ['forcer', 'ui'], sources: ['Règle: visibilité Forcer'] },
+    { q: 'Que contient le log remise ?', a: 'Date/heure, utilisateur, type d’action et données de scan.', tags: ['logs'], sources: ['Règle: logs détaillés'] },
+    { q: 'Que contient le log scrap ?', a: 'Date/heure, user, SKU, remise/panier, ScrapBox, zone/bin, qty.', tags: ['logs', 'scrap'], sources: ['Règle: scrap log complet'] },
+    { q: 'Comment sont créés les IDs ?', a: 'Auto-incrément local: LAVREMxxxx et LAVREMPxx.', tags: ['id', 'format'], sources: ['Règle: nextIds locale'] },
+    { q: 'Le système garde les données après fermeture ?', a: 'Oui, stockage local IndexedDB/LocalStorage.', tags: ['offline', 'stockage'], sources: ['Règle: persistance locale'] },
+    { q: 'Les notes KB sont persistées ?', a: 'Oui, elles restent locales et sont incluses dans l’export JSON.', tags: ['kb', 'persist'], sources: ['Règle: kb_notes persistées'] },
+    { q: 'L’historique chat IA est sauvegardé ?', a: 'Oui, chaque échange IA est enregistré localement.', tags: ['ia', 'chat'], sources: ['Règle: chat history persisté'] },
+    { q: 'Peut-on exporter l’historique chat ?', a: 'Oui, il est inclus dans l’export JSON complet.', tags: ['ia', 'export'], sources: ['Règle: export JSON complet'] },
+    { q: 'Peut-on importer l’historique chat ?', a: 'Oui via Import JSON, avec fusion dédoublonnée.', tags: ['ia', 'import'], sources: ['Règle: import JSON merge'] },
+    { q: 'Que faire si modal bloque le scan ?', a: 'Ferme la fenêtre modale puis rescane.', tags: ['scan', 'modal'], sources: ['Règle: focus scan et modal'] },
+    { q: 'Comment ajouter un utilisateur ?', a: 'Paramètres > Utilisateurs > Ajouter utilisateur.', tags: ['utilisateur'], sources: ['Écran: Paramètres utilisateurs'] },
+    { q: 'Comment changer utilisateur actif ?', a: 'Dans Paramètres, clique le nom du user voulu.', tags: ['utilisateur'], sources: ['Écran: Paramètres utilisateurs'] },
+    { q: 'Comment ajouter une note KB ?', a: 'Paramètres > KB notes IA > Ajouter note Q/R.', tags: ['kb', 'notes'], sources: ['Écran: Paramètres KB'] },
+    { q: 'Comment supprimer une note KB ?', a: 'Dans Paramètres > KB, clique Supprimer sur la note.', tags: ['kb', 'notes'], sources: ['Écran: Paramètres KB'] },
+    { q: 'Comment démarrer avec des données de test ?', a: 'Paramètres > Debug > Générer données exemple.', tags: ['debug', 'seed'], sources: ['Écran: Paramètres Debug'] },
+    { q: 'Comment nettoyer toutes les données locales ?', a: 'Paramètres > Debug > Reset local (effacement complet).', tags: ['debug', 'reset'], sources: ['Écran: Paramètres Debug'] },
+    { q: 'Le tri des zones est personnalisable ?', a: 'Oui via le champ Zones (ordre custom) en Paramètres.', tags: ['zones', 'paramètres'], sources: ['Paramètres: zoneOrder'] },
+    { q: 'Comment scanner une remise existante ?', a: 'Dans Prochaine remise, scanne LAVREMxxxx dans le champ prévu.', tags: ['remise', 'scan'], sources: ['Écran: Prochaine remise'] },
+    { q: 'Comment scanner un panier lors de la complétion ?', a: 'Lors de Compléter remise, scanne LAVREMPxx.', tags: ['panier', 'scan'], sources: ['Règle: demande panier à la complétion'] },
+    { q: 'Que se passe-t-il après scan item correct ?', a: 'La qty restante diminue, puis l’app peut demander confirmation bin.', tags: ['traitement', 'scan'], sources: ['Règle: scan item décrémente qty'] },
+    { q: 'Que se passe-t-il après scan bin correct ?', a: 'Ligne terminée et passage automatique au prochain produit.', tags: ['traitement', 'bin'], sources: ['Règle: scan bin valide -> next produit'] },
+    { q: 'Comment reconnaître un code remise valide ?', a: 'Regex: ^LAVREM\\d{4}$, exemple LAVREM0007.', tags: ['regex', 'lavrem'], sources: ['Validation regex remise'] },
+    { q: 'Comment reconnaître un code panier valide ?', a: 'Regex: ^LAVREMP\\d{2}$, exemple LAVREMP03.', tags: ['regex', 'lavremp'], sources: ['Validation regex panier'] },
+    { q: 'Comment éviter les erreurs de scan ?', a: 'Scanner posément, vérifier le champ actif et respecter le debounce.', tags: ['scan', 'qualité'], sources: ['Règle: focus scan + anti double-scan'] },
+    { q: 'Quelle est la logique de priorité IA ?', a: 'Erreurs critiques > intention détectée > FAQ/KB correspondante > fallback.', tags: ['ia', 'règles'], sources: ['Règle: moteur intentions priorisé'] },
+    { q: 'Quel format de réponse donne l’IA ?', a: 'Résumé, Étapes, Pourquoi, Où cliquer, Sources internes.', tags: ['ia', 'format'], sources: ['Règle: format réponse IA obligatoire'] }
   ];
 
-  const rules = [
-    { keys: ['forcer', 'justification'], answer: 'Le forçage demande une justification obligatoire pour audit interne.', source: 'Règle: FORCED doit être justifié' },
-    { keys: ['tri', 'zone', 'allée', 'bin'], answer: 'La remise est triée Zone→Allée→Bin avec ordre custom de zones.', source: 'Règle: optimisation de parcours' },
-    { keys: ['scrap', 'briser'], answer: 'Briser exige scan item + scrapbox puis journalisation complète.', source: 'Règle: flux Scrap' },
-    { keys: ['rebox'], answer: 'Rebox est tagué puis traité en fin de parcours dans zone Rebox.', source: 'Règle: Rebox en fin de parcours' },
-    { keys: ['scan', 'pièce'], answer: 'Chaque scan confirmé compte pour une unité.', source: 'Règle: scan item = 1 pièce' },
-  ];
+  const INTENTS = {
+    AIDE_GENERALE: ['aide', 'comment', 'expliquer', 'marche', 'workflow'],
+    GENERER_REMISE: ['generer', 'creer', 'nouvelle', 'remise', 'scan', 'construire', 'liste'],
+    ACTION_ITEM: ['briser', 'scrap', 'rebox', 'supprimer', 'annuler'],
+    SCRAP_PROC: ['scrapbox', 'scrap', 'briser', 'bac', 'rebut'],
+    REBOX_PROC: ['rebox', 'reemballer', 'emballage'],
+    TRAITEMENT_REMISE: ['prochaine', 'traiter', 'processing', 'etape'],
+    CONFIRMER_BIN: ['confirmer', 'bin', 'emplacement', 'bac', 'location'],
+    FORCER: ['forcer', 'skip', 'override', 'completer'],
+    IDS: ['lavrem', 'lavremp', 'format', 'numero', 'id', 'panier', 'remise'],
+    EXPORT_IMPORT: ['exporter', 'importer', 'csv', 'excel', 'json'],
+    UTILISATEURS: ['user', 'utilisateur', 'operateur', 'changer'],
+    PARAMETRES: ['parametres', 'settings', 'debounce', 'double', 'scan', 'zones']
+  };
 
   const state = {
     route: location.hash || '#home',
@@ -39,7 +129,8 @@
     users: [{ id: 'u1', name: 'Opérateur Laval', active: true }],
     baskets: [], remises: [], itemsMap: {}, actions: [], scrapLogs: [], tasks: [],
     kb_notes: [],
-    kb_faq: defaultFaq,
+    kb_faq: FAQ_FIXE,
+    ai_chat_history: [],
     settings: {
       scanDebounceMs: 300,
       requireBinConfirm: true,
@@ -76,6 +167,8 @@
     ensure() {
       state.data = Object.assign(clone(defaults), state.data || {});
       state.data.settings = Object.assign(clone(defaults.settings), state.data.settings || {});
+      if (!Array.isArray(state.data.kb_faq) || state.data.kb_faq.length < 80) state.data.kb_faq = clone(FAQ_FIXE);
+      state.data.ai_chat_history = Array.isArray(state.data.ai_chat_history) ? state.data.ai_chat_history : [];
     },
     openIDB() {
       return new Promise((resolve, reject) => {
@@ -539,7 +632,7 @@
   }
 
   function mergeData(incoming) {
-    ['users','baskets','remises','actions','scrapLogs','tasks','kb_notes'].forEach(k => {
+    ['users','baskets','remises','actions','scrapLogs','tasks','kb_notes','ai_chat_history'].forEach(k => {
       const base = state.data[k] || []; const add = incoming[k] || [];
       const seen = new Set(base.map(x => JSON.stringify(x)));
       add.forEach(x => { const sig = JSON.stringify(x); if (!seen.has(sig)) base.push(x); });
@@ -654,39 +747,115 @@
 
   function askWhy(topic) {
     const dict = {
-      force: 'Justification requise pour conserver une trace audit (FORCED).',
-      sorting: 'Ordre Zone→Allée→Bin réduit les déplacements et standardise le parcours.',
-      bin_confirm: 'Confirmation bin évite erreur de rangement et améliore la qualité.'
+      force: 'Forcer exige une justification pour assurer traçabilité et audit.',
+      sorting: 'Ordre Zone→Allée→Bin = parcours optimisé avec moins de déplacements.',
+      bin_confirm: 'La confirmation bin garantit le bon emplacement produit.',
+      rebox: 'Rebox en fin évite les retours en arrière.'
     };
     toast(dict[topic] || 'Décision basée sur règles internes.');
   }
 
-  function tokenize(txt) {
-    return txt.toLowerCase().normalize('NFD').replace(/[^a-z0-9\s]/g, ' ').split(/\s+/).filter(Boolean);
+  function normalizeText(txt = '') {
+    return txt.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
   }
 
-  function askAssistant() {
-    const q = ($('#iaInput').value || '').trim(); if (!q) return;
-    $('#iaInput').value = '';
-    const tokens = tokenize(q);
-    const sources = [];
-    let best = { score: 0, answer: 'Je n’ai pas trouvé de réponse exacte. Vérifiez les règles en Paramètres/KB.' };
+  function tokenize(txt) { return normalizeText(txt).split(' ').filter(Boolean); }
 
+  function normalizeSynonyms(tokens) {
+    const map = {
+      bac: 'bin', emplacement: 'bin', location: 'bin',
+      panier: 'remise',
+      rebut: 'scrap', briser: 'scrap',
+      're-emballer': 'rebox', reemballer: 'rebox',
+      lire: 'scanner', bip: 'scanner', scan: 'scanner'
+    };
+    return tokens.map(t => map[t] || t);
+  }
+
+  function detectIntent(tokens) {
+    let best = { intent: 'AIDE_GENERALE', score: 0 };
+    Object.entries(INTENTS).forEach(([intent, keys]) => {
+      const score = keys.filter(k => tokens.includes(k)).length;
+      if (score > best.score) best = { intent, score };
+    });
+    return best.intent;
+  }
+
+  function detectErrorRule(tokens, rawQuestion) {
+    if (!rawQuestion.trim()) return { summary: 'Rien scanné, recommence.', sources: ['Règle erreur: scan vide'] };
+    if (tokens.includes('forcer') && tokens.includes('sans') && !tokens.includes('justification')) return { summary: 'Forcer refusé: une justification est obligatoire.', sources: ['Règle erreur: forcer sans justification'] };
+    if (tokens.includes('scrap') && tokens.includes('sans') && !tokens.some(t => t.startsWith('scrapbox'))) return { summary: 'Scrap refusé: scanne un code ScrapBox valide.', sources: ['Règle erreur: scrap sans ScrapBox'] };
+    if (/lavrem|lavremp/.test(rawQuestion) && !/(^|\s)LAVREM\d{4}(\s|$)|(^|\s)LAVREMP\d{2}(\s|$)/i.test(rawQuestion) && tokens.some(t => t.includes('lavrem'))) {
+      return { summary: 'Format invalide. Remise: ^LAVREM\\d{4}$ (ex LAVREM0007), Panier: ^LAVREMP\\d{2}$ (ex LAVREMP03).', sources: ['Validation: ^LAVREM\\d{4}$', 'Validation: ^LAVREMP\\d{2}$'] };
+    }
+    if (tokens.includes('double') && tokens.includes('scan')) return { summary: 'Double scan ignoré (anti double-scan).', sources: ['Règle erreur: anti double-scan'] };
+    return null;
+  }
+
+  function formatAssistantAnswer({ summary, steps, why, where, sources }) {
+    return [
+      `<div><strong>Résumé</strong><br/>${summary}</div>`,
+      `<div><strong>Étapes</strong><ul>${steps.map(s => `<li>${s}</li>`).join('')}</ul></div>`,
+      `<div><strong>Pourquoi</strong><br/>${why}</div>`,
+      `<div><strong>Où cliquer</strong><br/>${where}</div>`,
+      `<div class="kb-source"><strong>Sources internes</strong>: ${(sources || ['Aucune']).join(' | ')}</div>`
+    ].join('');
+  }
+
+  function findBestFaq(tokens) {
+    let best = { score: 0, entry: null };
     [...state.data.kb_faq, ...state.data.kb_notes].forEach(entry => {
-      const hay = tokenize(`${entry.q} ${entry.a}`);
+      const hay = normalizeSynonyms(tokenize(`${entry.q} ${entry.a} ${(entry.tags || []).join(' ')}`));
       const score = tokens.filter(t => hay.includes(t)).length;
-      if (score > best.score) { best = { score, answer: entry.a }; sources.length = 0; sources.push(`FAQ/KB: ${entry.q}`); }
+      if (score > best.score) best = { score, entry };
     });
+    return best.entry;
+  }
 
-    rules.forEach(r => {
-      const score = r.keys.filter(k => tokens.includes(k)).length;
-      if (score > best.score) { best = { score, answer: r.answer }; sources.length = 0; sources.push(r.source); }
-    });
+  async function askAssistant() {
+    const q = ($('#iaInput').value || '').trim();
+    if (!q) return toast('Rien scanné, recommence');
+    $('#iaInput').value = '';
+    const tokens = normalizeSynonyms(tokenize(q));
+    const intent = detectIntent(tokens);
+    const error = detectErrorRule(tokens, q);
+    const entry = findBestFaq(tokens);
 
-    const c = document.createElement('div'); c.className = 'ia-msg';
-    c.innerHTML = `<strong>Q:</strong> ${q}<br/><strong>R:</strong> ${best.answer}<div class="kb-source">Sources: ${sources.join(' | ') || 'Aucune'}</div><button class="btn ghost" data-why="1">Pourquoi ?</button>`;
-    c.querySelector('[data-why]').onclick = () => askWhy('sorting');
+    const explainers = {
+      FORCER: 'Traçabilité + audit + réduction des pertes inventaire.',
+      CONFIRMER_BIN: 'Assure la remise au bon emplacement.',
+      PARAMETRES: 'Les réglages stabilisent le processus de scan.',
+      ACTION_ITEM: 'Chaque action item conserve un log clair.',
+      GENERER_REMISE: 'Le scan unitaire garantit une remise exacte.',
+      TRAITEMENT_REMISE: 'Le flux guidé réduit les erreurs opérationnelles.',
+      REBOX_PROC: 'Rebox en fin optimise le parcours.',
+      SCRAP_PROC: 'Le Scrap exige preuve de traitement (ScrapBox).'
+    };
+
+    const response = error ? {
+      summary: error.summary,
+      steps: ['Revoir le format ou l’étape demandée.', 'Resscanner avec un code valide.'],
+      why: explainers[intent] || 'Le moteur applique les règles de contrôle qualité offline.',
+      where: 'Écran courant + champs de scan (ou Paramètres > KB).',
+      sources: error.sources
+    } : {
+      summary: entry?.a || 'Je n’ai pas trouvé de réponse exacte. Consulte Paramètres > KB pour enrichir la base locale.',
+      steps: ['Suivre le flux à l’écran.', 'Valider chaque scan demandé.', 'En cas d’exception, utiliser Forcer avec justification.'],
+      why: explainers[intent] || 'Le moteur applique les règles de contrôle qualité offline.',
+      where: intent === 'GENERER_REMISE' ? 'Accueil > Générer une remise > Compléter remise' :
+        intent === 'TRAITEMENT_REMISE' ? 'Accueil > Prochaine remise > Traitement' :
+          intent === 'EXPORT_IMPORT' ? 'Historique / Paramètres' : 'Paramètres > KB',
+      sources: entry?.sources || [`Intent: ${intent}`, ...(entry?.q ? [`FAQ/KB: ${entry.q}`] : [])]
+    };
+
+    const c = document.createElement('div');
+    c.className = 'ia-msg';
+    c.innerHTML = `<strong>Q:</strong> ${q}${formatAssistantAnswer(response)}<button class="btn ghost" data-why="1">Pourquoi ?</button>`;
+    c.querySelector('[data-why]').onclick = () => askWhy(intent === 'FORCER' ? 'force' : (intent === 'CONFIRMER_BIN' ? 'bin_confirm' : (intent === 'REBOX_PROC' ? 'rebox' : 'sorting')));
     $('#iaMessages').prepend(c);
+    state.data.ai_chat_history.unshift({ at: nowIso(), q, intent, response });
+    state.data.ai_chat_history = state.data.ai_chat_history.slice(0, 300);
+    await store.save();
   }
 
   function wireIA() {
