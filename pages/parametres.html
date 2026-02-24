@@ -1,87 +1,36 @@
+<!-- BEGIN PATCH: settings global centralisés -->
 <section class="card">
-  <h2>Paramètres IA</h2>
-  <p class="muted">Aucun API, mode offline, entrainement local et pilotage des connaissances.</p>
+  <h2>Paramètres globaux</h2>
+  <p class="muted">Tous les paramètres modules sont centralisés ici.</p>
 </section>
 
-<section class="card">
-  <h3>1) Imports documents (Excel, CSV, PDF)</h3>
-  <label for="excelInput">Import Excel</label>
-  <input id="excelInput" type="file" accept=".xlsx,.xls" multiple />
-  <label for="csvInput">Import CSV</label>
-  <input id="csvInput" type="file" accept=".csv" multiple />
-  <label for="pdfInput">Import PDF</label>
-  <input id="pdfInput" type="file" accept=".pdf" multiple />
-  <div class="row">
-    <button id="extractExcel">Analyser les imports</button>
-    <button id="loadWarehouseData">Charger base IA complète</button>
-  </div>
-  <label for="fileInput">Import backup JSON</label>
-  <input id="fileInput" type="file" accept=".json" />
-  <div class="row">
-    <button id="exportBackup">Backup JSON</button>
-    <button id="importBackup">Import backup</button>
+<section class="card" id="settings-reception">
+  <button type="button" data-accordion-trigger aria-controls="settingsReceptionPanel" aria-expanded="true">Réception / Réception conteneur</button>
+  <div id="settingsReceptionPanel">
+    <p class="muted">Clés: DLWMS_BINMAP, DLWMS_CONTAINER_DRAFT_V1, DLWMS_CONTAINER_HISTORY_V1.</p>
+    <label for="receptionImportPref">Préférence import</label>
+    <input id="receptionImportPref" placeholder="csv_priority" />
   </div>
 </section>
 
-<section class="card">
-  <h3>2) Création de règles</h3>
-  <input id="customRule" placeholder="Écrire une nouvelle règle" />
-  <button id="addRule">Ajouter règle</button>
-</section>
-
-<section class="card">
-  <h3>3) Apprentissage (options modifiables)</h3>
-  <div class="row">
-    <button id="loadDataset">Charger dataset exemple</button>
-    <button id="runTraining" class="primary">Mini entraînement</button>
-  </div>
-  <div class="row">
-    <button id="startContinuousTraining" class="primary">Formation continue</button>
-    <button id="stopContinuousTraining" class="warn">Stop</button>
-  </div>
-  <div class="row">
-    <button id="resetLearning" class="warn">Reset apprentissage</button>
-    <button id="exportModel">Export modèle IA</button>
-  </div>
-  <div id="matrixOutput" class="log"></div>
-</section>
-
-<section class="card">
-  <h3>4) Historique d’apprentissage</h3>
-  <div id="learningHistory" class="log"></div>
-</section>
-
-<section class="card">
-  <h3>4-bis) Pages et données entraînées</h3>
-  <div id="trainingSources" class="log"></div>
-</section>
-
-<section class="card">
-  <h3>5, 6, 7) Connaissances & Mémoire</h3>
-  <div class="grid">
-    <div><div class="muted">% Connaissances</div><div id="knowledgePercent" class="kpi">0%</div></div>
-    <div><div class="muted">Quantité connaissances</div><div id="knowledgeQuantity" class="kpi">0</div></div>
-    <div><div class="muted">Niveau mémoire</div><div id="memoryLevel" class="kpi">0%</div></div>
+<section class="card" id="settings-consolidation">
+  <button type="button" data-accordion-trigger aria-controls="settingsConsolidationPanel" aria-expanded="false">Consolidation</button>
+  <div id="settingsConsolidationPanel" hidden>
+    <p class="muted">Règles de consolidation et exports.</p>
   </div>
 </section>
 
-
-<section class="card">
-  <h3>Pack 3000 améliorations (iPhone prioritaire + Offline + GitHub + 0 dépendance)</h3>
-  <p class="muted">Applique et audite automatiquement 3000 améliorations concrètes orientées iPhone, offline et zéro dépendance.</p>
-  <div class="row">
-    <button id="apply3000Improvements" class="primary">Appliquer les 3000 améliorations</button>
-    <button id="verify3000Improvements">Vérifier les 3000 améliorations</button>
+<section class="card" id="settings-remise">
+  <button type="button" data-accordion-trigger aria-controls="settingsRemisePanel" aria-expanded="false">Remise</button>
+  <div id="settingsRemisePanel" hidden>
+    <p class="muted">Overrides utilisateurs et préférences remise.</p>
   </div>
-  <div class="grid">
-    <div><div class="muted">Conformité</div><div id="improvementsScore" class="kpi">0%</div></div>
-    <div><div class="muted">Dernier audit</div><div id="improvementsLastAudit" class="kpi">Jamais</div></div>
-  </div>
-  <div id="improvementsLog" class="log"></div>
 </section>
 
-<section class="card">
-  <h3>Base vocale (option existante déplacée)</h3>
-  <input id="voicePrompt" placeholder="Ex: archive la palette" />
-  <button id="runVoiceCommand" class="primary">Exécuter la commande vocale</button>
+<section class="card" id="settings-layout">
+  <button type="button" data-accordion-trigger aria-controls="settingsLayoutPanel" aria-expanded="false">Layout</button>
+  <div id="settingsLayoutPanel" hidden>
+    <p class="muted">Options grille et types de cases.</p>
+  </div>
 </section>
+<!-- END PATCH: settings global centralisés -->

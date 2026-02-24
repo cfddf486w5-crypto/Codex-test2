@@ -72,3 +72,20 @@ zip -r dl-wms-offline-ai.zip index.html assets ai debug_ai.html tests samples RE
 - Annexes sauvegardées en localStorage: `settings`, `bin_map`, `diameter_overrides`, `users`, `active_user`, `tasks`, `move_logs`, `kb_notes`, `ai_chat_history`.
 - Import Bin Map `.xlsx`: alternative offline documentée (exporter la feuille en CSV A=bin, B=type P1..P7 puis importer).
 - Fichiers d'exemple de validation rapide: `samples/inventaire_test.csv`, `samples/reception_test.csv`, `samples/binmap_test.csv`.
+
+## MAP (navigation / routes / icônes / données)
+| Page | Route | Bouton d’accès | Icône | Sources de données locales |
+|---|---|---|---|---|
+| Accueil IA | `ai-center` | Bottom-nav “Accueil” | 🏠 | IndexedDB `requests`, `stats`, `rules`, localStorage `selectedPromptPreset` |
+| Consolidation | `consolidation` | Bottom-nav “Consol” | 📦 | IndexedDB datasets + règles locales |
+| Monitoring | `monitoring` | Bottom-nav “Suivi” | 📊 | IndexedDB `requests`, `stats` |
+| Paramètres globaux | `parametres` | Bottom-nav “Réglages” | ⚙️ | localStorage + IndexedDB (métriques) |
+| Réception | `reception` | Bouton depuis Accueil | 📥 | Clés module réception (dont `DLWMS_BINMAP`) |
+| Réception conteneur | `reception-conteneur` | Bouton dans page Réception | 🚚 | `DLWMS_CONTAINER_DRAFT_V1`, `DLWMS_CONTAINER_HISTORY_V1`, `DLWMS_BINMAP`, IndexedDB `DLWMS_RECEIPTS_DB_V1` |
+| FAQ Réception | `reception-faq` | Boutons FAQ (Réception + conteneur) | ❓ | `DLWMS_RECEPTION_FAQ_V1`, `DLWMS_RECEPTION_FAQ_NOTES_V1`, `DLWMS_RECEPTION_FAQ_PREFS_V1` |
+| Historique global | `history` | Bouton “Historique” depuis Accueil uniquement | 🕘 | IndexedDB `stats`, `requests` |
+
+## FAQ Réception (offline-first)
+- Fonction globale: `window.DLWMS_openReceptionFAQ()`.
+- Export/Import JSON: fusion robuste avec restauration fallback si dataset manquant/corrompu.
+- Notes équipe persistées localement, catégorie par catégorie.

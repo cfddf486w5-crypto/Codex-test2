@@ -6,6 +6,7 @@ import { incrementalTrain, trainingMatrix } from './trainer.js';
 import { trainNeuralLite } from './neural-lite.js';
 import { apply1000Improvements, auditImprovements } from './improvements.js';
 import { attachScanController } from './scan_ui.js';
+import { bindReceptionFaqPage, bindReceptionEntryPoints, installReceptionFaqGlobals } from './reception-faq.js';
 
 const appNode = document.getElementById('app');
 const nav = document.querySelector('.bottom-nav');
@@ -97,6 +98,15 @@ async function boot() {
   bindInstall();
   bindNetworkBadge();
   bindNav();
+  installReceptionFaqGlobals(navigate);
+  window.DLWMS_openHistory = async ({ module } = {}) => {
+    await navigate('history');
+    const filter = document.getElementById('historyModuleFilter');
+    if (filter && module) {
+      filter.value = module;
+      filter.dispatchEvent(new Event('change'));
+    }
+  };
   const initialRoute = localStorage.getItem('lastRoute') || 'ai-center';
   await navigate(initialRoute);
   setNavBadge('monitoring', 'IA');
@@ -159,16 +169,62 @@ function bindNav() {
 
 async function navigate(route) {
   await loadRoute(route, appNode);
-  setNavActive(route);
+  const rootRoute = ['ai-center', 'consolidation', 'monitoring', 'parametres'].includes(route) ? route : null;
+  setNavActive(rootRoute);
   localStorage.setItem('lastRoute', route);
   appNode.querySelectorAll('[data-route]').forEach((btn) => btn.addEventListener('click', () => navigate(btn.dataset.route)));
+  bindReceptionEntryPoints(appNode, navigate);
 
   await bindSharedActions();
   bindAccordions(appNode);
   bindScanInputs();
+  bindHistoryPage(route);
+  bindSettingsJumps(route);
+  if (route === 'reception-faq') bindReceptionFaqPage(appNode);
   if (route === 'parametres') await hydrateSettingsMetrics();
   if (route === 'monitoring') hydrateMonitoring();
   if (route === 'ui-self-test') bindUiSelfTest();
+}
+
+function bindSettingsJumps(route) {
+  const section = appNode.querySelector('[data-settings-section]')?.dataset.settingsSection;
+  if (route === 'parametres') {
+    const pending = sessionStorage.getItem('dlwms_settings_section');
+    if (pending) {
+      document.getElementById(pending)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      sessionStorage.removeItem('dlwms_settings_section');
+    }
+  }
+  appNode.querySelectorAll('[data-settings-section]').forEach((button) => {
+    button.addEventListener('click', () => {
+      sessionStorage.setItem('dlwms_settings_section', button.dataset.settingsSection);
+    });
+  });
+  if (section) sessionStorage.setItem('dlwms_settings_section', section);
+}
+
+async function bindHistoryPage(route) {
+  if (route !== 'history') return;
+  const list = document.getElementById('historyEvents');
+  const filter = document.getElementById('historyModuleFilter');
+  if (!list || !filter) return;
+  const [stats, requests] = await Promise.all([getAll('stats'), getAll('requests')]);
+  const rows = [...stats, ...requests].map((item) => ({
+    module: item.scope || item.module || 'ai-center',
+    label: item.prompt || item.status || item.type || 'événement',
+    at: item.updatedAt || Date.now(),
+  })).sort((a, b) => b.at - a.at);
+
+  const render = () => {
+    const module = filter.value;
+    const filtered = module === 'all' ? rows : rows.filter((row) => row.module.includes(module));
+    list.textContent = filtered.length
+      ? filtered.slice(0, 80).map((row) => `${new Date(row.at).toLocaleString('fr-FR')} · ${row.module} · ${row.label}`).join('\n')
+      : 'Aucun événement.';
+  };
+
+  filter.addEventListener('change', render);
+  render();
 }
 
 
@@ -288,6 +344,7 @@ async function bindSharedActions() {
   });
 
   document.getElementById('openLiaGuide')?.addEventListener('click', () => window.open(LIA_GUIDE_PATH, '_blank', 'noopener'));
+  document.getElementById('openGlobalHistory')?.addEventListener('click', () => window.DLWMS_openHistory?.({}));
 
   document.getElementById('runAi')?.addEventListener('click', async () => {
     const prompt = promptNode?.value.trim();
