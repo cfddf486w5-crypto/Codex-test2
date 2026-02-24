@@ -1,15 +1,18 @@
-import { loadRoute } from './router.js';
+// BEGIN PATCH: product-grade UI refresh
+import { loadRoute } from '../core/router.js';
 import ui, { setNavActive, setNavBadge, bindAccordions, showToast, debounce, addPassiveListener, UI_VERSION } from './ui.js';
-import { initDB, exportAllData, importAllData, putRecord, getAll, clearStore, setConfig, getConfig, flushConfigWrites } from './storage.js';
+import { initDB, exportAllData, importAllData, putRecord, getAll, clearStore, setConfig, getConfig, flushConfigWrites } from '../core/storage.js';
 import { analyzePrompt, parseCsv, splitRowsByColumns, normalize } from './ai-engine.js';
 import { incrementalTrain, trainingMatrix } from './trainer.js';
 import { trainNeuralLite } from './neural-lite.js';
 import { apply1000Improvements, auditImprovements } from './improvements.js';
 import { attachScanController } from './scan_ui.js';
 import { bindReceptionFaqPage, bindReceptionEntryPoints, installReceptionFaqGlobals } from './reception-faq.js';
+import { icon } from '../ui/icons.js';
 
 const appNode = document.getElementById('app');
 const nav = document.querySelector('.bottom-nav');
+const ROOT_ROUTES = ['home', 'operations', 'ai-center', 'tools', 'parametres'];
 const worker = new Worker('./app/ai-worker.js', { type: 'module' });
 const LIA_GUIDE_PATH = './docs/formation-lia.md';
 const COMPLETE_AI_SEED_PATH = './data/ai_complete_seed.json';
@@ -107,9 +110,11 @@ async function boot() {
       filter.dispatchEvent(new Event('change'));
     }
   };
-  const initialRoute = localStorage.getItem('lastRoute') || 'ai-center';
+  setupBottomNavIcons();
+  runOnboarding();
+  const initialRoute = localStorage.getItem('lastRoute') || 'home';
   await navigate(initialRoute);
-  setNavBadge('monitoring', 'IA');
+  setNavBadge('ai-center', 'IA');
   if ('serviceWorker' in navigator) await navigator.serviceWorker.register('./sw.js');
   setConfig('app_name', 'DL.WMS IA Ultimate');
   window.addEventListener('keydown', async (event) => {
@@ -120,6 +125,25 @@ async function boot() {
 }
 
 
+
+
+function setupBottomNavIcons() {
+  const labels = { home: 'Accueil', operations: 'Opérations', 'ai-center': 'IA', tools: 'Outils', parametres: 'Paramètres' };
+  nav?.querySelectorAll('[data-route]').forEach((button) => {
+    const route = button.dataset.route;
+    const iconName = route === 'ai-center' ? 'ai' : route;
+    button.innerHTML = `${icon(iconName)}<span class="label">${labels[route] || route}</span>`;
+  });
+}
+
+function runOnboarding() {
+  if (localStorage.getItem('onboardingSeen') === 'true') return;
+  ui.modal.open('onboardingModal', {
+    title: 'Bienvenue sur DL WMS',
+    content: '<p class="muted">Cette application fonctionne hors ligne, gère les imports, le mapping bins et trace l\'historique depuis Accueil.</p>',
+    actions: [{ label: 'Commencer', variant: 'primary', onClick: () => localStorage.setItem('onboardingSeen', 'true') }],
+  });
+}
 function bindNetworkBadge() {
   const badge = document.getElementById('networkBadge');
   if (!badge) return;
@@ -169,7 +193,7 @@ function bindNav() {
 
 async function navigate(route) {
   await loadRoute(route, appNode);
-  const rootRoute = ['ai-center', 'consolidation', 'monitoring', 'parametres'].includes(route) ? route : null;
+  const rootRoute = ROOT_ROUTES.includes(route) ? route : null;
   setNavActive(rootRoute);
   localStorage.setItem('lastRoute', route);
   appNode.querySelectorAll('[data-route]').forEach((btn) => btn.addEventListener('click', () => navigate(btn.dataset.route)));
@@ -685,3 +709,5 @@ function downloadJSON(data, filename) {
 
 window.addEventListener('beforeunload', flushConfigWrites);
 boot();
+
+// END PATCH: product-grade UI refresh
