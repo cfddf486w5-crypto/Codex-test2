@@ -110,9 +110,27 @@ function renderRoute() {
   if (current === "dashboard") renderDashboard();
   else if (current === "ia") renderIA();
   else if (current === "consolidation") renderConsolidation();
+  else if (current === "remise") renderRemise();
   else renderPlaceholder(current);
 
   window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function renderRemise() {
+  appView.innerHTML = `<section class="panel remise-panel">
+    <div class="section-head">
+      <h1>Remise en stock</h1>
+      <a class="small-btn" href="remise/index.html" target="_blank" rel="noopener">Ouvrir en plein écran</a>
+    </div>
+    <p class="muted">Module intégré dans l'application principale.</p>
+    <iframe
+      class="remise-frame"
+      title="Module remise en stock"
+      src="remise/index.html"
+      loading="lazy"
+      referrerpolicy="no-referrer"
+    ></iframe>
+  </section>`;
 }
 
 function renderTabbar() {
