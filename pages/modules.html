@@ -1,12 +1,42 @@
-<!-- BEGIN PATCH: ROUTER/NAV -->
 <section class="card">
-  <h2 class="ds-page-title">Modules</h2>
-  <p class="muted">Hub principal des modules opérationnels.</p>
+  <h2 class="ds-page-title">Modules opérationnels</h2>
+  <p class="muted">Accueil iPhone offline avec accès direct à tous les flux principaux.</p>
 </section>
 
-<section class="card hub-list">
-  <button class="hub-item" data-route="consolidation"><span class="hub-item-main"><span>🧩</span><span><strong>Consolidation</strong><br><small class="muted">Fusion et contrôle seuil.</small></span></span><span class="hub-chevron">›</span></button>
-  <button class="hub-item" data-route="remise"><span class="hub-item-main"><span>↩️</span><span><strong>Remise en stock</strong><br><small class="muted">Retour atelier.</small></span></span><span class="hub-chevron">›</span></button>
-  <button class="hub-item" data-route="reception-preuve"><span class="hub-item-main"><span>📷</span><span><strong>Réception (Preuve)</strong><br><small class="muted">Photos, preuves et pièces jointes.</small></span></span><span class="hub-chevron">›</span></button>
+<section class="module-grid" aria-label="Modules principaux">
+  <button class="module-card" type="button" data-route="consolidation" aria-label="Ouvrir Consolidation">
+    <img src="./consolidation-ios-dark.png" alt="Icône du module Consolidation" loading="lazy" />
+    <span class="module-card-title">🧩 Consolidation</span>
+    <small class="muted">Fusion inventaire + réception</small>
+  </button>
+
+  <button class="module-card" type="button" data-route="inventaire" aria-label="Ouvrir Inventaire">
+    <img src="./layout-ios-dark.png" alt="Icône du module Inventaire" loading="lazy" />
+    <span class="module-card-title">📦 Inventaire</span>
+    <small class="muted">Contrôle stock rapide</small>
+  </button>
+
+  <button class="module-card" type="button" data-route="monitoring" aria-label="Ouvrir Suivi expédition">
+    <img src="./suivi-expedition-ios-dark.png" alt="Icône du module Suivi expédition" loading="lazy" />
+    <span class="module-card-title">🚚 Suivi expédition</span>
+    <small class="muted">Tracking des sorties</small>
+  </button>
+
+  <button class="module-card" type="button" data-route="remise" aria-label="Ouvrir Remise en stock">
+    <img src="./remise-ios-dark.png" alt="Icône du module Remise en stock" loading="lazy" />
+    <span class="module-card-title">↩️ Remise en stock</span>
+    <small class="muted">Retour atelier / réintégration</small>
+  </button>
+
+  <button class="module-card" type="button" data-route="reception-conteneur" aria-label="Ouvrir Réception conteneur">
+    <img src="./receiving-ios-dark.png" alt="Icône du module Réception conteneur" loading="lazy" />
+    <span class="module-card-title">📥 Réception conteneur</span>
+    <small class="muted">Scan, bin map et preuves</small>
+  </button>
+
+  <button class="module-card" type="button" data-route="reception-preuve" aria-label="Ouvrir Réception ASN">
+    <img src="./receiving-ios-dark.png" alt="Icône du module Réception ASN" loading="lazy" />
+    <span class="module-card-title">📷 Réception ASN</span>
+    <small class="muted">Photos & documents</small>
+  </button>
 </section>
-<!-- END PATCH: ROUTER/NAV -->

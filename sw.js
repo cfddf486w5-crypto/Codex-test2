@@ -1,9 +1,9 @@
-const CACHE = 'dlwms-ia-v3';
+const CACHE = 'dlwms-ia-v4';
 const ASSETS = [
   './',
   './index.html',
-  './ia_auto.html',
   './manifest.json',
+  './design-system.css',
   './assets/style.css',
   './assets/app.css',
   './assets/print.css',
@@ -21,26 +21,21 @@ const ASSETS = [
   './app/simulator.js',
   './app/ai-worker.js',
   './app/improvements.js',
-  './js/utils.js',
-  './js/kb_store.js',
-  './js/kb_validate.js',
-  './js/search_engine.js',
-  './js/export_report.js',
-  './js/guided_diag.js',
-  './js/pwa.js',
-  './js/ia_auto.js',
-  './data/auto_kb.json',
-  './data/diag_flows.json',
-  './pages/dashboard.html',
-  './pages/ai-center.html',
-  './pages/reception.html',
-  './pages/remise.html',
+  './consolidation-ios-dark.png',
+  './layout-ios-dark.png',
+  './suivi-expedition-ios-dark.png',
+  './remise-ios-dark.png',
+  './receiving-ios-dark.png',
+  './pages/modules.html',
+  './pages/history.html',
+  './pages/parametres.html',
   './pages/consolidation.html',
   './pages/inventaire.html',
-  './pages/layout.html',
-  './pages/parametres.html',
-  './pages/prompt.html',
-  './pages/monitoring.html'
+  './pages/monitoring.html',
+  './pages/remise.html',
+  './pages/reception-conteneur.html',
+  './pages/reception-preuve.html',
+  './pages/reception-faq.html'
 ];
 
 self.addEventListener('install', (event) => {
