@@ -22,6 +22,8 @@ const ROUTE_ALIASES = {
 
 const MODULE_ROUTES = {
   'reception-conteneur': 'reception-conteneur',
+  'reception-preuve': 'reception-preuve',
+  receptionpreuve: 'reception-preuve',
   receptionConteneur: 'reception-conteneur',
   reception: 'reception-conteneur',
   consolidation: 'consolidation',
@@ -33,6 +35,12 @@ const MODULE_ROUTES = {
 };
 // END PATCH: NAV
 const worker = new Worker('./app/ai-worker.js', { type: 'module' });
+const CONS_DATA_KEY = 'DLWMS_CONS_DATA_V1';
+const CONS_LAST_IMPORT_KEY = 'DLWMS_CONS_LASTIMPORT_V1';
+const REMISE_DATA_KEY = 'DLWMS_REMISE_DATA_V1';
+const REMISE_HISTORY_POINTER_KEY = 'DLWMS_REMISE_HISTORY_POINTER';
+const RECEIPTS_DB_NAME = 'DLWMS_RECEIPTS_DB_V1';
+const RECEIPTS_STORE_NAME = 'photos';
 const PROMPT_DRAFT_KEY = 'dlwms_ai_prompt_draft_v1';
 const LAST_SENT_PROMPT_KEY = 'dlwms_ai_prompt_last_sent_v1';
 const LIA_GUIDE_PATH = './docs/formation-lia.md';
@@ -268,11 +276,339 @@ async function navigate(route, options = {}) {
   bindSettingsJumps(normalizedRoute);
   bindHomePage(normalizedRoute);
   bindLayoutPage(normalizedRoute);
+  bindModulePages(normalizedRoute);
   if (normalizedRoute === 'reception-faq') bindReceptionFaqPage(appNode);
   if (normalizedRoute === 'parametres') await hydrateSettingsMetrics();
   if (normalizedRoute === 'monitoring') hydrateMonitoring();
   if (normalizedRoute === 'ui-self-test') bindUiSelfTest();
 }
+
+
+// BEGIN PATCH: CONSOLIDATION PAGE
+function readJsonStorage(key, fallback) {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return fallback;
+    const parsed = JSON.parse(raw);
+    return parsed ?? fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function writeJsonStorage(key, value) {
+  localStorage.setItem(key, JSON.stringify(value));
+}
+
+function bindModulePages(route) {
+  if (route === 'consolidation') bindConsolidationPage();
+  if (route === 'remise') bindRemisePage();
+  if (route === 'reception-preuve') bindReceptionPreuvePage();
+}
+
+function bindConsolidationPage() {
+  const invInput = document.getElementById('consInventoryFile');
+  const recInput = document.getElementById('consReceptionFile');
+  const metaNode = document.getElementById('consImportMeta');
+  const dataset = readJsonStorage(CONS_DATA_KEY, { inventory: [], reception: [] });
+  const imports = readJsonStorage(CONS_LAST_IMPORT_KEY, { inventory: null, reception: null });
+
+  const renderMeta = () => {
+    if (!metaNode) return;
+    const fmt = (x) => (x ? `${x.fileName} · ${new Date(x.at).toLocaleString('fr-FR')}` : 'Aucun import');
+    metaNode.innerHTML = `<p class="muted">Inventaire: ${fmt(imports.inventory)}</p><p class="muted">Réception: ${fmt(imports.reception)}</p>`;
+  };
+
+  const parseRows = async (file) => {
+    const lower = file.name.toLowerCase();
+    if (lower.endsWith('.csv')) return parseCsv(await file.text());
+    if ((lower.endsWith('.xlsx') || lower.endsWith('.xls')) && window.XLSX) {
+      const wb = XLSX.read(await file.arrayBuffer(), { type: 'array' });
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      return XLSX.utils.sheet_to_json(ws, { defval: '' });
+    }
+    throw new Error('Format non supporté en mode offline (CSV requis, XLSX optionnel).');
+  };
+
+  const updateKpi = () => {
+    const all = [...(dataset.inventory || []), ...(dataset.reception || [])];
+    const skuSet = new Set();
+    const bins = new Set();
+    let totalUnits = 0;
+    let anomalies = 0;
+    all.forEach((row) => {
+      const sku = String(row.item || row.sku || row.SKU || '').trim();
+      const qty = Number(row.qty ?? row.quantity ?? row.QTY ?? 0);
+      const bin = String(row.bin || row.location || '').trim();
+      if (!sku) anomalies += 1;
+      if (sku) skuSet.add(sku);
+      if (bin) bins.add(bin);
+      if (Number.isFinite(qty)) totalUnits += qty;
+      else anomalies += 1;
+    });
+    const map = {
+      sku: skuSet.size,
+      bins: bins.size,
+      units: totalUnits,
+      low: Math.round(skuSet.size * 0.12),
+      anomalies,
+    };
+    Object.entries(map).forEach(([key, value]) => {
+      const node = document.getElementById(`consKpi-${key}`);
+      if (node) node.textContent = String(value);
+    });
+  };
+
+  const bindImport = (type, input) => {
+    if (!input) return;
+    input.addEventListener('change', async () => {
+      const file = input.files?.[0];
+      if (!file) {
+        showToast('Aucun fichier sélectionné.', 'warning');
+        return;
+      }
+      try {
+        const rows = await parseRows(file);
+        dataset[type] = Array.isArray(rows) ? rows : [];
+        imports[type] = { fileName: file.name, at: Date.now() };
+        writeJsonStorage(CONS_DATA_KEY, dataset);
+        writeJsonStorage(CONS_LAST_IMPORT_KEY, imports);
+        renderMeta();
+        updateKpi();
+        showToast(`Import ${type} réussi (${dataset[type].length} lignes).`, 'success');
+      } catch (error) {
+        showToast(error.message || 'Import impossible.', 'error');
+      } finally {
+        input.value = '';
+      }
+    });
+  };
+
+  bindImport('inventory', invInput);
+  bindImport('reception', recInput);
+  document.getElementById('consImportInventory')?.addEventListener('click', () => invInput?.click());
+  document.getElementById('consImportReception')?.addEventListener('click', () => recInput?.click());
+  document.getElementById('consRecompute')?.addEventListener('click', () => {
+    updateKpi();
+    showToast('KPI recalculés.', 'success');
+  });
+  document.getElementById('consGenerate')?.addEventListener('click', () => showToast('Génération à venir.', 'info'));
+  document.getElementById('consExportCsv')?.addEventListener('click', () => {
+    const rows = [...(dataset.inventory || []), ...(dataset.reception || [])];
+    if (!rows.length) {
+      showToast('Aucune donnée à exporter.', 'warning');
+      return;
+    }
+    const headers = Object.keys(rows[0]);
+    const csv = [headers.join(','), ...rows.map((row) => headers.map((h) => `"${String(row[h] ?? '').replaceAll('"', '""')}"`).join(','))].join('\n');
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+    a.download = `consolidation-moves-${Date.now()}.csv`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    showToast('Export CSV prêt.', 'success');
+  });
+  document.getElementById('consExportPdf')?.addEventListener('click', () => {
+    window.print();
+    showToast('Export PDF: impression système lancée.', 'info');
+  });
+  renderMeta();
+  updateKpi();
+}
+// END PATCH: CONSOLIDATION PAGE
+
+// BEGIN PATCH: REMISE PAGE
+function bindRemisePage() {
+  const data = readJsonStorage(REMISE_DATA_KEY, { upcoming: [], generated: [] });
+  const list = document.getElementById('remiseUpcomingList');
+  const renderList = () => {
+    if (!list) return;
+    const rows = data.upcoming || [];
+    if (!rows.length) {
+      list.innerHTML = '<div class="empty-state"><p class="muted">Aucune remise planifiée.</p></div>';
+      return;
+    }
+    list.innerHTML = rows.map((row) => `<article class="card"><strong>${row.id}</strong><p class="muted">${row.label || 'En attente'}</p></article>`).join('');
+  };
+
+  document.getElementById('remiseStart')?.addEventListener('click', () => showToast('Écran opérationnel à brancher.', 'info'));
+  document.getElementById('remiseScanSelect')?.addEventListener('click', () => showToast('Scanner ID à venir.', 'info'));
+  document.getElementById('remiseCreate')?.addEventListener('click', () => {
+    const id = `REM-${Date.now()}`;
+    data.upcoming.unshift({ id, label: 'Nouvelle remise' });
+    writeJsonStorage(REMISE_DATA_KEY, data);
+    writeJsonStorage(REMISE_HISTORY_POINTER_KEY, { lastId: id, at: Date.now() });
+    renderList();
+    showToast('Nouvelle remise créée.', 'success');
+  });
+  document.getElementById('remiseExport')?.addEventListener('click', () => {
+    const payload = JSON.stringify(data, null, 2);
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([payload], { type: 'application/json' }));
+    a.download = `remise-${Date.now()}.json`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    showToast('Export Remise généré.', 'success');
+  });
+  const importInput = document.getElementById('remiseImportInput');
+  document.getElementById('remiseImport')?.addEventListener('click', () => importInput?.click());
+  importInput?.addEventListener('change', async () => {
+    const file = importInput.files?.[0];
+    if (!file) return;
+    try {
+      const payload = JSON.parse(await file.text());
+      writeJsonStorage(REMISE_DATA_KEY, payload);
+      showToast('Import Remise effectué.', 'success');
+      renderList();
+    } catch {
+      showToast('Import Remise invalide.', 'error');
+    }
+  });
+  renderList();
+}
+// END PATCH: REMISE PAGE
+
+// BEGIN PATCH: RECEPTION PREUVE PAGE
+function openReceiptsDb() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(RECEIPTS_DB_NAME, 1);
+    req.onupgradeneeded = () => {
+      const db = req.result;
+      if (!db.objectStoreNames.contains(RECEIPTS_STORE_NAME)) {
+        db.createObjectStore(RECEIPTS_STORE_NAME, { keyPath: 'id' });
+      }
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function receiptStore(mode) {
+  const db = await openReceiptsDb();
+  return db.transaction(RECEIPTS_STORE_NAME, mode).objectStore(RECEIPTS_STORE_NAME);
+}
+
+async function addReceiptPhoto(record) {
+  const store = await receiptStore('readwrite');
+  return new Promise((resolve, reject) => {
+    const req = store.put(record);
+    req.onsuccess = () => resolve(true);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function getReceiptPhotos() {
+  const store = await receiptStore('readonly');
+  return new Promise((resolve, reject) => {
+    const req = store.getAll();
+    req.onsuccess = () => resolve(req.result || []);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function deleteReceiptPhoto(id) {
+  const store = await receiptStore('readwrite');
+  return new Promise((resolve, reject) => {
+    const req = store.delete(id);
+    req.onsuccess = () => resolve(true);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+function bindReceptionPreuvePage() {
+  const picker = document.getElementById('preuvePhotoInput');
+  const titleNode = document.getElementById('preuveTitle');
+  const containerNode = document.getElementById('preuveContainer');
+  const gallery = document.getElementById('preuveGallery');
+  const filterNode = document.getElementById('preuveFilterWindow');
+  const searchNode = document.getElementById('preuveSearchContainer');
+  const purgeDaysNode = document.getElementById('preuvePurgeDays');
+
+  const filterRows = (rows) => {
+    const now = Date.now();
+    const windowValue = filterNode?.value || 'today';
+    const search = (searchNode?.value || '').trim().toLowerCase();
+    return rows.filter((row) => {
+      const age = now - row.createdAt;
+      const keepByDate = windowValue === 'all'
+        ? true
+        : windowValue === '7d'
+          ? age <= 7 * 24 * 3600 * 1000
+          : new Date(row.createdAt).toDateString() === new Date(now).toDateString();
+      const keepBySearch = !search || String(row.linkedTo?.id || '').toLowerCase().includes(search);
+      return keepByDate && keepBySearch;
+    });
+  };
+
+  const renderGallery = async () => {
+    if (!gallery) return;
+    const rows = filterRows(await getReceiptPhotos());
+    if (!rows.length) {
+      gallery.innerHTML = '<div class="empty-state"><p class="muted">Aucune preuve trouvée.</p></div>';
+      return;
+    }
+    gallery.innerHTML = '';
+    rows.sort((a, b) => b.createdAt - a.createdAt).forEach((row) => {
+      const item = document.createElement('article');
+      item.className = 'card preuve-item';
+      const imgUrl = URL.createObjectURL(row.blob);
+      item.innerHTML = `<img src="${imgUrl}" alt="${row.title}" class="preuve-thumb" /><div><strong>${row.title}</strong><p class="muted">${new Date(row.createdAt).toLocaleString('fr-FR')} · conteneur: ${row.linkedTo?.id || '-'}</p></div><div class="row"><button class="btn" data-download="${row.id}">Télécharger</button><button class="btn btn-danger" data-delete="${row.id}">Supprimer</button></div>`;
+      gallery.appendChild(item);
+      item.querySelector('[data-download]')?.addEventListener('click', () => {
+        const a = document.createElement('a');
+        a.href = imgUrl;
+        a.download = `${row.title || 'preuve'}-${row.id}.jpg`;
+        a.click();
+        showToast('Téléchargement lancé.', 'success');
+      });
+      item.querySelector('[data-delete]')?.addEventListener('click', async () => {
+        await deleteReceiptPhoto(row.id);
+        showToast('Photo supprimée.', 'success');
+        renderGallery();
+      });
+    });
+  };
+
+  document.getElementById('preuveAddPhoto')?.addEventListener('click', () => picker?.click());
+  document.getElementById('preuvePickInPanel')?.addEventListener('click', () => picker?.click());
+  picker?.addEventListener('change', async () => {
+    const file = picker.files?.[0];
+    if (!file) {
+      showToast('Aucune photo sélectionnée.', 'warning');
+      return;
+    }
+    const record = {
+      id: `photo-${Date.now()}-${Math.random().toString(16).slice(2, 7)}`,
+      createdAt: Date.now(),
+      title: titleNode?.value?.trim() || 'Preuve réception',
+      blob: file,
+      linkedTo: { type: 'container', id: containerNode?.value?.trim() || '' },
+    };
+    try {
+      await addReceiptPhoto(record);
+      showToast('Photo enregistrée offline.', 'success');
+      picker.value = '';
+      renderGallery();
+    } catch {
+      showToast('Impossible de stocker la photo.', 'error');
+    }
+  });
+
+  filterNode?.addEventListener('change', renderGallery);
+  searchNode?.addEventListener('input', debounce(renderGallery, 180));
+  document.getElementById('preuvePurge')?.addEventListener('click', async () => {
+    const days = Math.max(1, Number(purgeDaysNode?.value || 30));
+    if (!window.confirm(`Supprimer les photos de plus de ${days} jours ?`)) return;
+    const rows = await getReceiptPhotos();
+    const limit = Date.now() - (days * 24 * 3600 * 1000);
+    await Promise.all(rows.filter((row) => row.createdAt < limit).map((row) => deleteReceiptPhoto(row.id)));
+    showToast('Purge effectuée.', 'success');
+    renderGallery();
+  });
+
+  renderGallery();
+}
+// END PATCH: RECEPTION PREUVE PAGE
 
 function bindSettingsJumps(route) {
   const section = appNode.querySelector('[data-settings-section]')?.dataset.settingsSection;

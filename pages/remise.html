@@ -1,4 +1,38 @@
+<!-- BEGIN PATCH: REMISE PAGE -->
 <section class="card">
-  <h2>Remise</h2>
-  <p class="muted">Module prêt pour exploitation offline et extension métier.</p>
+  <h2 class="ds-page-title">Remise en stock</h2>
+  <p class="muted">Retour atelier.</p>
+  <div class="row">
+    <button class="btn btn-primary" id="remiseStart">Démarrer</button>
+    <button class="btn" onclick="window.DLWMS_openSettings({section:'Remise'})">Ouvrir Paramètres</button>
+    <button class="btn" onclick="window.DLWMS_openHistory({module:'remise'})">Historique Remise</button>
+  </div>
 </section>
+
+<section class="card">
+  <button class="btn accordion-trigger" data-accordion-trigger aria-controls="remiseNextPanel" aria-expanded="false">Prochaine remise</button>
+  <div id="remiseNextPanel" class="accordion-panel" data-state="closed" hidden>
+    <div id="remiseUpcomingList"></div>
+    <button class="btn" id="remiseScanSelect">Scanner / Sélectionner ID</button>
+  </div>
+</section>
+
+<section class="card">
+  <button class="btn accordion-trigger" data-accordion-trigger aria-controls="remiseGeneratePanel" aria-expanded="false">Générer une remise</button>
+  <div id="remiseGeneratePanel" class="accordion-panel" data-state="closed" hidden>
+    <p class="muted">Scanner un panier/palette…</p>
+    <button class="btn" id="remiseCreate">Créer nouvelle remise</button>
+  </div>
+</section>
+
+<section class="card">
+  <button class="btn accordion-trigger" data-accordion-trigger aria-controls="remiseToolsPanel" aria-expanded="false">Outils</button>
+  <div id="remiseToolsPanel" class="accordion-panel" data-state="closed" hidden>
+    <div class="row">
+      <button class="btn" id="remiseExport">Exporter données</button>
+      <button class="btn" id="remiseImport">Importer données</button>
+      <input type="file" id="remiseImportInput" accept="application/json" hidden />
+    </div>
+  </div>
+</section>
+<!-- END PATCH: REMISE PAGE -->
