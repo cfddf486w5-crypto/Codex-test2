@@ -1,94 +1,38 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" data-ui-version="2026.02-ui1000">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>DL WMS Offline</title>
-    <link rel="stylesheet" href="styles.css" />
-    <link rel="stylesheet" href="modules/reception-conteneur/reception-conteneur.css" />
+    <meta name="theme-color" content="#0b1020" />
+    <title>DL WMS Offline AI</title>
+    <link rel="manifest" href="manifest.json" />
+    <link rel="stylesheet" href="assets/style.css" />
+    <link rel="stylesheet" href="assets/app.css" />
   </head>
-  <body>
-    <div class="app-shell">
-      <header class="topbar">
-        <button class="icon-button" type="button" aria-label="Menu">
-          <span aria-hidden="true">☰</span>
-        </button>
-        <p class="brand">Logo / DL Logistique ©</p>
-        <button class="icon-button bell-button" type="button" aria-label="Notifications">
-          <span aria-hidden="true">🔔</span>
-          <span class="badge">3</span>
-        </button>
-      </header>
+  <body data-ui-version="2026.02-ui1000">
+    <a class="skip-link" href="#app">Aller au contenu</a>
 
-      <main id="appView" class="content" aria-live="polite"></main>
+    <header class="topbar">
+      <div>
+        <h1>DL WMS Offline AI</h1>
+        <p class="topbar-subtitle muted">Pilotage entrepôt & IA locale</p>
+      </div>
+      <div class="row" style="justify-content:flex-end; min-width: fit-content;">
+        <span id="networkBadge" class="status-badge" role="status" aria-live="polite">En ligne</span>
+        <button id="installBtn" class="ghost hidden" type="button">Installer</button>
+      </div>
+    </header>
 
-      <nav class="tabbar" aria-label="Navigation" id="tabbar"></nav>
-    </div>
+    <main id="app" class="app-shell" aria-live="polite"></main>
 
-    <template id="dashboard-template">
-      <section class="pill-zone" aria-label="Actions rapides">
-        <button class="pill">Paramètres</button>
-        <button class="pill">Historique des mises à jour</button>
-        <button class="pill">Aide &amp; support</button>
-      </section>
+    <nav class="bottom-nav" aria-label="Navigation principale">
+      <button type="button" data-route="ai-center" aria-label="Accueil IA">🏠 Accueil</button>
+      <button type="button" data-route="consolidation" aria-label="Consolidation">📦 Consol</button>
+      <button type="button" data-route="monitoring" aria-label="Monitoring">📊 Suivi</button>
+      <button type="button" data-route="parametres" aria-label="Paramètres">⚙️ Réglages</button>
+    </nav>
 
-      <section class="cards-grid" id="cardsGrid"></section>
-
-      <section class="report-card" aria-label="Rapport entrepôt">
-        <h2>Rapport entrepôt</h2>
-        <div class="chart-wrap">
-          <canvas id="donutChart" width="220" height="220"></canvas>
-          <ul id="chartLegend" class="legend"></ul>
-        </div>
-      </section>
-    </template>
-
-    <template id="ia-template">
-      <section class="panel">
-        <div class="section-head">
-          <h1>Assistant IA</h1>
-          <div class="inline-actions">
-            <button class="small-btn" id="kbToggle">Base de connaissances</button>
-            <button class="small-btn danger" id="iaReset">Effacer</button>
-          </div>
-        </div>
-
-        <div class="chat-box" id="chatBox"></div>
-        <form id="chatForm" class="chat-form">
-          <input id="chatInput" type="text" placeholder="Pose une question WMS..." autocomplete="off" required />
-          <button type="submit" class="small-btn">Envoyer</button>
-        </form>
-      </section>
-
-      <section class="panel hidden" id="kbPanel">
-        <h2>Connaissances</h2>
-        <form id="kbForm" class="kb-form">
-          <input name="title" type="text" placeholder="Titre" required />
-          <textarea name="content" rows="3" placeholder="Règle / note" required></textarea>
-          <input name="tags" type="text" placeholder="tags, séparés, par, virgule" />
-          <button class="small-btn" type="submit">Ajouter</button>
-        </form>
-        <ul id="kbList" class="simple-list"></ul>
-      </section>
-    </template>
-
-    <template id="consolidation-template">
-      <section class="panel">
-        <h1>Consolidation</h1>
-        <div class="action-bar">
-          <label class="small-btn">Importer Inventaire (CSV)<input type="file" id="inventoryFile" accept=".csv" hidden /></label>
-          <label class="small-btn">Importer Réception (CSV)<input type="file" id="receivingFile" accept=".csv" hidden /></label>
-          <button class="small-btn" id="exportPdf">Exporter PDF</button>
-          <button class="small-btn" id="exportCsv">Exporter Excel/CSV</button>
-          <button class="small-btn" id="recomputeBtn">Rafraîchir / Recalculer</button>
-        </div>
-      </section>
-
-      <section class="accordion-group" id="consolidationAccordions"></section>
-    </template>
-
-    <div id="toast" class="toast" role="status" aria-live="polite"></div>
-    <script src="app.js"></script>
-    <script src="modules/reception-conteneur/reception-conteneur.js"></script>
+    <noscript>Cette application nécessite JavaScript pour fonctionner en mode hors ligne.</noscript>
+    <script type="module" src="app/core.js"></script>
   </body>
 </html>
