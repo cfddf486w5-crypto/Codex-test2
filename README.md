@@ -3,8 +3,22 @@
 Application HTML/CSS/JS offline-first avec assistant IA local pour usage WMS (iPhone + PC).
 
 ## Installation
-1. Ouvrir `index.html` depuis un serveur statique local (ex: `npx serve .`) ou via votre hébergement interne.
+1. Ouvrir `index.html` depuis un serveur statique local ou via votre hébergement interne.
 2. Aucune API externe n'est requise. Toutes les données restent locales (IndexedDB, fallback localStorage).
+
+### Démarrage local (macOS/Linux/Windows)
+- **Option 1 (Node.js, cross-platform)**: `npx serve .`
+- **Option 2 (Python, cross-platform)**: `python -m http.server 8080`
+- **Option 3 (VS Code)**: extension *Live Server* puis ouverture du dossier.
+
+### Vérification Windows
+- Installer Node.js LTS (inclut `node`/`npm`) puis vérifier:
+  - `node -v`
+  - `npm -v`
+- Démarrer le serveur depuis **PowerShell** dans le dossier du projet:
+  - `npx serve .`
+- Ouvrir ensuite `http://localhost:3000` (ou le port affiché).
+- Éviter l'ouverture directe en `file:///` pour garantir le bon fonctionnement des imports JS modules et du cache PWA.
 
 ## Usage IA
 - Bouton **Assistant IA**: ouvre le chat coulissant mobile-friendly.
@@ -42,6 +56,7 @@ Application HTML/CSS/JS offline-first avec assistant IA local pour usage WMS (iP
 
 ## Évaluation
 - Lancer: `node tests/run_tests.mjs`
+- Compatible Windows/macOS/Linux (commande identique en terminal ou PowerShell).
 - Dashboard: `debug_ai.html` affiche score, erreurs, tests, prompts et logs de décision.
 
 ## ZIP final
