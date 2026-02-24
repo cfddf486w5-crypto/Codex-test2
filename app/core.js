@@ -31,7 +31,6 @@ const MODULE_ROUTES = {
   'suivi-expedition': 'monitoring',
   monitoring: 'monitoring',
   remise: 'remise',
-  layout: 'layout',
 };
 // END PATCH: NAV
 const worker = new Worker('./app/ai-worker.js', { type: 'module' });
@@ -1026,9 +1025,8 @@ function bindHomePage(route) {
   bindQuick('CARD_QUICK_RECEIPT_CONTAINER', async () => { await window.DLWMS_openReceptionConteneur?.(); showActionToast('Module Réception conteneur ouvert.'); });
   bindQuick('CARD_QUICK_CONSOLIDATION', async () => { await navigate('consolidation'); showActionToast('Module Consolidation ouvert.'); });
   bindQuick('CARD_QUICK_INVENTORY', async () => { await navigate('inventaire'); showActionToast('Module Inventaire ouvert.'); });
-  bindQuick('CARD_QUICK_SHIPPING_TRACK', async () => { await navigate('monitoring'); showActionToast('Module Suivi expédition ouvert.'); }, true);
-  bindQuick('CARD_QUICK_RESTOCK', async () => { await navigate('remise'); showActionToast('Module Remise en stock ouvert.'); }, true);
-  bindQuick('CARD_QUICK_LAYOUT', async () => { await navigate('layout'); showActionToast('Module Layout ouvert.'); });
+  bindQuick('CARD_QUICK_SHIPPING_TRACK', async () => { await navigate('monitoring'); showActionToast('Module Suivi expédition ouvert.'); });
+  bindQuick('CARD_QUICK_RESTOCK', async () => { await navigate('remise'); showActionToast('Module Remise en stock ouvert.'); });
 
   document.getElementById('BTN_HOME_HELP_FAQ')?.addEventListener('click', async () => {
     await navigate('reception-faq');
@@ -1080,7 +1078,7 @@ function bindHomePage(route) {
   document.getElementById('BTN_HOME_OFFLINE_BADGE')?.addEventListener('click', () => {
     ui.modal.open('offlineHelpModal', {
       title: 'Mode offline',
-      content: '<p>Offline prêt: imports, exports, layout et historique disponibles sans réseau.</p>',
+      content: '<p>Offline prêt: imports, exports et historique disponibles sans réseau.</p>',
     });
   });
 }

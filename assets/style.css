@@ -241,7 +241,7 @@ textarea::placeholder { color: color-mix(in oklab, var(--muted) 80%, transparent
   bottom: 0;
   z-index: 10;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 6px;
   padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
   background: color-mix(in oklab, var(--bg) 85%, transparent);
@@ -291,6 +291,42 @@ textarea::placeholder { color: color-mix(in oklab, var(--muted) 80%, transparent
 :focus-visible {
   outline: none;
   box-shadow: var(--focus-ring);
+}
+
+
+
+.module-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.module-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+  min-height: 220px;
+  overflow: hidden;
+}
+
+.module-card img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid var(--stroke);
+}
+
+.module-card-title {
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+@media (max-width: 430px) {
+  .module-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 ::selection {
