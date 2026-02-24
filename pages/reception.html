@@ -1,4 +1,19 @@
+<!-- BEGIN PATCH: réception entry points + conformité settings/history -->
 <section class="card">
-  <h2>Reception</h2>
-  <p class="muted">Module prêt pour exploitation offline et extension métier.</p>
+  <h2>Réception</h2>
+  <p class="muted">Flux principal de réception (offline). Accès rapide FAQ et paramètres centralisés.</p>
+  <div class="row">
+    <button type="button" data-open-reception-faq class="primary">FAQ</button>
+    <button type="button" data-route="parametres" data-settings-section="settings-reception">Ouvrir Paramètres</button>
+  </div>
 </section>
+
+<section class="card">
+  <h3>Réception conteneur</h3>
+  <p class="muted">Traitement d’un conteneur, validation des écarts et stockage des preuves.</p>
+  <div class="row">
+    <button type="button" data-route="reception-conteneur">Ouvrir réception conteneur</button>
+    <button type="button" data-open-reception-faq>FAQ</button>
+  </div>
+</section>
+<!-- END PATCH: réception entry points + conformité settings/history -->

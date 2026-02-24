@@ -1,0 +1,45 @@
+<!-- BEGIN PATCH: page FAQ réception -->
+<section id="receptionFaqPage" class="card reception-faq-page">
+  <h2>FAQ — Réception</h2>
+  <p class="muted">Base de connaissance offline: recherche instantanée, filtres, notes d’équipe et import/export JSON.</p>
+
+  <label for="receptionFaqSearch">Recherche</label>
+  <input id="receptionFaqSearch" type="search" placeholder="Chercher question, réponse, mot-clé..." autocomplete="off" />
+
+  <div class="row">
+    <label for="receptionFaqSeverity">Niveau</label>
+    <select id="receptionFaqSeverity">
+      <option value="all">Tous</option>
+      <option value="info">Info</option>
+      <option value="warn">Avertissement</option>
+      <option value="critical">Critique</option>
+    </select>
+  </div>
+
+  <div id="receptionFaqCategories" class="chip-row" aria-label="Catégories FAQ"></div>
+
+  <div class="row">
+    <button id="exportReceptionFaq" type="button">Exporter FAQ + Notes (JSON)</button>
+    <label class="button-like" for="importReceptionFaqFile">Importer FAQ + Notes (JSON)</label>
+    <input id="importReceptionFaqFile" type="file" accept=".json" hidden />
+  </div>
+
+  <p id="receptionFaqStatus" class="muted" role="status" aria-live="polite"></p>
+  <p id="receptionFaqEmpty" class="muted" hidden>Aucune entrée trouvée avec ces filtres.</p>
+  <div id="receptionFaqList" class="faq-list"></div>
+</section>
+
+<section class="card">
+  <h3>Notes de l’équipe (KB personnalisée)</h3>
+  <label for="notesQuai">Quai / opérations</label>
+  <textarea id="notesQuai" data-notes-category="quai" placeholder="Notes spécifiques Transbec/DAI..."></textarea>
+
+  <label for="notesQualite">Qualité / exceptions</label>
+  <textarea id="notesQualite" data-notes-category="qualite" placeholder="Règles dommages, refus, isolement..."></textarea>
+</section>
+
+<section class="card">
+  <h3>Checklist Réception</h3>
+  <div id="receptionChecklist" class="faq-checklist"></div>
+</section>
+<!-- END PATCH: page FAQ réception -->

@@ -16,6 +16,20 @@ export const UI_FLAGS = {
 
 const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+export const ICONS = {
+  home: '🏠',
+  consolidation: '📦',
+  monitoring: '📊',
+  settings: '⚙️',
+  faq: '❓',
+  history: '🕘',
+};
+
+export function getIcon(name) {
+  return ICONS[name] || '•';
+}
+
+
 function getFocusableElements(root) {
   return [...root.querySelectorAll('button,[href],input,select,textarea,[tabindex]:not([tabindex="-1"])')]
     .filter((el) => !el.hasAttribute('disabled') && !el.getAttribute('aria-hidden'));

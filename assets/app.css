@@ -303,3 +303,28 @@ button.is-pressed { transform: scale(var(--ui-press-scale)); }
   .ai-panel #aiToggle { margin-left: auto; display: block; }
   .ai-drawer { width: 100vw; border-radius: 12px 12px 0 0; }
 }
+
+/* BEGIN PATCH: FAQ réception styles */
+.reception-faq-page input[type='search'] { min-height: 44px; }
+.chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+.chip-row .chip.active { background: var(--accent); color: #fff; border-color: transparent; }
+.button-like {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--stroke);
+  border-radius: 12px;
+}
+.faq-list { display: grid; gap: 10px; }
+.faq-item { border: 1px solid var(--stroke); border-radius: 12px; overflow: hidden; }
+.faq-question { width: 100%; text-align: left; background: transparent; border: 0; padding: 12px; display: grid; gap: 4px; }
+.faq-question small { color: var(--muted); }
+.faq-answer { padding: 0 12px 12px; }
+.faq-severity-pill { text-transform: uppercase; font-size: 11px; }
+.severity-critical { border-color: color-mix(in oklab, var(--danger) 55%, var(--stroke)); }
+.severity-warn { border-color: color-mix(in oklab, #f59e0b 45%, var(--stroke)); }
+.faq-checklist { display: grid; gap: 8px; }
+.faq-check { display: flex; gap: 10px; align-items: center; min-height: 44px; }
+/* END PATCH: FAQ réception styles */
