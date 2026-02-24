@@ -106,6 +106,14 @@ button:active { transform: scale(0.97); }
 .settings-grid input, .settings-grid select { border: 1px solid #c6d7ed; border-radius: 10px; padding: 8px; background: #fff; }
 .task-header { margin-bottom: 8px; }
 .ia-chat-panel { margin-bottom: 20px; }
+.remise-panel { display: grid; gap: 10px; }
+.remise-frame {
+  width: 100%;
+  min-height: 72vh;
+  border: 1px solid #cfdcf0;
+  border-radius: 16px;
+  background: #fff;
+}
 @media (max-width: 390px) { .settings-grid { grid-template-columns: 1fr; } }
 
 @media print {
