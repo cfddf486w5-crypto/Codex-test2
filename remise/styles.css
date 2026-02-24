@@ -1,0 +1,106 @@
+:root {
+  --bg: #f1f5fb;
+  --card: #ffffff;
+  --text: #0f2855;
+  --muted: #5d6e91;
+  --blue: #1f57d5;
+  --blue-dark: #163f9b;
+  --ok: #17a673;
+  --warn: #d97706;
+  --danger: #c62828;
+  --border: #d6e0f7;
+  --shadow: 0 8px 22px rgba(19, 49, 107, 0.12);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0a1630;
+    --card: #122143;
+    --text: #eaf0ff;
+    --muted: #b2c0df;
+    --blue: #5e89ff;
+    --blue-dark: #7ca2ff;
+    --border: #27416f;
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  }
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.app-shell { max-width: 980px; margin: 0 auto; min-height: 100dvh; padding-bottom: 132px; }
+.top-header {
+  position: sticky; top: 0; z-index: 20;
+  padding: 14px 16px;
+  background: color-mix(in oklab, var(--bg), black 6%);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(8px);
+}
+.route-view { padding: 16px; display: grid; gap: 12px; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 18px; box-shadow: var(--shadow); padding: 14px; }
+.row { display: flex; align-items: center; }
+.row.end { justify-content: flex-end; }
+.row.gap { gap: 10px; }
+.stack { display: grid; gap: 8px; }
+
+h1,h2,h3,p { margin: 0; }
+.small { font-size: 12px; color: var(--muted); }
+.muted { color: var(--muted); }
+
+.grid-2 { display: grid; gap: 10px; grid-template-columns: repeat(2, minmax(0,1fr)); }
+@media (max-width: 740px) { .grid-2 { grid-template-columns: 1fr; } }
+
+.btn {
+  border: 0; border-radius: 14px; background: #dce7ff; color: var(--text);
+  min-height: 44px; padding: 0 14px; font-weight: 700; cursor: pointer;
+}
+.btn:active { transform: translateY(1px); }
+.btn.primary { background: var(--blue); color: #fff; }
+.btn.ghost { background: transparent; border: 1px solid var(--border); }
+.btn.warning { background: #ffe6bf; color: #6f3f00; }
+.btn.danger { background: #ffd9d9; color: #7f1212; }
+.input, input {
+  width: 100%; min-height: 46px; border-radius: 12px; border: 1px solid var(--border);
+  background: var(--card); color: var(--text); padding: 0 12px; font-size: 16px;
+}
+.badge { padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+.badge.pending { background:#f0f6ff; color:#1749b8; }
+.badge.progress { background:#fff3dc; color:#7f4d00; }
+.badge.done { background:#d5f7eb; color:#0d6f4d; }
+
+.list { display: grid; gap: 8px; }
+.item-row {
+  border: 1px solid var(--border); border-radius: 12px; padding: 10px; background: color-mix(in oklab, var(--card), var(--blue) 3%);
+}
+.progress-wrap { margin-top: 8px; height: 10px; background: #d6def2; border-radius: 999px; overflow: hidden; }
+.progress-bar { height: 10px; background: linear-gradient(90deg, var(--blue), #6ea1ff); }
+
+.ia-panel {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  margin: 0 auto; max-width: 980px; background: var(--card); border-top: 1px solid var(--border); z-index: 30;
+}
+.ia-toggle { width: 100%; min-height: 44px; border: 0; background: var(--blue); color:#fff; font-weight: 700; }
+.ia-body { padding: 10px; display: grid; gap: 8px; }
+.ia-messages { max-height: 180px; overflow: auto; display: grid; gap: 8px; }
+.ia-msg { border:1px solid var(--border); border-radius: 10px; padding: 8px; }
+.ia-input-row { display:flex; gap:8px; }
+
+.hidden { display: none !important; }
+.modal-backdrop {
+  position: fixed; inset:0; background: rgba(4, 12, 28, 0.45); z-index: 50;
+  display: grid; place-items: center; padding: 20px;
+}
+.modal-card { width: min(540px, 100%); background: var(--card); border-radius: 16px; padding: 16px; box-shadow: var(--shadow); display: grid; gap: 10px; }
+.action-grid { display:grid; gap:8px; grid-template-columns: repeat(2, 1fr); }
+.toast {
+  position: fixed; top: 78px; right: 12px; left: 12px; z-index: 60; background: var(--blue-dark); color:#fff;
+  border-radius: 12px; padding: 12px; font-weight: 700; text-align: center;
+}
+
+.icon-btn { min-width: 44px; }
+.kb-source { font-size: 12px; color: var(--muted); margin-top: 4px; }
