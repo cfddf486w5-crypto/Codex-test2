@@ -1,0 +1,40 @@
+<!-- BEGIN PATCH: product-grade UI refresh -->
+<section class="card">
+  <h2 class="ds-page-title">Accueil DL WMS</h2>
+  <p class="muted">Vue pilotage offline-first. Actions prioritaires et statut opérationnel du site.</p>
+  <div class="grid">
+    <article class="kpi-tile"><div class="muted">Réceptions aujourd’hui</div><strong id="kpiHomeReception" class="kpi">0</strong></article>
+    <article class="kpi-tile"><div class="muted">Tâches ouvertes</div><strong id="kpiHomeTasks" class="kpi">0</strong></article>
+    <article class="kpi-tile"><div class="muted">Moves générés</div><strong id="kpiHomeMoves" class="kpi">0</strong></article>
+    <article class="kpi-tile"><div class="muted">Exports</div><strong id="kpiHomeExports" class="kpi">0</strong></article>
+  </div>
+</section>
+
+<section class="card">
+  <h3>Quick actions</h3>
+  <div class="grid">
+    <button data-route="reception-conteneur" class="primary">Réception conteneur</button>
+    <button data-route="consolidation">Consolidation</button>
+    <button data-route="monitoring">Suivi expédition</button>
+    <button data-route="remise">Remise en stock</button>
+  </div>
+</section>
+
+<section class="card">
+  <button type="button" data-accordion-trigger aria-controls="homeShortcuts" aria-expanded="false" class="accordion-trigger">Raccourcis</button>
+  <div id="homeShortcuts" class="accordion-panel" hidden>
+    <div class="row">
+      <button data-route="reception">Réception</button>
+      <button data-route="layout">Layout</button>
+      <button data-route="inventaire">Inventaire</button>
+    </div>
+  </div>
+</section>
+
+<section class="card">
+  <h3>Historique</h3>
+  <p class="muted">Point d’entrée unique vers la traçabilité.</p>
+  <button data-route="history">Ouvrir l’historique</button>
+</section>
+
+<!-- END PATCH: product-grade UI refresh -->
