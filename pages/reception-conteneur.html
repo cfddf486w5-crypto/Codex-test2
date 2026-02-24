@@ -4,7 +4,14 @@
   <p class="muted">Page opérationnelle conteneur: mapping, validations et anomalies.</p>
   <div class="row">
     <button type="button" data-open-reception-faq class="primary">FAQ</button>
-    <button type="button" data-route="parametres" data-settings-section="settings-reception">Ouvrir Paramètres</button>
+    <button type="button" data-route="settings" data-settings-section="settings-reception">Ouvrir Paramètres</button>
+  </div>
+</section>
+
+<section class="card">
+  <button type="button" data-accordion-trigger aria-controls="receptionChecksPanel" aria-expanded="false">Contrôles rapides réception</button>
+  <div id="receptionChecksPanel" hidden>
+    <p class="muted">Vérifier le mapping, les validations lot/date et les anomalies bloquantes avant clôture.</p>
   </div>
 </section>
 <!-- END PATCH: page réception conteneur -->

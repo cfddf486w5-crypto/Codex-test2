@@ -13,6 +13,25 @@ import { icon } from '../ui/icons.js';
 const appNode = document.getElementById('app');
 const nav = document.querySelector('.bottom-nav');
 const ROOT_ROUTES = ['modules', 'history', 'parametres'];
+// BEGIN PATCH: NAV
+const ROUTE_ALIASES = {
+  settings: 'parametres',
+  modules: 'modules',
+  history: 'history',
+};
+
+const MODULE_ROUTES = {
+  'reception-conteneur': 'reception-conteneur',
+  receptionConteneur: 'reception-conteneur',
+  reception: 'reception-conteneur',
+  consolidation: 'consolidation',
+  inventaire: 'inventaire',
+  'suivi-expedition': 'monitoring',
+  monitoring: 'monitoring',
+  remise: 'remise',
+  layout: 'layout',
+};
+// END PATCH: NAV
 const worker = new Worker('./app/ai-worker.js', { type: 'module' });
 const LIA_GUIDE_PATH = './docs/formation-lia.md';
 const COMPLETE_AI_SEED_PATH = './data/ai_complete_seed.json';
@@ -102,6 +121,13 @@ async function boot() {
   bindNetworkBadge();
   bindNav();
   installReceptionFaqGlobals(navigate);
+  // BEGIN PATCH: NAV
+  window.DLWMS_navTo = async (route) => navigate(route);
+  window.DLWMS_openModule = async (moduleId) => {
+    const targetRoute = MODULE_ROUTES[moduleId] || MODULE_ROUTES[String(moduleId || '').toLowerCase()] || 'modules';
+    await navigate(targetRoute);
+  };
+  // END PATCH: NAV
   window.DLWMS_openHistory = async ({ module } = {}) => {
     await navigate('history');
     const filter = document.getElementById('historyModuleFilter');
@@ -112,12 +138,13 @@ async function boot() {
   };
   window.DLWMS_openSettings = async ({ section } = {}) => {
     if (section) sessionStorage.setItem('dlwms_settings_section', `settings-${section}`);
-    await navigate('parametres');
+    await navigate('settings');
   };
-  window.DLWMS_openReceptionConteneur = async () => navigate('reception-conteneur');
+  window.DLWMS_openReceptionConteneur = async () => navigate('module/reception-conteneur');
   setupBottomNavIcons();
   runOnboarding();
-  const initialRoute = localStorage.getItem('lastRoute') || 'home';
+  bindHashRouting();
+  const initialRoute = parseHashRoute() || localStorage.getItem('lastRoute') || 'modules';
   await navigate(initialRoute);
   setNavBadge('ai-center', 'IA');
   if ('serviceWorker' in navigator) await navigator.serviceWorker.register('./sw.js');
@@ -128,6 +155,28 @@ async function boot() {
     }
   });
 }
+
+// BEGIN PATCH: NAV
+function normalizeRoute(route) {
+  const raw = String(route || '').trim().replace(/^#\/?/, '').replace(/^\//, '');
+  if (!raw) return 'modules';
+  if (raw.startsWith('module/')) {
+    const moduleId = raw.slice('module/'.length);
+    return MODULE_ROUTES[moduleId] || MODULE_ROUTES[moduleId.toLowerCase()] || 'modules';
+  }
+  return ROUTE_ALIASES[raw] || raw;
+}
+
+function parseHashRoute() {
+  return normalizeRoute(window.location.hash);
+}
+
+function bindHashRouting() {
+  window.addEventListener('hashchange', () => {
+    navigate(parseHashRoute(), { syncHash: false });
+  });
+}
+// END PATCH: NAV
 
 
 
@@ -195,25 +244,32 @@ function bindNav() {
   });
 }
 
-async function navigate(route) {
-  await loadRoute(route, appNode);
-  const rootRoute = ROOT_ROUTES.includes(route) ? route : null;
+async function navigate(route, options = {}) {
+  const normalizedRoute = normalizeRoute(route);
+  const { syncHash = true } = options;
+  await loadRoute(normalizedRoute, appNode);
+  const rootRoute = ROOT_ROUTES.includes(normalizedRoute) ? normalizedRoute : 'modules';
   setNavActive(rootRoute);
-  localStorage.setItem('lastRoute', route);
+  localStorage.setItem('lastRoute', normalizedRoute);
+  if (syncHash) {
+    const hashRoute = normalizedRoute === 'parametres' ? 'settings' : normalizedRoute;
+    const targetHash = `#/${hashRoute}`;
+    if (window.location.hash !== targetHash) history.replaceState(null, '', targetHash);
+  }
   appNode.querySelectorAll('[data-route]').forEach((btn) => btn.addEventListener('click', () => navigate(btn.dataset.route)));
   bindReceptionEntryPoints(appNode, navigate);
 
   await bindSharedActions();
   bindAccordions(appNode);
   bindScanInputs();
-  bindHistoryPage(route);
-  bindSettingsJumps(route);
-  bindHomePage(route);
-  bindLayoutPage(route);
-  if (route === 'reception-faq') bindReceptionFaqPage(appNode);
-  if (route === 'parametres') await hydrateSettingsMetrics();
-  if (route === 'monitoring') hydrateMonitoring();
-  if (route === 'ui-self-test') bindUiSelfTest();
+  bindHistoryPage(normalizedRoute);
+  bindSettingsJumps(normalizedRoute);
+  bindHomePage(normalizedRoute);
+  bindLayoutPage(normalizedRoute);
+  if (normalizedRoute === 'reception-faq') bindReceptionFaqPage(appNode);
+  if (normalizedRoute === 'parametres') await hydrateSettingsMetrics();
+  if (normalizedRoute === 'monitoring') hydrateMonitoring();
+  if (normalizedRoute === 'ui-self-test') bindUiSelfTest();
 }
 
 function bindSettingsJumps(route) {
@@ -221,7 +277,12 @@ function bindSettingsJumps(route) {
   if (route === 'parametres') {
     const pending = sessionStorage.getItem('dlwms_settings_section');
     if (pending) {
-      document.getElementById(pending)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const targetSection = document.getElementById(pending);
+      targetSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (targetSection) {
+        targetSection.classList.add('settings-highlight');
+        window.setTimeout(() => targetSection.classList.remove('settings-highlight'), 1800);
+      }
       sessionStorage.removeItem('dlwms_settings_section');
     }
   }

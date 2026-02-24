@@ -415,3 +415,10 @@ textarea::placeholder { color: color-mix(in oklab, var(--muted) 80%, transparent
 .layout-cell { width:28px; height:28px; border-radius:6px; border:1px solid color-mix(in oklab,var(--muted) 20%,transparent); font-size:10px; padding:0; }
 .layout-cell.active { outline:2px solid var(--accent); }
 .bottom-nav { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+/* BEGIN PATCH: NAV */
+.settings-highlight {
+  border-color: color-mix(in oklab, var(--accent) 65%, var(--stroke));
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--accent) 25%, transparent), var(--lift-shadow);
+}
+/* END PATCH: NAV */
