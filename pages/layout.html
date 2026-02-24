@@ -1,4 +1,40 @@
 <section class="card">
-  <h2>Layout</h2>
-  <p class="muted">Module prêt pour exploitation offline et extension métier.</p>
+  <div class="card-header">
+    <div>
+      <h2>Layout</h2>
+      <p class="muted">Éditeur de plan offline-first.</p>
+    </div>
+    <button id="BTN_LAYOUT_OPEN_SETTINGS">Paramètres</button>
+  </div>
+  <label for="DROPDOWN_LAYOUT_SELECT">Layout actif</label>
+  <select id="DROPDOWN_LAYOUT_SELECT"></select>
+</section>
+
+<section class="card">
+  <div class="layout-toolbar" id="layoutTools">
+    <button id="TOOL_SELECT">Select</button><button id="TOOL_PEN">Pinceau</button><button id="TOOL_ERASER">Gomme</button><button id="TOOL_FILL">Remplir</button><button id="TOOL_RECT">Rect</button><button id="TOOL_TEXT_LABEL">Label</button><button id="TOOL_MEASURE">Mesure</button>
+  </div>
+  <div class="layout-zoom-row">
+    <button id="BTN_ZOOM_OUT">-</button><button id="BTN_ZOOM_IN">+</button><button id="BTN_ZOOM_FIT">Ajuster</button><button id="TOGGLE_PAN_MODE">Pan</button><button id="BTN_UNDO">Undo</button><button id="BTN_REDO">Redo</button>
+  </div>
+  <div class="layout-zoom-row">
+    <button id="BTN_TILE_PICKER">Type case</button><button id="BTN_TILE_FAVORITES">Favoris</button><button id="BTN_GRID_RESIZE">Resize</button><button id="BTN_GRID_TOGGLE_COORDS">Coords</button><button id="BTN_GRID_SNAP">Snap</button><button id="TOGGLE_AUTOSAVE">Auto-save</button>
+  </div>
+  <div class="layout-canvas-wrap"><div id="layoutGrid" class="layout-grid" aria-label="Grille layout"></div></div>
+</section>
+
+<section class="card">
+  <h3>Export / Import</h3>
+  <div class="row">
+    <button id="BTN_LAYOUT_EXPORT_JSON">Export JSON</button><button id="BTN_LAYOUT_IMPORT_JSON">Import JSON</button><button id="BTN_LAYOUT_EXPORT_PNG">Export PNG</button><button id="BTN_LAYOUT_EXPORT_PDF">Export PDF</button><button id="BTN_LAYOUT_EXPORT_LEGEND">Export légende</button><button id="BTN_LAYOUT_VIEW_CHANGES">Voir historique</button>
+    <input id="layoutImportFile" type="file" accept="application/json" class="hidden" />
+  </div>
+</section>
+
+<section class="card" id="layoutCellSheet">
+  <h3>Propriétés de la case</h3>
+  <p id="layoutCellMeta" class="muted">Sélectionnez une case.</p>
+  <div class="row">
+    <button id="BTN_CELL_CHANGE_TYPE">Changer type</button><button id="BTN_CELL_EDIT_LABEL">Éditer label</button><button id="BTN_CELL_CLEAR">Vider</button><button id="BTN_CELL_COPY">Copier</button><button id="BTN_CELL_PASTE">Coller</button>
+  </div>
 </section>

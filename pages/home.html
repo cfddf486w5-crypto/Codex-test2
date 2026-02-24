@@ -1,40 +1,48 @@
-<!-- BEGIN PATCH: product-grade UI refresh -->
-<section class="card">
-  <h2 class="ds-page-title">Accueil DL WMS</h2>
-  <p class="muted">Vue pilotage offline-first. Actions prioritaires et statut opérationnel du site.</p>
-  <div class="grid">
-    <article class="kpi-tile"><div class="muted">Réceptions aujourd’hui</div><strong id="kpiHomeReception" class="kpi">0</strong></article>
-    <article class="kpi-tile"><div class="muted">Tâches ouvertes</div><strong id="kpiHomeTasks" class="kpi">0</strong></article>
-    <article class="kpi-tile"><div class="muted">Moves générés</div><strong id="kpiHomeMoves" class="kpi">0</strong></article>
-    <article class="kpi-tile"><div class="muted">Exports</div><strong id="kpiHomeExports" class="kpi">0</strong></article>
+<section class="card home-topbar-card">
+  <div>
+    <h2 class="ds-page-title">DL WMS</h2>
+    <p class="muted" id="homeContext">Site principal · Opérateur local</p>
+  </div>
+  <div class="home-top-actions">
+    <button id="BTN_HOME_STORAGE_STATUS" class="icon-btn" title="Statut stockage">💾</button>
+    <button id="BTN_HOME_OFFLINE_BADGE" class="status-pill success" type="button">Offline prêt</button>
   </div>
 </section>
 
 <section class="card">
-  <h3>Quick actions</h3>
-  <div class="grid">
-    <button data-route="reception-conteneur" class="primary">Réception conteneur</button>
-    <button data-route="consolidation">Consolidation</button>
-    <button data-route="monitoring">Suivi expédition</button>
-    <button data-route="remise">Remise en stock</button>
+  <h3>Actions rapides</h3>
+  <div class="home-quick-grid">
+    <button id="CARD_QUICK_RECEIPT_CONTAINER" class="quick-card"><strong>Réception conteneur</strong><span>Importer, assigner bins, preuve photo</span></button>
+    <button id="CARD_QUICK_CONSOLIDATION" class="quick-card"><strong>Consolidation</strong><span>Fusion inventaire + réception</span></button>
+    <button id="CARD_QUICK_INVENTORY" class="quick-card"><strong>Inventaire</strong><span>Importer et normaliser inventaire</span></button>
+    <button id="CARD_QUICK_SHIPPING_TRACK" class="quick-card"><strong>Suivi expédition</strong><span>Surveillance des sorties</span></button>
+    <button id="CARD_QUICK_RESTOCK" class="quick-card"><strong>Remise en stock</strong><span>Retour atelier et réintégration</span></button>
+    <button id="CARD_QUICK_LAYOUT" class="quick-card"><strong>Layout</strong><span>Éditeur de plan entrepôt</span></button>
   </div>
 </section>
 
 <section class="card">
-  <button type="button" data-accordion-trigger aria-controls="homeShortcuts" aria-expanded="false" class="accordion-trigger">Raccourcis</button>
-  <div id="homeShortcuts" class="accordion-panel" hidden>
+  <h3>Modules</h3>
+  <div class="row">
+    <button id="BTN_NAV_MODULES" data-route="modules">Ouvrir Modules</button>
+    <button id="BTN_HOME_HISTORY">Historique</button>
+    <button id="BTN_NAV_SETTINGS" data-route="parametres">Paramètres</button>
+  </div>
+</section>
+
+<section class="card">
+  <button type="button" data-accordion-trigger aria-controls="homeToolsPanel" aria-expanded="false" class="accordion-trigger">Outils</button>
+  <div id="homeToolsPanel" class="accordion-panel" hidden>
     <div class="row">
-      <button data-route="reception">Réception</button>
-      <button data-route="layout">Layout</button>
-      <button data-route="inventaire">Inventaire</button>
+      <button id="BTN_HOME_EXPORT_BACKUP">Exporter Backup</button>
+      <button id="BTN_HOME_IMPORT_BACKUP">Importer Backup</button>
+      <button id="BTN_HOME_HELP_FAQ">Aide / FAQ</button>
+      <input id="homeBackupFile" type="file" accept="application/json" class="hidden" />
     </div>
   </div>
 </section>
 
 <section class="card">
-  <h3>Historique</h3>
-  <p class="muted">Point d’entrée unique vers la traçabilité.</p>
-  <button data-route="history">Ouvrir l’historique</button>
+  <h3>Santé / Status offline</h3>
+  <p class="muted" id="homeHealthHint">Toutes les actions sont offline-first. Vérifiez le stockage avant un import massif.</p>
 </section>
-
-<!-- END PATCH: product-grade UI refresh -->

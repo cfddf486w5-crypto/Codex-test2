@@ -12,7 +12,7 @@ import { icon } from '../ui/icons.js';
 
 const appNode = document.getElementById('app');
 const nav = document.querySelector('.bottom-nav');
-const ROOT_ROUTES = ['home', 'operations', 'ai-center', 'tools', 'parametres'];
+const ROOT_ROUTES = ['modules', 'history', 'parametres'];
 const worker = new Worker('./app/ai-worker.js', { type: 'module' });
 const LIA_GUIDE_PATH = './docs/formation-lia.md';
 const COMPLETE_AI_SEED_PATH = './data/ai_complete_seed.json';
@@ -110,6 +110,11 @@ async function boot() {
       filter.dispatchEvent(new Event('change'));
     }
   };
+  window.DLWMS_openSettings = async ({ section } = {}) => {
+    if (section) sessionStorage.setItem('dlwms_settings_section', `settings-${section}`);
+    await navigate('parametres');
+  };
+  window.DLWMS_openReceptionConteneur = async () => navigate('reception-conteneur');
   setupBottomNavIcons();
   runOnboarding();
   const initialRoute = localStorage.getItem('lastRoute') || 'home';
@@ -128,11 +133,10 @@ async function boot() {
 
 
 function setupBottomNavIcons() {
-  const labels = { home: 'Accueil', operations: 'Opérations', 'ai-center': 'IA', tools: 'Outils', parametres: 'Paramètres' };
+  const labels = { modules: 'Modules', history: 'Historique', parametres: 'Paramètres' };
   nav?.querySelectorAll('[data-route]').forEach((button) => {
     const route = button.dataset.route;
-    const iconName = route === 'ai-center' ? 'ai' : route;
-    button.innerHTML = `${icon(iconName)}<span class="label">${labels[route] || route}</span>`;
+    button.innerHTML = `${icon(route)}<span class="label">${labels[route] || route}</span>`;
   });
 }
 
@@ -204,6 +208,8 @@ async function navigate(route) {
   bindScanInputs();
   bindHistoryPage(route);
   bindSettingsJumps(route);
+  bindHomePage(route);
+  bindLayoutPage(route);
   if (route === 'reception-faq') bindReceptionFaqPage(appNode);
   if (route === 'parametres') await hydrateSettingsMetrics();
   if (route === 'monitoring') hydrateMonitoring();
@@ -537,6 +543,266 @@ async function bindSharedActions() {
       updateAiPanels('Commande vocale enregistrée.', 'Aucune action associée trouvée.');
     }
   });
+}
+
+
+function showActionToast(message, tone = 'success') {
+  showToast(message, tone);
+}
+
+function bindHomePage(route) {
+  if (route !== 'home') return;
+  const hasBinMap = !!getConfig('DLWMS_BINMAP', null);
+  const bindQuick = (id, handler, requiresBinMap = false) => {
+    const btn = document.getElementById(id);
+    if (!btn) return;
+    if (requiresBinMap && !hasBinMap) {
+      btn.disabled = true;
+      btn.title = 'Aller dans Paramètres > Réception pour configurer Bin Map';
+      return;
+    }
+    btn.addEventListener('click', handler);
+  };
+
+  bindQuick('BTN_HOME_HISTORY', () => {
+    window.DLWMS_openHistory?.({ module: 'all' });
+    showActionToast('Historique ouvert.');
+  });
+  bindQuick('CARD_QUICK_RECEIPT_CONTAINER', async () => { await window.DLWMS_openReceptionConteneur?.(); showActionToast('Module Réception conteneur ouvert.'); });
+  bindQuick('CARD_QUICK_CONSOLIDATION', async () => { await navigate('consolidation'); showActionToast('Module Consolidation ouvert.'); });
+  bindQuick('CARD_QUICK_INVENTORY', async () => { await navigate('inventaire'); showActionToast('Module Inventaire ouvert.'); });
+  bindQuick('CARD_QUICK_SHIPPING_TRACK', async () => { await navigate('monitoring'); showActionToast('Module Suivi expédition ouvert.'); }, true);
+  bindQuick('CARD_QUICK_RESTOCK', async () => { await navigate('remise'); showActionToast('Module Remise en stock ouvert.'); }, true);
+  bindQuick('CARD_QUICK_LAYOUT', async () => { await navigate('layout'); showActionToast('Module Layout ouvert.'); });
+
+  document.getElementById('BTN_HOME_HELP_FAQ')?.addEventListener('click', async () => {
+    await navigate('reception-faq');
+    showActionToast('Aide FAQ ouverte.');
+  });
+
+  document.getElementById('BTN_HOME_EXPORT_BACKUP')?.addEventListener('click', async () => {
+    const data = await exportAllData();
+    const payload = {
+      meta: { exportedAt: Date.now(), source: 'home-tools' },
+      indexedDb: data,
+      settings: getConfig('DLWMS_LAYOUT_PREFS_V1', {}),
+      layouts: getConfig('DLWMS_LAYOUTS_V1', []),
+      layoutLast: getConfig('DLWMS_LAYOUT_LAST_ID', null),
+      tileset: getConfig('DLWMS_LAYOUT_TILESET_V1', []),
+      binMap: getConfig('DLWMS_BINMAP', null),
+    };
+    downloadJSON(payload, `dlwms_backup_${new Date().toISOString().slice(0, 10)}.json`);
+    showActionToast('Backup exporté.');
+  });
+
+  document.getElementById('BTN_HOME_IMPORT_BACKUP')?.addEventListener('click', () => document.getElementById('homeBackupFile')?.click());
+  document.getElementById('homeBackupFile')?.addEventListener('change', async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    try {
+      const json = JSON.parse(await file.text());
+      if (json.indexedDb) await importAllData(json.indexedDb);
+      if (json.settings) setConfig('DLWMS_LAYOUT_PREFS_V1', json.settings);
+      if (json.layouts) setConfig('DLWMS_LAYOUTS_V1', json.layouts);
+      if (json.layoutLast) setConfig('DLWMS_LAYOUT_LAST_ID', json.layoutLast);
+      if (json.tileset) setConfig('DLWMS_LAYOUT_TILESET_V1', json.tileset);
+      if (json.binMap) setConfig('DLWMS_BINMAP', json.binMap);
+      showActionToast('Backup importé avec merge.', 'success');
+    } catch {
+      showActionToast('Import backup invalide.', 'error');
+    }
+  });
+
+  document.getElementById('BTN_HOME_STORAGE_STATUS')?.addEventListener('click', async () => {
+    const usage = new Blob(Object.values(localStorage)).size;
+    const indexedStats = (await getAll('stats')).length;
+    ui.modal.open('storageStatusModal', {
+      title: 'Santé stockage',
+      content: `<p>localStorage ~ ${(usage / 1024).toFixed(1)} KB</p><p>IndexedDB stats: ${indexedStats} entrées</p>`,
+    });
+  });
+
+  document.getElementById('BTN_HOME_OFFLINE_BADGE')?.addEventListener('click', () => {
+    ui.modal.open('offlineHelpModal', {
+      title: 'Mode offline',
+      content: '<p>Offline prêt: imports, exports, layout et historique disponibles sans réseau.</p>',
+    });
+  });
+}
+
+function bindLayoutPage(route) {
+  if (route !== 'layout') return;
+  const tileTypes = [
+    { id: 'TILE_EMPTY', color: '#1f2947' }, { id: 'TILE_AISLE', color: '#2f8fff' }, { id: 'TILE_WALL', color: '#5d657f' }, { id: 'TILE_DOOR', color: '#26d39b' },
+    { id: 'TILE_RACK', color: '#ffba55' }, { id: 'TILE_PILLAR', color: '#8a6eff' }, { id: 'TILE_DOCK', color: '#4ea8ff' }, { id: 'TILE_OFFICE', color: '#fb79b2' },
+    { id: 'TILE_NO_GO', color: '#ff5f7d' }, { id: 'TILE_ZONE', color: '#6ad5ff' }, { id: 'TILE_STAIRS', color: '#9dacd6' }, { id: 'TILE_ELEVATOR', color: '#4bdca6' },
+    { id: 'TILE_PARKING', color: '#d1b3ff' }, { id: 'TILE_CHARGING', color: '#85f4ff' },
+  ];
+  const defaultLayout = { id: 'main', name: 'Principal', rows: 12, cols: 12, cells: Array.from({ length: 144 }, () => ({ type: 'TILE_EMPTY', label: '' })) };
+  const prefs = { autosave: true, showCoords: false, brush: '1x1', dragPaint: true, ...getConfig('DLWMS_LAYOUT_PREFS_V1', {}) };
+  const layouts = getConfig('DLWMS_LAYOUTS_V1', [defaultLayout]);
+  const lastId = getConfig('DLWMS_LAYOUT_LAST_ID', layouts[0]?.id || 'main');
+  let activeId = lastId;
+  let tool = 'TOOL_SELECT';
+  let activeType = 'TILE_RACK';
+  let selectedIndex = 0;
+  const undo = [];
+  const redo = [];
+
+  const byId = (id) => layouts.find((l) => l.id === id) || layouts[0];
+  const activeLayout = () => byId(activeId);
+
+  const select = document.getElementById('DROPDOWN_LAYOUT_SELECT');
+  select.innerHTML = layouts.map((l) => `<option value="${l.id}">${l.name}</option>`).join('');
+  select.value = activeId;
+  select.addEventListener('change', () => {
+    persist();
+    activeId = select.value;
+    setConfig('DLWMS_LAYOUT_LAST_ID', activeId);
+    renderGrid();
+    showActionToast('Layout chargé.');
+  });
+
+  const grid = document.getElementById('layoutGrid');
+  const meta = document.getElementById('layoutCellMeta');
+
+  const saveSnapshot = () => undo.push(JSON.stringify(activeLayout().cells));
+
+  const persist = () => {
+    setConfig('DLWMS_LAYOUTS_V1', layouts);
+    setConfig('DLWMS_LAYOUT_PREFS_V1', prefs);
+  };
+
+  const applyCell = (index, type = activeType) => {
+    const cell = activeLayout().cells[index];
+    if (!cell) return;
+    cell.type = type;
+    if (prefs.autosave) persist();
+  };
+
+  const renderGrid = () => {
+    const layout = activeLayout();
+    grid.style.gridTemplateColumns = `repeat(${layout.cols}, 28px)`;
+    grid.innerHTML = '';
+    layout.cells.forEach((cell, index) => {
+      const b = document.createElement('button');
+      b.className = `layout-cell ${selectedIndex === index ? 'active' : ''}`;
+      const tile = tileTypes.find((t) => t.id === cell.type);
+      b.style.background = tile?.color || '#1f2947';
+      b.title = cell.type;
+      b.textContent = prefs.showCoords ? `${Math.floor(index / layout.cols)},${index % layout.cols}` : '';
+      b.addEventListener('click', () => {
+        selectedIndex = index;
+        if (tool === 'TOOL_PEN') { saveSnapshot(); applyCell(index); }
+        if (tool === 'TOOL_ERASER') { saveSnapshot(); applyCell(index, 'TILE_EMPTY'); }
+        if (tool === 'TOOL_FILL') {
+          const ref = cell.type;
+          const total = layout.cells.filter((c) => c.type === ref).length;
+          if (total > 100 && !confirm(`Remplir ${total} cases ?`)) return;
+          saveSnapshot();
+          layout.cells.forEach((c) => { if (c.type === ref) c.type = activeType; });
+        }
+        if (tool === 'TOOL_RECT') {
+          saveSnapshot();
+          const baseRow = Math.floor(selectedIndex / layout.cols);
+          const baseCol = selectedIndex % layout.cols;
+          const row = Math.floor(index / layout.cols);
+          const col = index % layout.cols;
+          for (let r = Math.min(baseRow, row); r <= Math.max(baseRow, row); r += 1) {
+            for (let c = Math.min(baseCol, col); c <= Math.max(baseCol, col); c += 1) applyCell(r * layout.cols + c);
+          }
+        }
+        if (tool === 'TOOL_MEASURE') {
+          const row = Math.floor(index / layout.cols);
+          const col = index % layout.cols;
+          const sRow = Math.floor(selectedIndex / layout.cols);
+          const sCol = selectedIndex % layout.cols;
+          showActionToast(`Distance: ${Math.abs(row - sRow) + Math.abs(col - sCol)} cases`, 'info');
+        }
+        meta.textContent = `${cell.type} · row ${Math.floor(index / layout.cols)} col ${index % layout.cols} · label: ${cell.label || '-'}`;
+        renderGrid();
+      });
+      grid.appendChild(b);
+    });
+  };
+
+  ['TOOL_SELECT', 'TOOL_PEN', 'TOOL_ERASER', 'TOOL_FILL', 'TOOL_RECT', 'TOOL_TEXT_LABEL', 'TOOL_MEASURE'].forEach((id) => {
+    document.getElementById(id)?.addEventListener('click', () => { tool = id; showActionToast(`Outil actif: ${id}`); });
+  });
+  document.getElementById('BTN_TILE_PICKER')?.addEventListener('click', () => {
+    const choice = prompt(`Type case (${tileTypes.map((t) => t.id).join(', ')})`, activeType);
+    if (!choice) return;
+    activeType = choice;
+    showActionToast(`Type actif: ${activeType}`);
+  });
+  document.getElementById('BTN_TILE_FAVORITES')?.addEventListener('click', () => {
+    const favorites = getConfig('DLWMS_LAYOUT_PREFS_V1', {}).favorites || [];
+    if (!favorites.includes(activeType)) favorites.push(activeType);
+    prefs.favorites = favorites;
+    persist();
+    showActionToast('Favori ajouté.');
+  });
+  document.getElementById('BTN_UNDO')?.addEventListener('click', () => { if (!undo.length) return; redo.push(JSON.stringify(activeLayout().cells)); activeLayout().cells = JSON.parse(undo.pop()); renderGrid(); showActionToast('Undo.'); });
+  document.getElementById('BTN_REDO')?.addEventListener('click', () => { if (!redo.length) return; undo.push(JSON.stringify(activeLayout().cells)); activeLayout().cells = JSON.parse(redo.pop()); renderGrid(); showActionToast('Redo.'); });
+  document.getElementById('TOGGLE_AUTOSAVE')?.addEventListener('click', () => { prefs.autosave = !prefs.autosave; persist(); showActionToast(`Auto-save ${prefs.autosave ? 'ON' : 'OFF'}`); });
+  document.getElementById('BTN_GRID_TOGGLE_COORDS')?.addEventListener('click', () => { prefs.showCoords = !prefs.showCoords; persist(); renderGrid(); showActionToast('Affichage coords mis à jour.'); });
+  document.getElementById('BTN_GRID_SNAP')?.addEventListener('click', () => showActionToast('Snap togglé.', 'info'));
+  document.getElementById('TOGGLE_PAN_MODE')?.addEventListener('click', () => showActionToast('Mode pan actif.', 'info'));
+  document.getElementById('BTN_ZOOM_IN')?.addEventListener('click', () => { grid.style.zoom = String((Number(grid.style.zoom || 1) + 0.1).toFixed(2)); });
+  document.getElementById('BTN_ZOOM_OUT')?.addEventListener('click', () => { grid.style.zoom = String((Number(grid.style.zoom || 1) - 0.1).toFixed(2)); });
+  document.getElementById('BTN_ZOOM_FIT')?.addEventListener('click', () => { grid.style.zoom = '1'; showActionToast('Zoom ajusté.', 'info'); });
+  document.getElementById('BTN_GRID_RESIZE')?.addEventListener('click', () => {
+    const rows = Number(prompt('Nb lignes', String(activeLayout().rows)) || activeLayout().rows);
+    const cols = Number(prompt('Nb colonnes', String(activeLayout().cols)) || activeLayout().cols);
+    if (!rows || !cols) return;
+    const old = activeLayout();
+    const next = [];
+    for (let r = 0; r < rows; r += 1) {
+      for (let c = 0; c < cols; c += 1) {
+        const oldIndex = r * old.cols + c;
+        next.push(old.cells[oldIndex] || { type: 'TILE_EMPTY', label: '' });
+      }
+    }
+    old.rows = rows; old.cols = cols; old.cells = next;
+    persist(); renderGrid(); showActionToast('Grille redimensionnée.');
+  });
+
+  document.getElementById('BTN_CELL_CHANGE_TYPE')?.addEventListener('click', () => { applyCell(selectedIndex); renderGrid(); showActionToast('Type case changé.'); });
+  document.getElementById('BTN_CELL_EDIT_LABEL')?.addEventListener('click', () => { const v = prompt('Label case', activeLayout().cells[selectedIndex].label || ''); if (v === null) return; activeLayout().cells[selectedIndex].label = v; persist(); renderGrid(); });
+  document.getElementById('BTN_CELL_CLEAR')?.addEventListener('click', () => { applyCell(selectedIndex, 'TILE_EMPTY'); renderGrid(); showActionToast('Case vidée.'); });
+  document.getElementById('BTN_CELL_COPY')?.addEventListener('click', () => { sessionStorage.setItem('layoutCellClipboard', JSON.stringify(activeLayout().cells[selectedIndex])); showActionToast('Case copiée.'); });
+  document.getElementById('BTN_CELL_PASTE')?.addEventListener('click', () => { const clip = sessionStorage.getItem('layoutCellClipboard'); if (!clip) return; activeLayout().cells[selectedIndex] = JSON.parse(clip); persist(); renderGrid(); showActionToast('Case collée.'); });
+
+  document.getElementById('BTN_LAYOUT_EXPORT_JSON')?.addEventListener('click', () => downloadJSON({ version: 1, layout: activeLayout(), legend: tileTypes }, `layout_${activeLayout().id}_${new Date().toISOString().slice(0, 10)}.json`));
+  document.getElementById('BTN_LAYOUT_IMPORT_JSON')?.addEventListener('click', () => document.getElementById('layoutImportFile')?.click());
+  document.getElementById('layoutImportFile')?.addEventListener('change', async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    try {
+      const json = JSON.parse(await file.text());
+      if (!json.layout?.cells) throw new Error();
+      const idx = layouts.findIndex((l) => l.id === json.layout.id);
+      if (idx >= 0) layouts[idx] = json.layout; else layouts.push(json.layout);
+      activeId = json.layout.id;
+      persist();
+      showActionToast('Layout importé.');
+      select.innerHTML = layouts.map((l) => `<option value="${l.id}">${l.name}</option>`).join('');
+      select.value = activeId;
+      renderGrid();
+    } catch {
+      showActionToast('Import layout invalide.', 'error');
+    }
+  });
+  document.getElementById('BTN_LAYOUT_EXPORT_PNG')?.addEventListener('click', () => showActionToast('Export PNG non disponible: utilisez JSON.', 'warning'));
+  document.getElementById('BTN_LAYOUT_EXPORT_PDF')?.addEventListener('click', () => window.print());
+  document.getElementById('BTN_LAYOUT_EXPORT_LEGEND')?.addEventListener('click', () => downloadJSON(tileTypes, 'layout_legend.json'));
+  document.getElementById('BTN_LAYOUT_VIEW_CHANGES')?.addEventListener('click', () => window.DLWMS_openHistory?.({ module: 'layout' }));
+  document.getElementById('BTN_LAYOUT_OPEN_SETTINGS')?.addEventListener('click', () => window.DLWMS_openSettings?.({ section: 'layout' }));
+
+  document.getElementById('BTN_NAV_SETTINGS')?.addEventListener('click', () => showActionToast('Paramètres globaux ouverts.'));
+  document.getElementById('BTN_NAV_MODULES')?.addEventListener('click', () => showActionToast('Hub modules ouvert.'));
+
+  renderGrid();
 }
 
 async function loadCompleteAISeed() {

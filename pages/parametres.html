@@ -31,6 +31,13 @@
   <button type="button" data-accordion-trigger aria-controls="settingsLayoutPanel" aria-expanded="false">Layout</button>
   <div id="settingsLayoutPanel" hidden>
     <p class="muted">Options grille et types de cases.</p>
+    <div class="row">
+      <label><input type="checkbox" id="settingsLayoutDragPaint" /> Drag paint</label>
+      <label>Taille pinceau<select id="settingsLayoutBrush"><option>1x1</option><option>2x2</option><option>3x3</option></select></label>
+      <label><input type="checkbox" id="settingsLayoutCoords" /> Show coords</label>
+      <label><input type="checkbox" id="settingsLayoutAutosave" /> Autosave</label>
+      <label>Favoris palette<input id="settingsLayoutFavorites" placeholder="rack,aisle,dock" /></label>
+    </div>
   </div>
 </section>
 <!-- END PATCH: settings global centralisés -->
