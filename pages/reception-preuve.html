@@ -1,0 +1,46 @@
+<!-- BEGIN PATCH: RECEPTION PREUVE PAGE -->
+<section class="card">
+  <h2 class="ds-page-title">Réception — Preuve</h2>
+  <p class="muted">Photos, preuves et pièces jointes.</p>
+  <div class="row">
+    <button class="btn btn-primary" id="preuveAddPhoto">Ajouter une photo</button>
+    <button class="btn" onclick="window.DLWMS_openSettings({section:'Réception'})">Ouvrir Paramètres</button>
+    <button class="btn" onclick="window.DLWMS_openHistory({module:'reception'})">Historique Réception</button>
+  </div>
+  <input id="preuvePhotoInput" type="file" accept="image/*" capture="environment" hidden />
+</section>
+
+<section class="card">
+  <button class="btn accordion-trigger" data-accordion-trigger aria-controls="preuveAddPanel" aria-expanded="false">Ajouter preuve</button>
+  <div id="preuveAddPanel" class="accordion-panel" data-state="closed" hidden>
+    <label class="field"><span class="label">Titre</span><input class="input" id="preuveTitle" placeholder="Titre preuve" /></label>
+    <label class="field"><span class="label">Numéro conteneur</span><input class="input" id="preuveContainer" placeholder="CONT-001" /></label>
+    <button class="btn" id="preuvePickInPanel">Capturer / choisir image</button>
+  </div>
+</section>
+
+<section class="card">
+  <button class="btn accordion-trigger" data-accordion-trigger aria-controls="preuveGalleryPanel" aria-expanded="false">Galerie du jour</button>
+  <div id="preuveGalleryPanel" class="accordion-panel" data-state="closed" hidden>
+    <div class="row">
+      <select id="preuveFilterWindow" class="input">
+        <option value="today">Aujourd’hui</option>
+        <option value="7d">7 jours</option>
+        <option value="all">Tout</option>
+      </select>
+      <input id="preuveSearchContainer" class="input" placeholder="Recherche conteneur" />
+    </div>
+    <div id="preuveGallery" class="stack"></div>
+  </div>
+</section>
+
+<section class="card">
+  <button class="btn accordion-trigger" data-accordion-trigger aria-controls="preuveCleanupPanel" aria-expanded="false">Nettoyage</button>
+  <div id="preuveCleanupPanel" class="accordion-panel" data-state="closed" hidden>
+    <div class="row">
+      <input id="preuvePurgeDays" class="input" type="number" min="1" value="30" />
+      <button class="btn btn-danger" id="preuvePurge">Purger photos &gt; X jours</button>
+    </div>
+  </div>
+</section>
+<!-- END PATCH: RECEPTION PREUVE PAGE -->

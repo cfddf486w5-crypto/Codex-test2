@@ -1,10 +1,10 @@
-# QA CHECKLIST — DL WMS
+# QA CHECKLIST — DL WMS (Modules V1)
 
-- [x] Bottom-nav limitée à 5 onglets maximum.
-- [x] Historique visible uniquement depuis Home.
-- [x] Paramètres globaux centralisés (page Paramètres).
-- [x] Onboarding affiché au premier lancement seulement.
-- [x] Empty state visible sur hub Outils.
-- [x] Icônes unifiées (registry `ui/icons.js`, 24px).
-- [x] Offline-first conservé (pas d'API obligatoire ajoutée).
-- [x] Console audit: 0 erreur bloquante lors du chargement de l'app.
+- [x] Nav routes: `#/modules`, `#/module/consolidation`, `#/module/remise`, `#/module/reception-preuve`, `#/history`, `#/settings`.
+- [x] AppShell: topbar + badge "En ligne" + bottom-nav 3 boutons identiques sur les pages testées.
+- [x] Hub Modules: cartes cliquables vers Consolidation, Remise en stock, Réception (Preuve).
+- [x] Accordéons: sections fermées par défaut sur les 3 pages.
+- [x] Consolidation: imports CSV/XLSX (si `window.XLSX`), KPI, exports, toasts sans crash sans data.
+- [x] Remise: actions stub + création locale + export/import JSON + historique global filtré.
+- [x] Réception Preuve: ajout photo (`accept=image/*`, `capture=environment`), stockage IndexedDB (`DLWMS_RECEIPTS_DB_V1/photos`), galerie/filtre/recherche/téléchargement/suppression/purge.
+- [x] Console: aucun crash détecté lors des flows basiques exécutés.
