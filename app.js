@@ -5,6 +5,7 @@ const navItems = [
   ['scan', 'Scan Info'],
   ['consolidation', 'Consolidation'],
   ['shipping', 'Suivi expédition'],
+  ['reception-conteneur', 'Réception'],
   ['remise', 'Remise en stock'],
   ['history', 'Historique'],
   ['settings', 'Paramètres'],
@@ -501,19 +502,29 @@ function init() {
   renderDataStatus();
 }
 
-document.getElementById('backupJsonBtn').onclick = () => dl(`dlwms-backup-${Date.now()}.json`, JSON.stringify(state, null, 2), 'application/json');
-document.getElementById('restoreJsonBtn').onclick = () => document.getElementById('restoreJsonInput').click();
-document.getElementById('restoreJsonInput').onchange = async (e) => {
-  const f = e.target.files[0];
-  if (!f) return;
-  try {
-    state = JSON.parse(await f.text());
-    saveState();
-    init();
-    log('Restore JSON', { file: f.name });
-  } catch {
-    alert('Backup JSON invalide');
-  }
-};
+window.DLWMS_openReceptionConteneur = window.DLWMS_openReceptionConteneur || (() => {
+  if (typeof switchView === 'function') switchView('reception-conteneur');
+});
 
-init();
+const backupBtn = document.getElementById('backupJsonBtn');
+const restoreBtn = document.getElementById('restoreJsonBtn');
+const restoreInput = document.getElementById('restoreJsonInput');
+
+if (backupBtn && restoreBtn && restoreInput && document.getElementById('view-dashboard')) {
+  backupBtn.onclick = () => dl(`dlwms-backup-${Date.now()}.json`, JSON.stringify(state, null, 2), 'application/json');
+  restoreBtn.onclick = () => restoreInput.click();
+  restoreInput.onchange = async (e) => {
+    const f = e.target.files[0];
+    if (!f) return;
+    try {
+      state = JSON.parse(await f.text());
+      saveState();
+      init();
+      log('Restore JSON', { file: f.name });
+    } catch {
+      alert('Backup JSON invalide');
+    }
+  };
+
+  init();
+}

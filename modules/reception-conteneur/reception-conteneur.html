@@ -1,0 +1,66 @@
+<section class="panel reception-container-page" id="receptionConteneurRoot">
+  <div class="section-head">
+    <h1>Réception conteneur</h1>
+    <span class="pill" id="rcDraftBadge">Brouillon auto</span>
+  </div>
+
+  <div class="rc-subtabs" role="tablist" aria-label="Sous-sections réception">
+    <button class="rc-subtab active" data-rc-tab="conteneur" type="button">Conteneur</button>
+    <button class="rc-subtab" data-rc-tab="import" type="button">Import</button>
+    <button class="rc-subtab" data-rc-tab="bins" type="button">Réception-Bins</button>
+    <button class="rc-subtab" data-rc-tab="photos" type="button">Photos</button>
+    <button class="rc-subtab" data-rc-tab="historique" type="button">Historique</button>
+    <button class="rc-subtab" data-rc-tab="parametres" type="button">Paramètres</button>
+  </div>
+
+  <div class="rc-pane active" data-rc-pane="conteneur">
+    <div class="settings-grid">
+      <label>Conteneur<input id="rcContainer" placeholder="ex: MSKU1234567" /></label>
+      <label>Référence ASN<input id="rcAsn" placeholder="ex: ASN-2026-001" /></label>
+      <label>Dock/Quai<input id="rcDock" placeholder="ex: D3" /></label>
+      <label>Date<input id="rcDate" type="date" /></label>
+    </div>
+    <label>Notes
+      <textarea id="rcNotes" rows="3" placeholder="Anomalies, scellé, remarques..."></textarea>
+    </label>
+    <div class="row">
+      <button class="small-btn" id="rcSaveDraft" type="button">Sauvegarder brouillon</button>
+      <button class="small-btn" id="rcClearDraft" type="button">Vider</button>
+    </div>
+  </div>
+
+  <div class="rc-pane" data-rc-pane="import">
+    <p class="muted">Import CSV/Excel (optionnel XLSX si librairie chargée).</p>
+    <label class="small-btn">Importer lignes<input type="file" id="rcImportFile" accept=".csv,.xlsx,.xls" hidden /></label>
+    <table class="list-table" id="rcImportTable"></table>
+  </div>
+
+  <div class="rc-pane" data-rc-pane="bins">
+    <div class="row">
+      <input id="rcBin" placeholder="BIN" />
+      <input id="rcItem" placeholder="ITEM" />
+      <input id="rcQty" type="number" min="0" step="1" placeholder="Qté" />
+      <button class="small-btn" id="rcAddBin" type="button">Ajouter</button>
+    </div>
+    <table class="list-table" id="rcBinsTable"></table>
+  </div>
+
+  <div class="rc-pane" data-rc-pane="photos">
+    <label class="small-btn">Ajouter photo<input id="rcPhotoInput" type="file" accept="image/*" capture="environment" hidden /></label>
+    <div id="rcPhotosGrid" class="cards-grid"></div>
+  </div>
+
+  <div class="rc-pane" data-rc-pane="historique">
+    <div class="row">
+      <button class="small-btn" id="rcCommit" type="button">Archiver réception</button>
+      <button class="small-btn" id="rcExport" type="button">Exporter JSON</button>
+      <label class="small-btn">Importer JSON<input id="rcImportHistory" type="file" accept=".json" hidden /></label>
+    </div>
+    <div id="rcHistoryList" class="simple-list"></div>
+  </div>
+
+  <div class="rc-pane" data-rc-pane="parametres">
+    <label>Préfixe BIN par défaut<input id="rcDefaultBin" placeholder="ex: A-" /></label>
+    <p class="muted">Clés utilisées: DLWMS_CONTAINER_DRAFT_V1, DLWMS_CONTAINER_HISTORY_V1, DLWMS_BINMAP, IndexedDB DLWMS_RECEIPTS_DB_V1/photos.</p>
+  </div>
+</section>
