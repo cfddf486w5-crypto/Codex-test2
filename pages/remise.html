@@ -1,38 +1,78 @@
-<!-- BEGIN PATCH: REMISE PAGE -->
-<section class="card">
-  <h2 class="ds-page-title">Remise en stock</h2>
-  <p class="muted">Retour atelier.</p>
-  <div class="row">
-    <button class="btn btn-primary" id="remiseStart">Démarrer</button>
-    <button class="btn" onclick="window.DLWMS_openSettings({section:'Remise'})">Ouvrir Paramètres</button>
-    <button class="btn" onclick="window.DLWMS_openHistory({module:'remise'})">Historique Remise</button>
-  </div>
-</section>
-
-<section class="card">
-  <button class="btn accordion-trigger" data-accordion-trigger aria-controls="remiseNextPanel" aria-expanded="false">Prochaine remise</button>
-  <div id="remiseNextPanel" class="accordion-panel" data-state="closed" hidden>
-    <div id="remiseUpcomingList"></div>
-    <button class="btn" id="remiseScanSelect">Scanner / Sélectionner ID</button>
-  </div>
-</section>
-
-<section class="card">
-  <button class="btn accordion-trigger" data-accordion-trigger aria-controls="remiseGeneratePanel" aria-expanded="false">Générer une remise</button>
-  <div id="remiseGeneratePanel" class="accordion-panel" data-state="closed" hidden>
-    <p class="muted">Scanner un panier/palette…</p>
-    <button class="btn" id="remiseCreate">Créer nouvelle remise</button>
-  </div>
-</section>
-
-<section class="card">
-  <button class="btn accordion-trigger" data-accordion-trigger aria-controls="remiseToolsPanel" aria-expanded="false">Outils</button>
-  <div id="remiseToolsPanel" class="accordion-panel" data-state="closed" hidden>
-    <div class="row">
-      <button class="btn" id="remiseExport">Exporter données</button>
-      <button class="btn" id="remiseImport">Importer données</button>
-      <input type="file" id="remiseImportInput" accept="application/json" hidden />
+<section class="remise-page" aria-label="Remise en stock">
+  <article class="rem-card rem-hero">
+    <div>
+      <h2>Remise en stock</h2>
+      <p>Créer et traiter des remises pour réintégrer efficacement les produits en stock.</p>
+      <small>100% sur iPhone. Offline first.</small>
     </div>
-  </div>
+    <img src="./remise.png" alt="Employé réintégrant des produits en stock" />
+  </article>
+
+  <section class="rem-grid" aria-label="Actions principales">
+    <button class="rem-tile rem-main" type="button" data-route="remise/generer">
+      <img src="./remise_generer.png" alt="Générer une remise" />
+      <span><strong>📋 Générer une remise</strong><small>Scanner panier/palette</small></span>
+    </button>
+    <button class="rem-tile rem-main" type="button" data-route="remise/suivant">
+      <img src="./remise_prochaine.png" alt="Prochaine remise" />
+      <span><strong>🗂 Prochaine remise</strong><small>Sélection/Scan Numéro</small></span>
+    </button>
+  </section>
+
+  <section class="rem-grid rem-shortcuts" aria-label="Raccourcis vérification">
+    <button class="rem-tile rem-short" type="button" data-route="remise/verifier">
+      <span><strong>🔎 Vérifier un produit</strong></span>
+    </button>
+    <button class="rem-tile rem-short" type="button" data-route="remise/bins">
+      <span><strong>📦 Vérifier une bin</strong></span>
+    </button>
+  </section>
+
+  <article class="rem-card rem-ai">
+    <header>
+      <h3><img src="./assistant_robot.png" alt="robot" width="26" height="26" /> Assistant IA</h3>
+      <div class="rem-row">
+        <button class="rem-pill" id="remiseNotesBtn" type="button">Notes IA</button>
+        <button class="rem-pill" id="remiseWhyBtn" type="button">Pourquoi ?</button>
+      </div>
+    </header>
+    <form id="remiseAiForm" class="rem-ai-form">
+      <input id="remiseAiInput" type="text" placeholder="Posez une question..." autocomplete="off" />
+      <button type="submit" class="rem-send" aria-label="Envoyer">💬</button>
+    </form>
+    <div id="remiseAiOutput" class="rem-ai-output"></div>
+  </article>
+
+  <nav class="rem-mini-nav" aria-label="Navigation remise">
+    <button class="rem-mini is-active" type="button" data-route="remise"><span>🛒</span><b>Remise</b></button>
+    <button class="rem-mini" type="button" data-route="remise/suivant"><span>✅</span><b>Suivant</b></button>
+    <button class="rem-mini" type="button" data-route="remise/verifier"><span>🕘</span><b>Vérifier</b></button>
+    <button class="rem-mini" type="button" data-route="remise/bins"><span>🧰</span><b>Bins</b></button>
+  </nav>
+
+  <dialog id="remiseWhyModal" class="rem-modal">
+    <article>
+      <h3>Règles Remise en stock (V1)</h3>
+      <ul>
+        <li>1 scan item = 1 pièce.</li>
+        <li>Briser: scanner item + bac Scrap, log horodaté obligatoire.</li>
+        <li>Rebox: déplacer en zone Rebox pour traitement différé.</li>
+        <li>Compléter la remise: archive ID LAVREMxxxx et tri zone→allée→bin.</li>
+        <li>Traitement suivant: scanner produit puis scanner bin de confirmation.</li>
+        <li>Option Forcer disponible avec justification obligatoire.</li>
+      </ul>
+      <button type="button" class="rem-btn" data-close-modal>Fermer</button>
+    </article>
+  </dialog>
+
+  <dialog id="remiseNotesModal" class="rem-modal">
+    <article>
+      <h3>Notes IA locales</h3>
+      <textarea id="remiseAiNotes" rows="8" placeholder="Procédures locales, exceptions..." class="rem-input"></textarea>
+      <div class="rem-row" style="margin-top:10px; justify-content:flex-end;">
+        <button type="button" class="rem-btn" id="remiseSaveNotes">Enregistrer</button>
+        <button type="button" class="rem-btn" data-close-modal>Annuler</button>
+      </div>
+    </article>
+  </dialog>
 </section>
-<!-- END PATCH: REMISE PAGE -->

@@ -1,0 +1,31 @@
+<section class="remise-page" aria-label="Prochaine remise">
+  <article class="rem-card">
+    <h2>🗂 Prochaine remise</h2>
+    <form id="remisePickForm" class="rem-ai-form">
+      <input id="remisePickInput" type="text" placeholder="Scanner/Saisir ID remise..." autocomplete="off" />
+      <button class="rem-send" type="submit">↩</button>
+    </form>
+    <div id="remiseQueueList" class="rem-list" style="margin-top:10px;"></div>
+  </article>
+
+  <article class="rem-card" id="remiseProcessCard">
+    <h3>Traitement</h3>
+    <div id="remiseProcessState" class="rem-list"></div>
+    <form id="remiseProductForm" class="rem-stack" style="margin-top:10px;">
+      <input id="remiseProductScan" class="rem-input" placeholder="Scanner produit" />
+      <input id="remiseBinScan" class="rem-input" placeholder="Scanner bin" />
+    </form>
+    <div class="rem-row" style="margin-top:10px;">
+      <button class="rem-btn" id="remiseForceBtn" type="button">Forcer</button>
+      <button class="rem-btn" type="button" data-route="remise/generer">Générer une remise</button>
+      <button class="rem-btn" type="button" data-route="remise">Annuler / Retour</button>
+    </div>
+  </article>
+
+  <nav class="rem-mini-nav" aria-label="Navigation remise">
+    <button class="rem-mini" type="button" data-route="remise"><span>🛒</span><b>Remise</b></button>
+    <button class="rem-mini is-active" type="button" data-route="remise/suivant"><span>✅</span><b>Suivant</b></button>
+    <button class="rem-mini" type="button" data-route="remise/verifier"><span>🕘</span><b>Vérifier</b></button>
+    <button class="rem-mini" type="button" data-route="remise/bins"><span>🧰</span><b>Bins</b></button>
+  </nav>
+</section>
