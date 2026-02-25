@@ -1313,7 +1313,7 @@ const REMISE_FAQ = [
   ['comment creer une remise', 'Utilisez Générer une remise, scannez vos SKU puis validez Compléter la remise.'],
   ['1 scan 1 piece', 'Oui. Chaque lecture scanner incrémente exactement une pièce.'],
   ['briser', 'Action Briser: scanner item puis bac Scrap pour journaliser la casse.'],
-  ['rebox', 'Action Rebox: déplace l'item dans la file Rebox locale pour traitement différé.'],
+  ['rebox', "Action Rebox: déplace l'item dans la file Rebox locale pour traitement différé."],
   ['forcer', 'Forcer est autorisé en Suivant avec justification obligatoire.'],
   ['prochaine remise', 'Ouvrez Suivant, sélectionnez ou scannez un ID puis traitez SKU par SKU.'],
   ['scanner bin', 'Après confirmation produit, scanner la bin attendue finalise la ligne.'],
@@ -1327,13 +1327,13 @@ const REMISE_FAQ = [
   ['scrap', 'Le journal Scrap conserve date, utilisateur, zone, bac et SKU.'],
   ['rebox file', 'La file Rebox garde les SKU à retraiter plus tard.'],
   ['annuler', 'Depuis Suivant, utilisez Annuler / Retour pour revenir au hub Remise.'],
-  ['quantite multiple', 'Par défaut il faut scanner chaque pièce jusqu'à qty restante = 0.'],
+  ['quantite multiple', "Par défaut il faut scanner chaque pièce jusqu'à qty restante = 0."],
   ['justification forcer', 'La justification est obligatoire pour garder la traçabilité opérateur.'],
   ['tri optimise', 'Le tri optimisé suit zone puis allée puis bin.'],
   ['scan clavier', 'Le champ scanner accepte les douchettes clavier en mode Enter.'],
   ['iphone', 'Interface mobile-first: safe-area iOS et grosses cibles tactiles.'],
   ['assistant local', 'Assistant KB local sans API externe, avec matching par mots-clés.'],
-  ['archive', 'Compléter archive la remise et l'envoie immédiatement dans la file Suivant.'],
+  ['archive', "Compléter archive la remise et l'envoie immédiatement dans la file Suivant."],
   ['retour generer', 'Le bouton Générer une remise dans Suivant relance la création rapide.'],
   ['restant', 'Le compteur restant est décrémenté à chaque scan produit validé.'],
   ['erreur scan', 'Un scan SKU/BIN inattendu affiche une alerte et ne modifie pas la tâche.'],
@@ -1375,10 +1375,10 @@ function createRemiseAiAnswer(question, notes = '') {
     const score = tokens.reduce((acc, token) => (q.includes(token) ? acc + 2 : acc), 0) + (q.includes(normalize(k)) ? 3 : 0);
     return { k, answer, score };
   }).sort((a, b) => b.score - a.score);
-  const best = scored[0]?.score > 0 ? scored[0] : { answer: 'Je n'ai pas trouvé de règle exacte. Utilisez le bouton Pourquoi pour la procédure standard.' };
+  const best = scored[0]?.score > 0 ? scored[0] : { answer: "Je n'ai pas trouvé de règle exacte. Utilisez le bouton Pourquoi pour la procédure standard." };
   return {
     summary: best.answer,
-    steps: ['Confirmer le contexte (Générer, Suivant, Vérifier ou Bins).', 'Suivre les scans demandés dans l'ordre écran.', 'Valider l'étape et contrôler le statut (Nouveau/En traitement/Complété).'],
+    steps: ['Confirmer le contexte (Générer, Suivant, Vérifier ou Bins).', "Suivre les scans demandés dans l'ordre écran.", "Valider l'étape et contrôler le statut (Nouveau/En traitement/Complété)."],
     why: 'Traçabilité locale obligatoire: chaque scan et action sont journalisés hors ligne.',
     where: `Zone à utiliser: tuile Remise en stock > écran ${q.includes('bin') ? 'Bins' : q.includes('verif') ? 'Vérifier' : q.includes('suivant') ? 'Suivant' : 'Générer'}.`,
     note: notes ? `Notes locales: ${notes.slice(0, 200)}` : '',
