@@ -1,0 +1,20 @@
+<section class="conso-page" aria-label="Consolidation statistiques">
+  <article class="conso-card">
+    <h3>Statistiques</h3>
+    <div class="conso-kpis">
+      <article><small>Sessions</small><strong id="consoKpiSessions">0</strong></article>
+      <article><small>Pièces</small><strong id="consoKpiPieces">0</strong></article>
+      <article><small>Temps moyen</small><strong id="consoKpiAvg">0 min</strong></article>
+    </div>
+  </article>
+  <article class="conso-card conso-charts">
+    <h3>Top 5 SKU</h3>
+    <ul id="consoTopSku" class="conso-top"></ul>
+    <canvas id="consoBarChart" width="320" height="180"></canvas>
+  </article>
+  <article class="conso-card conso-charts">
+    <h3>Moves complétés vs en attente</h3>
+    <canvas id="consoPieChart" width="320" height="190"></canvas>
+    <button type="button" class="conso-btn" data-route="consolidation">Retour</button>
+  </article>
+</section>

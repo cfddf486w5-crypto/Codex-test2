@@ -1,55 +1,92 @@
-<!-- BEGIN PATCH: CONSOLIDATION PAGE -->
-<section class="card">
-  <h2 class="ds-page-title">Consolidation</h2>
-  <p class="muted">Fusion et contrôle seuil.</p>
-  <div class="row">
-    <button class="btn" onclick="window.DLWMS_openSettings({section:'Consolidation'})">Ouvrir Paramètres</button>
-  </div>
-</section>
-
-<section class="card">
-  <button class="btn accordion-trigger" data-accordion-trigger aria-controls="consImportPanel" aria-expanded="false">Import données</button>
-  <div id="consImportPanel" class="accordion-panel" data-state="closed" hidden>
-    <div class="row">
-      <button class="btn" id="consImportInventory">Importer Inventaire</button>
-      <button class="btn" id="consImportReception">Importer Réception</button>
+<section class="conso-page" aria-label="Flux consolidation">
+  <article class="conso-card">
+    <div class="conso-hero">
+      <img src="./header_pallet_arrows.png" alt="Palette avec flux de consolidation" />
+      <div>
+        <h2>Flux complet consolidation</h2>
+        <p>Scannez les items pour consolider dans un voisinage rapproché. Offline first.</p>
+      </div>
     </div>
-    <input id="consInventoryFile" type="file" accept=".csv,.xlsx,.xls" hidden />
-    <input id="consReceptionFile" type="file" accept=".csv,.xlsx,.xls" hidden />
-    <div id="consImportMeta"></div>
-    <p class="muted">Mode offline: CSV accepté; XLSX uniquement si la librairie est chargée.</p>
-  </div>
-</section>
-
-<section class="card">
-  <button class="btn accordion-trigger" data-accordion-trigger aria-controls="consKpiPanel" aria-expanded="false">Résumé / KPI</button>
-  <div id="consKpiPanel" class="accordion-panel" data-state="closed" hidden>
-    <div class="row">
-      <div class="kpi-tile">SKU<br><strong id="consKpi-sku">0</strong></div>
-      <div class="kpi-tile">Bins<br><strong id="consKpi-bins">0</strong></div>
-      <div class="kpi-tile">Unités<br><strong id="consKpi-units">0</strong></div>
-      <div class="kpi-tile">SKU ≤ 20<br><strong id="consKpi-low">0</strong></div>
-      <div class="kpi-tile">Anomalies<br><strong id="consKpi-anomalies">0</strong></div>
+    <div class="conso-stats" role="status" aria-live="polite">
+      <article>
+        <b>📋 Remises en attente</b>
+        <strong id="consoStatPending">0</strong>
+        <small id="consoStatPieces">0 pièces</small>
+      </article>
+      <article>
+        <b>🕒 Temps moyen</b>
+        <strong id="consoStatAvg">0 min</strong>
+        <small>Cycle sessions</small>
+      </article>
+      <article>
+        <b>🗂 Zone active</b>
+        <strong id="consoZoneLabel">ZD18</strong>
+        <small>Consolidation</small>
+      </article>
     </div>
-    <button class="btn" id="consRecompute">Recalculer</button>
-  </div>
-</section>
+    <label class="conso-zone" for="consoZoneInput">
+      <span>Zone</span>
+      <input id="consoZoneInput" class="conso-input" maxlength="8" />
+    </label>
+  </article>
 
-<section class="card">
-  <button class="btn accordion-trigger" data-accordion-trigger aria-controls="consRecoPanel" aria-expanded="false">Recommandations</button>
-  <div id="consRecoPanel" class="accordion-panel" data-state="closed" hidden>
-    <div class="empty-state"><p class="muted">Aucune recommandation pour l’instant.</p></div>
-    <button class="btn" id="consGenerate">Générer</button>
-  </div>
-</section>
+  <section class="conso-grid" aria-label="Actions consolidation">
+    <button class="conso-tile" type="button" data-conso-route="consolidation/charger">
+      <img src="./charger.png" alt="Charger" />
+      <span>📦 Charger</span>
+    </button>
+    <button class="conso-tile" type="button" data-conso-route="consolidation/optimiser">
+      <img src="./optimiser.png" alt="Optimiser" />
+      <span>🕒 Optimiser</span>
+    </button>
+    <button class="conso-tile" type="button" data-conso-route="consolidation/historique">
+      <img src="./historique.png" alt="Historique" />
+      <span>🕘 Historique</span>
+    </button>
+    <button class="conso-tile" type="button" data-conso-route="consolidation/statistiques">
+      <img src="./statistiques.png" alt="Statistiques" />
+      <span>📊 Statistiques</span>
+    </button>
+  </section>
 
-<section class="card">
-  <button class="btn accordion-trigger" data-accordion-trigger aria-controls="consExportPanel" aria-expanded="false">Exports</button>
-  <div id="consExportPanel" class="accordion-panel" data-state="closed" hidden>
-    <div class="row">
-      <button class="btn" id="consExportCsv">Exporter CSV moves</button>
-      <button class="btn" id="consExportPdf">Exporter PDF</button>
-    </div>
-  </div>
+  <article class="conso-card conso-ai">
+    <header>
+      <div class="conso-ai-title"><img src="./assistant_robot.png" alt="robot" width="28" height="28" /> Assistant IA</div>
+      <div class="conso-actions">
+        <button type="button" class="conso-pill" id="consoNotesBtn">Notes IA</button>
+        <button type="button" class="conso-pill" id="consoRulesBtn">Pourquoi ?</button>
+      </div>
+    </header>
+    <form id="consoAiForm" class="conso-input-row">
+      <input id="consoAiInput" type="text" placeholder="Posez une question..." autocomplete="off" />
+      <button class="conso-send" type="submit" aria-label="Envoyer">💬</button>
+    </form>
+    <div id="consoAiOutput" class="conso-ai-output"></div>
+  </article>
+
+  <dialog id="consoRulesModal" class="conso-modal">
+    <article>
+      <h3>Règles consolidation (V1)</h3>
+      <ul>
+        <li>Regrouper les SKU fréquents vers des bins proches de la zone active.</li>
+        <li>Prioriser les moves qui libèrent des emplacements saturés.</li>
+        <li>Conserver la traçabilité locale des sessions et des moves appliqués.</li>
+        <li>Marquer les sessions clôturées après application opérationnelle.</li>
+      </ul>
+      <h4>À venir (V2)</h4>
+      <p class="muted">Score de proximité réel par binmap, gestion des contraintes volume/poids, suggestions multi-zones.</p>
+      <button type="button" class="conso-btn" data-close-modal>Fermer</button>
+    </article>
+  </dialog>
+
+  <dialog id="consoNotesModal" class="conso-modal">
+    <article>
+      <h3>Notes IA</h3>
+      <textarea id="consoAiNotes" class="conso-input" rows="8" placeholder="Ajoutez vos consignes locales..."></textarea>
+      <div class="conso-actions" style="margin-top:10px;">
+        <button type="button" class="conso-btn" id="consoSaveNotes">Enregistrer</button>
+        <button type="button" class="conso-btn" data-close-modal>Annuler</button>
+      </div>
+    </article>
+  </dialog>
 </section>
-<!-- END PATCH: CONSOLIDATION PAGE -->
