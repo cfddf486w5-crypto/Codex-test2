@@ -15,6 +15,7 @@ import {
   restoreRulebookToBackup,
   restoreRulebookToCanonical,
   maybeRunRulebookSelfCheck,
+  RULEBOOK_CANONICAL,
 } from './rulebook.js';
 
 const appNode = document.getElementById('app');
@@ -441,7 +442,25 @@ async function bindSettingsStorageFaq(route) {
   const rulesPanel = document.getElementById('settingsStorageRulesPanel');
   const faqPanel = document.getElementById('settingsStorageFaqPanel');
   const rulesDump = document.getElementById('settingsRulesStorageDump');
+  const storageReadMeta = document.getElementById('settingsStorageReadMeta');
+  const storageRefreshBtn = document.getElementById('settingsStorageRefreshBtn');
+  const storageCopyBtn = document.getElementById('settingsStorageCopyBtn');
+  const rulebookValidation = document.getElementById('settingsRulebookValidation');
+  const rulebookDiff = document.getElementById('settingsRulebookDiff');
+  const storageKeysList = document.getElementById('settingsStorageKeysList');
+  const storageFilterAll = document.getElementById('settingsStorageFilterAll');
+  const storageFilterDlwms = document.getElementById('settingsStorageFilterDlwms');
+  const storageFilterRule = document.getElementById('settingsStorageFilterRule');
+  const storageFilterFaq = document.getElementById('settingsStorageFilterFaq');
+  const adminToggleBtn = document.getElementById('settingsAdminToggleBtn');
+  const adminStatus = document.getElementById('settingsAdminStatus');
   const faqInventory = document.getElementById('settingsFaqInventory');
+  const faqCounters = document.getElementById('settingsFaqCounters');
+  const faqSearchInput = document.getElementById('settingsFaqSearchInput');
+  const faqCategoryFilter = document.getElementById('settingsFaqCategoryFilter');
+  const faqPagination = document.getElementById('settingsFaqPagination');
+  const faqExportJson = document.getElementById('settingsFaqExportJson');
+  const faqExportCsv = document.getElementById('settingsFaqExportCsv');
   if (!rulesTab || !faqTab || !rulesPanel || !faqPanel || !rulesDump || !faqInventory) return;
 
   const activateTab = (tabName) => {
@@ -458,19 +477,258 @@ async function bindSettingsStorageFaq(route) {
   faqTab.addEventListener('click', () => activateTab('faq'));
   activateTab('rules');
 
-  const rulebookRaw = localStorage.getItem('rulebook_active') || '';
-  const rulebookStored = safeParseJson(rulebookRaw, null);
-  const rulebookText = typeof rulebookStored?.text === 'string' ? rulebookStored.text : getActiveRulebook();
-  const localRuleKeys = Object.keys(localStorage).filter((key) => /rule|regle|règle/i.test(key));
-  const storageRulesSnapshot = {
-    extractedAt: new Date().toISOString(),
-    rulebookStorageKey: 'rulebook_active',
-    activeRulebookLength: rulebookText.length,
-    activeRulebookPreview: rulebookText.slice(0, 600),
-    knownRuleStorageKeys: localRuleKeys,
+  const state = {
+    currentStorageFilter: 'all',
+    adminEnabled: false,
+    faqMerged: [],
+    faqSearch: '',
+    faqCategory: 'all',
+    faqPage: 1,
+    faqPageSize: 20,
   };
-  rulesDump.textContent = JSON.stringify(storageRulesSnapshot, null, 2);
 
+  const escapeHtml = (value) => String(value || '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+
+  const highlightText = (value, query) => {
+    const safe = escapeHtml(value);
+    if (!query) return safe;
+    const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`(${escapedQuery})`, 'ig');
+    return safe.replace(regex, '<mark>$1</mark>');
+  };
+
+  const summarizeDiff = (canonical, active) => {
+    const canonicalLines = canonical.split('\n');
+    const activeLines = active.split('\n');
+    const max = Math.max(canonicalLines.length, activeLines.length);
+    let added = 0;
+    let removed = 0;
+    let changed = 0;
+    for (let i = 0; i < max; i += 1) {
+      const left = canonicalLines[i];
+      const right = activeLines[i];
+      if (left == null && right != null) {
+        added += 1;
+      } else if (left != null && right == null) {
+        removed += 1;
+      } else if (left !== right) {
+        changed += 1;
+      }
+    }
+    return { added, removed, changed };
+  };
+
+  const validateRulebookEntry = (entry) => {
+    if (!entry || typeof entry !== 'object') return { ok: false, reason: 'Absent ou non JSON.' };
+    if (typeof entry.text !== 'string') return { ok: false, reason: 'Champ text manquant.' };
+    if (typeof entry.integrity !== 'string') return { ok: false, reason: 'Champ integrity manquant.' };
+    if (!entry.integrity.includes(':')) return { ok: false, reason: 'Format integrity invalide.' };
+    return { ok: true, reason: 'Structure valide.' };
+  };
+
+  const setFilterButtonState = (activeFilter) => {
+    const mapping = [
+      [storageFilterAll, 'all'],
+      [storageFilterDlwms, 'DLWMS_'],
+      [storageFilterRule, 'rule'],
+      [storageFilterFaq, 'faq'],
+    ];
+    mapping.forEach(([node, value]) => {
+      if (!node) return;
+      node.classList.toggle('btn-primary', activeFilter === value);
+    });
+  };
+
+  const updateStorageView = () => {
+    const extractedAt = new Date();
+    if (storageReadMeta) storageReadMeta.textContent = `Dernière lecture du storage: ${extractedAt.toLocaleString('fr-FR')}`;
+
+    const rulebookRaw = localStorage.getItem('rulebook_active') || '';
+    const rulebookStored = safeParseJson(rulebookRaw, null);
+    const rulebookValidationResult = validateRulebookEntry(rulebookStored);
+    const activeRulebook = typeof rulebookStored?.text === 'string' ? rulebookStored.text : getActiveRulebook();
+    const localRuleKeys = Object.keys(localStorage).filter((key) => /rule|regle|règle/i.test(key));
+    const storageRulesSnapshot = {
+      extractedAt: extractedAt.toISOString(),
+      rulebookStorageKey: 'rulebook_active',
+      activeRulebookLength: activeRulebook.length,
+      activeRulebookPreview: activeRulebook.slice(0, 600),
+      knownRuleStorageKeys: localRuleKeys,
+    };
+
+    if (!state.adminEnabled) {
+      storageRulesSnapshot.activeRulebookPreview = '[masqué: mode admin requis]';
+      storageRulesSnapshot.knownRuleStorageKeys = '[masqué: mode admin requis]';
+    }
+
+    rulesDump.textContent = JSON.stringify(storageRulesSnapshot, null, 2);
+    if (rulebookValidation) {
+      rulebookValidation.innerHTML = rulebookValidationResult.ok
+        ? '<strong>Validation rulebook_active:</strong> ✅ OK — Structure valide.'
+        : `<strong>Validation rulebook_active:</strong> ❌ KO — ${escapeHtml(rulebookValidationResult.reason)}`;
+    }
+
+    if (rulebookDiff) {
+      const diff = summarizeDiff(RULEBOOK_CANONICAL, activeRulebook);
+      rulebookDiff.innerHTML = `<strong>Comparateur canonique vs actif:</strong> +${diff.added} / -${diff.removed} / ~${diff.changed}`;
+    }
+
+    if (storageKeysList) {
+      const keys = Object.keys(localStorage)
+        .sort((a, b) => a.localeCompare(b))
+        .filter((key) => {
+          if (state.currentStorageFilter === 'all') return true;
+          if (state.currentStorageFilter === 'DLWMS_') return key.startsWith('DLWMS_');
+          return key.toLowerCase().includes(state.currentStorageFilter.toLowerCase());
+        });
+      storageKeysList.innerHTML = keys.length
+        ? `<ul>${keys.map((key) => `<li>${escapeHtml(key)}</li>`).join('')}</ul>`
+        : '<p class="muted">Aucune clé pour ce filtre.</p>';
+    }
+    setFilterButtonState(state.currentStorageFilter);
+  };
+
+  const toCsvRow = (cols) => cols
+    .map((value) => `"${String(value ?? '').replaceAll('"', '""')}"`)
+    .join(',');
+
+  const downloadFile = (fileName, mimeType, content) => {
+    const blob = new Blob([content], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const renderFaq = () => {
+    const search = state.faqSearch.trim().toLowerCase();
+    const filtered = state.faqMerged.filter((entry) => {
+      const matchCategory = state.faqCategory === 'all' || entry.categorie === state.faqCategory;
+      if (!matchCategory) return false;
+      if (!search) return true;
+      return (`${entry.question} ${entry.reponse} ${entry.categorie}`).toLowerCase().includes(search);
+    });
+
+    const totalPages = Math.max(1, Math.ceil(filtered.length / state.faqPageSize));
+    state.faqPage = Math.min(state.faqPage, totalPages);
+    const start = (state.faqPage - 1) * state.faqPageSize;
+    const pageItems = filtered.slice(start, start + state.faqPageSize);
+
+    if (faqPagination) {
+      faqPagination.innerHTML = `
+        <button type="button" id="settingsFaqPrevPage" class="btn" ${state.faqPage === 1 ? 'disabled' : ''}>← Précédent</button>
+        <span class="muted">Page ${state.faqPage} / ${totalPages} (${filtered.length} résultats)</span>
+        <button type="button" id="settingsFaqNextPage" class="btn" ${state.faqPage >= totalPages ? 'disabled' : ''}>Suivant →</button>
+      `;
+      const prev = faqPagination.querySelector('#settingsFaqPrevPage');
+      const next = faqPagination.querySelector('#settingsFaqNextPage');
+      prev?.addEventListener('click', () => {
+        state.faqPage = Math.max(1, state.faqPage - 1);
+        renderFaq();
+      });
+      next?.addEventListener('click', () => {
+        state.faqPage = Math.min(totalPages, state.faqPage + 1);
+        renderFaq();
+      });
+    }
+
+    faqInventory.innerHTML = pageItems.length
+      ? `<ul>${pageItems.map((entry) => `<li><strong>${highlightText(entry.question, state.faqSearch)}</strong> <span class="muted">[${highlightText(entry.categorie, state.faqSearch)} · ${entry.source}]</span><br>${highlightText(entry.reponse, state.faqSearch)}</li>`).join('')}</ul>`
+      : '<p class="muted">Aucune FAQ trouvée.</p>';
+
+    if (faqCounters) {
+      const bySource = filtered.reduce((acc, item) => {
+        acc[item.source] = (acc[item.source] || 0) + 1;
+        return acc;
+      }, {});
+      const byCategory = filtered.reduce((acc, item) => {
+        acc[item.categorie] = (acc[item.categorie] || 0) + 1;
+        return acc;
+      }, {});
+      const sourceBadges = Object.entries(bySource).map(([source, count]) => `<span class="btn">${escapeHtml(source)}: ${count}</span>`).join('');
+      const categoryBadges = Object.entries(byCategory).slice(0, 10).map(([category, count]) => `<span class="btn">${escapeHtml(category)}: ${count}</span>`).join('');
+      faqCounters.innerHTML = `<span class="muted">Sources:</span>${sourceBadges}<span class="muted">Catégories:</span>${categoryBadges}`;
+    }
+
+    return filtered;
+  };
+
+  const exportFaqJson = () => {
+    const visible = renderFaq();
+    downloadFile('faq-inventaire.json', 'application/json;charset=utf-8', JSON.stringify(visible, null, 2));
+    showToast('Export JSON FAQ lancé.', 'success');
+  };
+
+  const exportFaqCsv = () => {
+    const visible = renderFaq();
+    const csv = [
+      toCsvRow(['id', 'source', 'categorie', 'question', 'reponse']),
+      ...visible.map((entry) => toCsvRow([entry.id, entry.source, entry.categorie, entry.question, entry.reponse])),
+    ].join('\n');
+    downloadFile('faq-inventaire.csv', 'text/csv;charset=utf-8', csv);
+    showToast('Export CSV FAQ lancé.', 'success');
+  };
+
+  const promptAdminPin = () => {
+    const pin = window.prompt('Entrez le code admin local');
+    if (pin === null) return;
+    if (pin === 'Adamour/////0000') {
+      state.adminEnabled = !state.adminEnabled;
+      if (adminStatus) adminStatus.textContent = state.adminEnabled ? 'Mode admin activé' : 'Mode admin désactivé';
+      if (adminToggleBtn) adminToggleBtn.textContent = state.adminEnabled ? 'Désactiver mode admin' : 'Activer mode admin';
+      showToast(state.adminEnabled ? 'Mode admin activé.' : 'Mode admin désactivé.', 'success');
+      updateStorageView();
+      return;
+    }
+    showToast('Code admin invalide.', 'error');
+  };
+
+  storageRefreshBtn?.addEventListener('click', updateStorageView);
+  storageCopyBtn?.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(rulesDump.textContent || '');
+      showToast('Diagnostic storage copié.', 'success');
+    } catch {
+      showToast('Copie impossible (permissions navigateur).', 'error');
+    }
+  });
+  storageFilterAll?.addEventListener('click', () => {
+    state.currentStorageFilter = 'all';
+    updateStorageView();
+  });
+  storageFilterDlwms?.addEventListener('click', () => {
+    state.currentStorageFilter = 'DLWMS_';
+    updateStorageView();
+  });
+  storageFilterRule?.addEventListener('click', () => {
+    state.currentStorageFilter = 'rule';
+    updateStorageView();
+  });
+  storageFilterFaq?.addEventListener('click', () => {
+    state.currentStorageFilter = 'faq';
+    updateStorageView();
+  });
+  adminToggleBtn?.addEventListener('click', promptAdminPin);
+
+  faqSearchInput?.addEventListener('input', () => {
+    state.faqSearch = faqSearchInput.value || '';
+    state.faqPage = 1;
+    renderFaq();
+  });
+  faqCategoryFilter?.addEventListener('change', () => {
+    state.faqCategory = faqCategoryFilter.value || 'all';
+    state.faqPage = 1;
+    renderFaq();
+  });
+  faqExportJson?.addEventListener('click', exportFaqJson);
+  faqExportCsv?.addEventListener('click', exportFaqCsv);
   const localFaq = safeParseJson(localStorage.getItem('DLWMS_RECEPTION_FAQ_V1') || '', { entries: [] });
   const localFaqEntries = Array.isArray(localFaq?.entries) ? localFaq.entries : [];
 
@@ -485,27 +743,30 @@ async function bindSettingsStorageFaq(route) {
     catalogFaq = [];
   }
 
-  const lines = [];
-  lines.push(`<p><strong>FAQ locale Réception:</strong> ${localFaqEntries.length}</p>`);
-  lines.push(`<p><strong>FAQ référentiel Indago:</strong> ${catalogFaq.length}</p>`);
-  lines.push('<hr>');
+  state.faqMerged = [
+    ...localFaqEntries.map((entry, index) => ({
+      id: entry.id || `local-${index + 1}`,
+      source: 'locale',
+      categorie: entry.categorie || 'Non catégorisée',
+      question: entry.question || 'Question non définie',
+      reponse: entry.reponse || entry.answer || '',
+    })),
+    ...catalogFaq.map((entry, index) => ({
+      id: entry.id || `ref-${index + 1}`,
+      source: 'référentiel',
+      categorie: entry.categorie || 'Non catégorisée',
+      question: entry.question || 'Question non définie',
+      reponse: entry.reponse || entry.answer || '',
+    })),
+  ];
 
-  if (localFaqEntries.length) {
-    lines.push('<p><strong>Entrées FAQ locales</strong></p>');
-    lines.push('<ul>');
-    lines.push(...localFaqEntries.map((entry) => `<li>${entry.id || 'n/a'} — ${entry.question || 'Question non définie'}</li>`));
-    lines.push('</ul>');
+  if (faqCategoryFilter) {
+    const categories = [...new Set(state.faqMerged.map((entry) => entry.categorie))].sort((a, b) => a.localeCompare(b));
+    faqCategoryFilter.innerHTML = ['<option value="all">Toutes catégories</option>', ...categories.map((item) => `<option value="${escapeHtml(item)}">${escapeHtml(item)}</option>`)].join('');
   }
 
-  if (catalogFaq.length) {
-    lines.push('<p><strong>Entrées FAQ référentiel</strong> (premières 80)</p>');
-    lines.push('<ul>');
-    lines.push(...catalogFaq.slice(0, 80).map((entry) => `<li>#${entry.id} [${entry.categorie}] — ${entry.question}</li>`));
-    lines.push('</ul>');
-    if (catalogFaq.length > 80) lines.push(`<p class="muted">${catalogFaq.length - 80} autres FAQ sont aussi disponibles dans le fichier référentiel.</p>`);
-  }
-
-  faqInventory.innerHTML = lines.join('');
+  updateStorageView();
+  renderFaq();
 }
 
 
