@@ -45,8 +45,12 @@ const MODULE_ROUTES = {
 const worker = new Worker('./app/ai-worker.js', { type: 'module' });
 const CONS_DATA_KEY = 'DLWMS_CONS_DATA_V1';
 const CONS_LAST_IMPORT_KEY = 'DLWMS_CONS_LASTIMPORT_V1';
-const REMISE_DATA_KEY = 'DLWMS_REMISE_DATA_V1';
-const REMISE_HISTORY_POINTER_KEY = 'DLWMS_REMISE_HISTORY_POINTER';
+const REMISE_DATA_KEY = 'dlwms_rem_data';
+const REMISE_SCRAP_LOG_KEY = 'dlwms_rem_scrap_log';
+const REMISE_REBOX_KEY = 'dlwms_rem_rebox';
+const REMISE_SETTINGS_KEY = 'dlwms_rem_settings';
+const REMISE_AI_NOTES_KEY = 'dlwms_rem_ai_notes';
+const REMISE_AI_CHAT_KEY = 'dlwms_rem_ai_chat';
 const RECEIPTS_DB_NAME = 'DLWMS_RECEIPTS_DB_V1';
 const RECEIPTS_STORE_NAME = 'photos';
 const PROMPT_DRAFT_KEY = 'dlwms_ai_prompt_draft_v1';
@@ -850,7 +854,7 @@ const CONSO_FAQ = [
 function bindModulePages(route) {
   if (route === 'modules') bindModulesPageStatusDot();
   if (route === 'consolidation' || route.startsWith('consolidation/')) bindConsolidationPage(route);
-  if (route === 'remise') bindRemisePage();
+  if (route === 'remise' || route.startsWith('remise/')) bindRemisePage(route);
   if (route === 'reception-preuve') bindReceptionPreuvePage();
 }
 
@@ -1305,53 +1309,447 @@ function ensureConsolidationStyles() {
 // END PATCH: CONSOLIDATION PAGE
 
 // BEGIN PATCH: REMISE PAGE
-function bindRemisePage() {
-  const data = readJsonStorage(REMISE_DATA_KEY, { upcoming: [], generated: [] });
-  const list = document.getElementById('remiseUpcomingList');
-  const renderList = () => {
-    if (!list) return;
-    const rows = data.upcoming || [];
-    if (!rows.length) {
-      list.innerHTML = '<div class="empty-state"><p class="muted">Aucune remise planifiée.</p></div>';
-      return;
-    }
-    list.innerHTML = rows.map((row) => `<article class="card"><strong>${row.id}</strong><p class="muted">${row.label || 'En attente'}</p></article>`).join('');
-  };
+const REMISE_FAQ = [
+  ['comment creer une remise', 'Utilisez Générer une remise, scannez vos SKU puis validez Compléter la remise.'],
+  ['1 scan 1 piece', 'Oui. Chaque lecture scanner incrémente exactement une pièce.'],
+  ['briser', 'Action Briser: scanner item puis bac Scrap pour journaliser la casse.'],
+  ['rebox', 'Action Rebox: déplace l'item dans la file Rebox locale pour traitement différé.'],
+  ['forcer', 'Forcer est autorisé en Suivant avec justification obligatoire.'],
+  ['prochaine remise', 'Ouvrez Suivant, sélectionnez ou scannez un ID puis traitez SKU par SKU.'],
+  ['scanner bin', 'Après confirmation produit, scanner la bin attendue finalise la ligne.'],
+  ['verifier produit', 'Vérifier produit liste toutes les remises contenant le SKU et leur progression.'],
+  ['verifier bin', 'Vérifier bin affiche les SKU attendus et les remises actives liées à cette bin.'],
+  ['status', 'Les statuts disponibles: Nouveau, En traitement, Complété.'],
+  ['offline', 'Toutes les données Remise sont stockées localement pour un fonctionnement hors ligne.'],
+  ['id remise', 'Format ID: LAVREM0001, incrémenté automatiquement en local.'],
+  ['notes ia', 'Le bouton Notes IA sauvegarde des consignes locales persistées.'],
+  ['pourquoi', 'Le bouton Pourquoi ouvre les règles officielles V1 du flux remise.'],
+  ['scrap', 'Le journal Scrap conserve date, utilisateur, zone, bac et SKU.'],
+  ['rebox file', 'La file Rebox garde les SKU à retraiter plus tard.'],
+  ['annuler', 'Depuis Suivant, utilisez Annuler / Retour pour revenir au hub Remise.'],
+  ['quantite multiple', 'Par défaut il faut scanner chaque pièce jusqu'à qty restante = 0.'],
+  ['justification forcer', 'La justification est obligatoire pour garder la traçabilité opérateur.'],
+  ['tri optimise', 'Le tri optimisé suit zone puis allée puis bin.'],
+  ['scan clavier', 'Le champ scanner accepte les douchettes clavier en mode Enter.'],
+  ['iphone', 'Interface mobile-first: safe-area iOS et grosses cibles tactiles.'],
+  ['assistant local', 'Assistant KB local sans API externe, avec matching par mots-clés.'],
+  ['archive', 'Compléter archive la remise et l'envoie immédiatement dans la file Suivant.'],
+  ['retour generer', 'Le bouton Générer une remise dans Suivant relance la création rapide.'],
+  ['restant', 'Le compteur restant est décrémenté à chaque scan produit validé.'],
+  ['erreur scan', 'Un scan SKU/BIN inattendu affiche une alerte et ne modifie pas la tâche.'],
+  ['donnees', 'Clés utilisées: dlwms_rem_data, dlwms_rem_scrap_log, dlwms_rem_rebox, dlwms_rem_ai_notes.'],
+  ['bin progression', 'La progression bin indique total restant vs total initial sur remises actives.'],
+  ['event', 'Chaque action importante ajoute un événement horodaté dans la remise.'],
+  ['export', 'V1 privilégie la continuité opérationnelle locale; export global non requis.'],
+  ['utilisateur', 'Le profil opérateur provient de dlwms_rem_settings.user si défini.'],
+  ['zone order', 'Le tri suit la liste settings.zoneOrder: ZA,ZB,ZC,ZD par défaut.'],
+  ['reset', 'Effacez localStorage uniquement si vous voulez repartir de zéro.'],
+];
 
-  document.getElementById('remiseStart')?.addEventListener('click', () => showToast('Écran opérationnel à brancher.', 'info'));
-  document.getElementById('remiseScanSelect')?.addEventListener('click', () => showToast('Scanner ID à venir.', 'info'));
-  document.getElementById('remiseCreate')?.addEventListener('click', () => {
-    const id = `REM-${Date.now()}`;
-    data.upcoming.unshift({ id, label: 'Nouvelle remise' });
-    writeJsonStorage(REMISE_DATA_KEY, data);
-    writeJsonStorage(REMISE_HISTORY_POINTER_KEY, { lastId: id, at: Date.now() });
-    renderList();
-    showToast('Nouvelle remise créée.', 'success');
-  });
-  document.getElementById('remiseExport')?.addEventListener('click', () => {
-    const payload = JSON.stringify(data, null, 2);
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(new Blob([payload], { type: 'application/json' }));
-    a.download = `remise-${Date.now()}.json`;
-    a.click();
-    URL.revokeObjectURL(a.href);
-    showToast('Export Remise généré.', 'success');
-  });
-  const importInput = document.getElementById('remiseImportInput');
-  document.getElementById('remiseImport')?.addEventListener('click', () => importInput?.click());
-  importInput?.addEventListener('change', async () => {
-    const file = importInput.files?.[0];
-    if (!file) return;
-    try {
-      const payload = JSON.parse(await file.text());
-      writeJsonStorage(REMISE_DATA_KEY, payload);
-      showToast('Import Remise effectué.', 'success');
-      renderList();
-    } catch {
-      showToast('Import Remise invalide.', 'error');
-    }
-  });
-  renderList();
+function defaultRemiseData() {
+  return { counter: 0, draft: { items: {} }, remises: [] };
+}
+
+function getRemiseSettings() {
+  return { user: 'OPERATEUR-LOCAL', zoneOrder: ['ZA', 'ZB', 'ZC', 'ZD'], ...readJsonStorage(REMISE_SETTINGS_KEY, {}) };
+}
+
+function normalizeSku(value) {
+  return String(value || '').trim().toUpperCase();
+}
+
+function deriveLocation(sku) {
+  const clean = normalizeSku(sku) || 'SKU';
+  const num = clean.split('').reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
+  return {
+    zone: ['ZA', 'ZB', 'ZC', 'ZD'][num % 4],
+    allee: `A${String((num % 12) + 1).padStart(2, '0')}`,
+    bin: `BIN-${String((num % 28) + 1).padStart(2, '0')}`,
+  };
+}
+
+function createRemiseAiAnswer(question, notes = '') {
+  const q = normalize(question).replace(/_/g, ' ');
+  const scored = REMISE_FAQ.map(([k, answer]) => {
+    const tokens = normalize(k).split(' ').filter(Boolean);
+    const score = tokens.reduce((acc, token) => (q.includes(token) ? acc + 2 : acc), 0) + (q.includes(normalize(k)) ? 3 : 0);
+    return { k, answer, score };
+  }).sort((a, b) => b.score - a.score);
+  const best = scored[0]?.score > 0 ? scored[0] : { answer: 'Je n'ai pas trouvé de règle exacte. Utilisez le bouton Pourquoi pour la procédure standard.' };
+  return {
+    summary: best.answer,
+    steps: ['Confirmer le contexte (Générer, Suivant, Vérifier ou Bins).', 'Suivre les scans demandés dans l'ordre écran.', 'Valider l'étape et contrôler le statut (Nouveau/En traitement/Complété).'],
+    why: 'Traçabilité locale obligatoire: chaque scan et action sont journalisés hors ligne.',
+    where: `Zone à utiliser: tuile Remise en stock > écran ${q.includes('bin') ? 'Bins' : q.includes('verif') ? 'Vérifier' : q.includes('suivant') ? 'Suivant' : 'Générer'}.`,
+    note: notes ? `Notes locales: ${notes.slice(0, 200)}` : '',
+  };
+}
+
+function bindRemisePage(route = 'remise') {
+  ensureRemiseStyles();
+  const data = readJsonStorage(REMISE_DATA_KEY, defaultRemiseData());
+  const settings = getRemiseSettings();
+  const scrapLog = readJsonStorage(REMISE_SCRAP_LOG_KEY, []);
+  const reboxQueue = readJsonStorage(REMISE_REBOX_KEY, []);
+  const saveData = () => writeJsonStorage(REMISE_DATA_KEY, data);
+  const closeModals = () => document.querySelectorAll('.rem-modal[open]').forEach((m) => m.close());
+
+  document.querySelectorAll('[data-close-modal]').forEach((btn) => btn.addEventListener('click', () => btn.closest('dialog')?.close()));
+
+  if (route === 'remise') {
+    const notes = readJsonStorage(REMISE_AI_NOTES_KEY, '');
+    const output = document.getElementById('remiseAiOutput');
+    const form = document.getElementById('remiseAiForm');
+    const input = document.getElementById('remiseAiInput');
+    const whyBtn = document.getElementById('remiseWhyBtn');
+    const notesBtn = document.getElementById('remiseNotesBtn');
+
+    const writeChat = (entry) => {
+      const rows = readJsonStorage(REMISE_AI_CHAT_KEY, []);
+      writeJsonStorage(REMISE_AI_CHAT_KEY, [...rows, entry].slice(-40));
+    };
+
+    form?.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const question = String(input?.value || '').trim();
+      if (!question) return;
+      const answer = createRemiseAiAnswer(question, readJsonStorage(REMISE_AI_NOTES_KEY, ''));
+      output.innerHTML = `<article><strong>Résumé</strong><p>${escapeHtml(answer.summary)}</p><strong>Étapes</strong><ul>${answer.steps.map((step) => `<li>${escapeHtml(step)}</li>`).join('')}</ul><strong>Pourquoi</strong><p>${escapeHtml(answer.why)}</p><strong>Où cliquer</strong><p>${escapeHtml(answer.where)}</p>${answer.note ? `<p class="muted">${escapeHtml(answer.note)}</p>` : ''}</article>`;
+      writeChat({ question, answer, at: Date.now() });
+      if (input) input.value = '';
+    });
+
+    whyBtn?.addEventListener('click', () => document.getElementById('remiseWhyModal')?.showModal());
+    notesBtn?.addEventListener('click', () => {
+      const textarea = document.getElementById('remiseAiNotes');
+      if (textarea) textarea.value = readJsonStorage(REMISE_AI_NOTES_KEY, notes);
+      document.getElementById('remiseNotesModal')?.showModal();
+    });
+    document.getElementById('remiseSaveNotes')?.addEventListener('click', () => {
+      const value = String(document.getElementById('remiseAiNotes')?.value || '');
+      writeJsonStorage(REMISE_AI_NOTES_KEY, value);
+      showToast('Notes IA enregistrées.', 'success');
+      closeModals();
+    });
+  }
+
+  if (route === 'remise/generer') {
+    const form = document.getElementById('remiseGenerateForm');
+    const input = document.getElementById('remiseGenerateScan');
+    const list = document.getElementById('remiseGenerateList');
+    const itemModal = document.getElementById('remiseItemActionModal');
+    const breakModal = document.getElementById('remiseBreakModal');
+    let selectedSku = '';
+
+    const render = () => {
+      const items = Object.entries(data.draft?.items || {}).filter(([, qty]) => qty > 0);
+      if (!list) return;
+      if (!items.length) {
+        list.innerHTML = '<p class="muted">Aucun item scanné.</p>';
+        return;
+      }
+      list.innerHTML = items.map(([sku, qty]) => `<button type="button" class="rem-row-item" data-sku="${escapeHtml(sku)}"><strong>${escapeHtml(sku)}</strong><small>x${qty}</small></button>`).join('');
+    };
+
+    form?.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const sku = normalizeSku(input?.value);
+      if (!sku) return;
+      data.draft.items[sku] = Number(data.draft.items[sku] || 0) + 1;
+      saveData();
+      if (input) input.value = '';
+      render();
+    });
+    input?.addEventListener('blur', () => setTimeout(() => input.focus(), 60));
+    setTimeout(() => input?.focus(), 20);
+
+    list?.addEventListener('click', (event) => {
+      const row = event.target.closest('[data-sku]');
+      if (!row) return;
+      selectedSku = row.dataset.sku || '';
+      const title = document.getElementById('remiseItemActionTitle');
+      if (title) title.textContent = `Actions item · ${selectedSku}`;
+      itemModal?.showModal();
+    });
+
+    document.getElementById('remiseActionDelete')?.addEventListener('click', () => {
+      delete data.draft.items[selectedSku];
+      saveData();
+      closeModals();
+      render();
+    });
+
+    document.getElementById('remiseActionRebox')?.addEventListener('click', () => {
+      if (!selectedSku) return;
+      data.draft.items[selectedSku] = Math.max(0, Number(data.draft.items[selectedSku] || 0) - 1);
+      if (data.draft.items[selectedSku] === 0) delete data.draft.items[selectedSku];
+      reboxQueue.unshift({ sku: selectedSku, at: Date.now(), user: settings.user, zone: 'REBOX' });
+      writeJsonStorage(REMISE_REBOX_KEY, reboxQueue);
+      saveData();
+      closeModals();
+      render();
+      showToast('Item envoyé en Rebox.', 'success');
+    });
+
+    document.getElementById('remiseActionBreak')?.addEventListener('click', () => {
+      const itemInput = document.getElementById('remiseBreakItem');
+      if (itemInput) itemInput.value = selectedSku;
+      breakModal?.showModal();
+    });
+
+    document.getElementById('remiseBreakForm')?.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const scannedItem = normalizeSku(document.getElementById('remiseBreakItem')?.value);
+      const scannedBin = normalizeSku(document.getElementById('remiseBreakBin')?.value);
+      if (!scannedItem || !scannedBin) return;
+      if (scannedItem !== selectedSku) {
+        showToast('Scan item différent de la sélection.', 'error');
+        return;
+      }
+      data.draft.items[selectedSku] = Math.max(0, Number(data.draft.items[selectedSku] || 0) - 1);
+      if (data.draft.items[selectedSku] === 0) delete data.draft.items[selectedSku];
+      scrapLog.unshift({ at: Date.now(), user: settings.user, zone: 'SCRAP', bin: scannedBin, sku: scannedItem });
+      writeJsonStorage(REMISE_SCRAP_LOG_KEY, scrapLog);
+      saveData();
+      closeModals();
+      render();
+      showToast('Item envoyé vers Scrap.', 'success');
+    });
+
+    document.getElementById('remiseCompleteBtn')?.addEventListener('click', () => {
+      const entries = Object.entries(data.draft?.items || {}).filter(([, qty]) => qty > 0);
+      if (!entries.length) {
+        showToast('Scannez au moins un item.', 'info');
+        return;
+      }
+      data.counter = Number(data.counter || 0) + 1;
+      const remiseId = `LAVREM${String(data.counter).padStart(4, '0')}`;
+      const zoneIndex = new Map(settings.zoneOrder.map((zone, index) => [zone, index]));
+      const items = entries.map(([sku, qty]) => {
+        const loc = deriveLocation(sku);
+        return { sku, qty, remaining: qty, ...loc, lastEventAt: Date.now(), lastEvent: 'Nouveau scan' };
+      }).sort((a, b) => (zoneIndex.get(a.zone) ?? 99) - (zoneIndex.get(b.zone) ?? 99) || a.allee.localeCompare(b.allee) || a.bin.localeCompare(b.bin));
+      data.remises.unshift({ id: remiseId, createdAt: Date.now(), status: 'Nouveau', items, history: [{ at: Date.now(), type: 'CREATED', user: settings.user }] });
+      data.draft.items = {};
+      saveData();
+      showToast(`Remise ${remiseId} archivée.`, 'success');
+      navigate('remise/suivant');
+    });
+
+    render();
+  }
+
+  if (route === 'remise/suivant') {
+    const listNode = document.getElementById('remiseQueueList');
+    const stateNode = document.getElementById('remiseProcessState');
+    const pickForm = document.getElementById('remisePickForm');
+    const pickInput = document.getElementById('remisePickInput');
+    const productForm = document.getElementById('remiseProductForm');
+    const productInput = document.getElementById('remiseProductScan');
+    const binInput = document.getElementById('remiseBinScan');
+    let activeId = data.activeId || data.remises.find((r) => r.status !== 'Complété')?.id || '';
+    let waitingBinForSku = '';
+
+    const findRemise = () => data.remises.find((row) => row.id === activeId);
+    const currentItem = () => findRemise()?.items.find((item) => item.remaining > 0);
+
+    const updateStatuses = (remise) => {
+      const hasRemaining = remise.items.some((item) => item.remaining > 0);
+      remise.status = hasRemaining ? (remise.items.some((item) => item.remaining < item.qty) ? 'En traitement' : 'Nouveau') : 'Complété';
+    };
+
+    const renderQueue = () => {
+      const open = data.remises.filter((row) => row.status !== 'Complété');
+      if (!listNode) return;
+      if (!open.length) {
+        listNode.innerHTML = '<p class="muted">Aucune remise active.</p>';
+        return;
+      }
+      listNode.innerHTML = open.map((row) => `<button type="button" class="rem-row-item ${row.id === activeId ? 'is-active' : ''}" data-remise-id="${row.id}"><strong>${row.id}</strong><small>${row.status} · ${row.items.reduce((acc, item) => acc + item.remaining, 0)} restant</small></button>`).join('');
+    };
+
+    const renderState = () => {
+      const remise = findRemise();
+      if (!stateNode) return;
+      if (!remise) {
+        stateNode.innerHTML = '<p class="muted">Sélectionnez une remise pour démarrer.</p>';
+        return;
+      }
+      const item = currentItem();
+      if (!item) {
+        stateNode.innerHTML = `<article><strong>${remise.id}</strong><p>Remise complète ✅</p><div class="rem-row"><button class="rem-btn" data-route="remise/suivant">Prochaine remise</button><button class="rem-btn" data-route="remise/generer">Générer une remise</button></div></article>`;
+        return;
+      }
+      stateNode.innerHTML = `<article><strong>${escapeHtml(remise.id)} · ${escapeHtml(item.sku)}</strong><p>Zone ${item.zone} · Allée ${item.allee} · Bin ${item.bin}</p><p>Quantité restante: ${item.remaining}/${item.qty}</p><p class="muted">Workflow: scanner produit puis confirmer bin.</p></article>`;
+    };
+
+    listNode?.addEventListener('click', (event) => {
+      const btn = event.target.closest('[data-remise-id]');
+      if (!btn) return;
+      activeId = btn.dataset.remiseId || '';
+      data.activeId = activeId;
+      saveData();
+      renderQueue();
+      renderState();
+    });
+
+    pickForm?.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const id = normalizeSku(pickInput?.value);
+      if (!id) return;
+      const found = data.remises.find((row) => row.id === id);
+      if (!found) {
+        showToast('ID remise introuvable.', 'error');
+        return;
+      }
+      activeId = found.id;
+      data.activeId = activeId;
+      saveData();
+      if (pickInput) pickInput.value = '';
+      renderQueue();
+      renderState();
+    });
+
+    productForm?.addEventListener('submit', (event) => event.preventDefault());
+    productInput?.addEventListener('keydown', (event) => {
+      if (event.key !== 'Enter') return;
+      event.preventDefault();
+      const remise = findRemise();
+      const item = currentItem();
+      const scan = normalizeSku(productInput.value);
+      if (!remise || !item || !scan) return;
+      if (scan !== item.sku) {
+        showToast('Produit inattendu pour cette étape.', 'error');
+        return;
+      }
+      item.remaining = Math.max(0, item.remaining - 1);
+      item.lastEventAt = Date.now();
+      item.lastEvent = 'Produit confirmé';
+      waitingBinForSku = item.sku;
+      if (productInput) productInput.value = '';
+      if (item.remaining === 0) showToast('Produit confirmé, scanner bin.', 'success');
+      updateStatuses(remise);
+      saveData();
+      renderQueue();
+      renderState();
+      setTimeout(() => binInput?.focus(), 30);
+    });
+
+    binInput?.addEventListener('keydown', (event) => {
+      if (event.key !== 'Enter') return;
+      event.preventDefault();
+      const remise = findRemise();
+      const item = remise?.items.find((row) => row.sku === waitingBinForSku);
+      const scan = normalizeSku(binInput.value);
+      if (!remise || !item || !scan) return;
+      if (scan !== item.bin) {
+        showToast('Bin attendue différente.', 'error');
+        return;
+      }
+      item.lastEventAt = Date.now();
+      item.lastEvent = `Bin confirmée ${scan}`;
+      remise.history.unshift({ at: Date.now(), type: 'BIN_CONFIRMED', sku: item.sku, bin: scan, user: settings.user });
+      waitingBinForSku = '';
+      if (binInput) binInput.value = '';
+      updateStatuses(remise);
+      saveData();
+      showToast('Remise produit complète.', 'success');
+      renderQueue();
+      renderState();
+      setTimeout(() => productInput?.focus(), 30);
+    });
+
+    document.getElementById('remiseForceBtn')?.addEventListener('click', () => {
+      const remise = findRemise();
+      const item = currentItem();
+      if (!remise || !item) return;
+      const justification = prompt('Justification obligatoire pour Forcer:');
+      if (!justification || justification.trim().length < 3) {
+        showToast('Justification insuffisante.', 'error');
+        return;
+      }
+      item.remaining = 0;
+      item.lastEventAt = Date.now();
+      item.lastEvent = `Forcé: ${justification.trim()}`;
+      remise.history.unshift({ at: Date.now(), type: 'FORCED', sku: item.sku, justification: justification.trim(), user: settings.user });
+      updateStatuses(remise);
+      saveData();
+      showToast('Produit forcé avec justification.', 'success');
+      renderQueue();
+      renderState();
+    });
+
+    setTimeout(() => productInput?.focus(), 20);
+    renderQueue();
+    renderState();
+  }
+
+  if (route === 'remise/verifier') {
+    const form = document.getElementById('remiseVerifyProductForm');
+    const input = document.getElementById('remiseVerifyProductInput');
+    const out = document.getElementById('remiseVerifyProductResults');
+    form?.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const sku = normalizeSku(input?.value);
+      if (!sku || !out) return;
+      const rows = data.remises.map((remise) => {
+        const found = remise.items.find((item) => item.sku === sku);
+        return found ? { remise, item: found } : null;
+      }).filter(Boolean);
+      if (!rows.length) {
+        out.innerHTML = '<p class="muted">SKU absent des remises.</p>';
+        return;
+      }
+      const total = rows.reduce((acc, row) => acc + row.item.remaining, 0);
+      out.innerHTML = `<article><strong>SKU ${escapeHtml(sku)}</strong><p>Quantité restante totale: ${total}</p></article>${rows.map((row) => `<article><strong>${row.remise.id}</strong><p>Statut: ${row.remise.status}</p><p>Reste: ${row.item.remaining}/${row.item.qty}</p><p>Dernier événement: ${new Date(row.item.lastEventAt || row.remise.createdAt).toLocaleString('fr-CA')} · ${escapeHtml(row.item.lastEvent || 'Nouveau')}</p></article>`).join('')}`;
+    });
+  }
+
+  if (route === 'remise/bins') {
+    const form = document.getElementById('remiseVerifyBinForm');
+    const input = document.getElementById('remiseVerifyBinInput');
+    const out = document.getElementById('remiseVerifyBinResults');
+    form?.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const bin = normalizeSku(input?.value);
+      if (!bin || !out) return;
+      const rows = [];
+      data.remises.filter((remise) => remise.status !== 'Complété').forEach((remise) => {
+        remise.items.filter((item) => item.bin === bin && item.remaining > 0).forEach((item) => rows.push({ remise, item }));
+      });
+      if (!rows.length) {
+        out.innerHTML = '<p class="muted">Aucun SKU attendu pour cette bin.</p>';
+        return;
+      }
+      out.innerHTML = rows.map((row) => `<article><strong>${escapeHtml(row.item.sku)}</strong><p>${row.remise.id} · ${row.remise.status}</p><p>Progression: ${row.item.qty - row.item.remaining}/${row.item.qty}</p></article>`).join('');
+    });
+  }
+}
+
+function ensureRemiseStyles() {
+  if (document.getElementById('remiseStyles')) return;
+  const style = document.createElement('style');
+  style.id = 'remiseStyles';
+  style.textContent = `
+    .remise-page{padding:calc(env(safe-area-inset-top,0px) + 10px) 10px calc(env(safe-area-inset-bottom,0px) + 24px);color:#ebf3ff;background:linear-gradient(180deg,#12285f 0%,#040a28 100%);border-radius:26px;position:relative;overflow:hidden}
+    .remise-page::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(circle at 20% 15%,rgba(180,210,255,.16) 1px,transparent 1px),radial-gradient(circle at 65% 62%,rgba(138,182,255,.14) 1px,transparent 1px);background-size:26px 26px,33px 33px;opacity:.35}
+    .remise-page>*{position:relative;z-index:1}.rem-card,.rem-tile,.rem-mini{background:linear-gradient(180deg,rgba(16,30,70,.82),rgba(10,18,46,.9));border:1px solid rgba(160,190,255,.18);box-shadow:0 16px 42px rgba(0,0,0,.42), inset 0 1px 0 rgba(240,250,255,.06);border-radius:24px}
+    .rem-card{padding:14px;margin-bottom:12px}.rem-hero{display:grid;grid-template-columns:1.1fr .9fr;align-items:center;gap:12px}.rem-hero h2{font-size:46px;line-height:1.04;margin:0 0 10px}.rem-hero p{font-size:17px;margin:0 0 8px;color:#b8c9ed}.rem-hero small{font-size:14px;color:#9db4dc}.rem-hero img{width:100%;border-radius:18px}
+    .rem-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}.rem-tile{padding:0;overflow:hidden;text-align:left;transition:transform .14s ease, box-shadow .14s ease}.rem-tile:active{transform:scale(.985);box-shadow:0 18px 38px rgba(59,126,255,.45)}.rem-main img{width:100%;height:164px;object-fit:cover;display:block}
+    .rem-main span{display:flex;flex-direction:column;padding:12px;background:rgba(11,20,48,.88)}.rem-main strong{font-size:21px}.rem-main small{font-size:16px;color:#9db2d8}
+    .rem-short{display:flex;align-items:center;min-height:72px;padding:8px 14px}.rem-short strong{font-size:19px}.rem-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .rem-ai header{display:flex;align-items:center;justify-content:space-between}.rem-ai h3{margin:0;display:flex;align-items:center;gap:8px;font-size:22px}.rem-pill,.rem-btn{border-radius:999px;padding:8px 12px;border:1px solid rgba(146,177,237,.34);background:rgba(67,96,160,.3);color:#d9e6ff}
+    .rem-ai-form{display:flex;gap:8px;margin-top:10px}.rem-ai-form input,.rem-input{flex:1;background:rgba(16,30,67,.82);border:1px solid rgba(146,178,240,.34);border-radius:18px;color:#e9f1ff;padding:12px}
+    .rem-send{width:52px;height:52px;border-radius:50%;border:1px solid rgba(146,177,238,.38);background:linear-gradient(180deg,#67b0ff,#2f5fd0);color:#fff}
+    .rem-ai-output article,.rem-list article,.rem-row-item{margin-top:10px;background:rgba(8,14,38,.58);border:1px solid rgba(140,174,237,.2);padding:10px;border-radius:14px;display:block;color:#eaf2ff}
+    .rem-row-item{display:flex;justify-content:space-between;width:100%}.rem-row-item.is-active{box-shadow:0 0 0 1px rgba(95,156,255,.65) inset}
+    .rem-mini-nav{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.rem-mini{padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:4px}.rem-mini b{font-size:15px}
+    .rem-mini.is-active{box-shadow:0 -3px 0 #46a1ff inset,0 0 0 1px rgba(96,166,255,.5)}.rem-mini span{font-size:24px}
+    .rem-modal{border:none;border-radius:20px;padding:0;max-width:520px;width:calc(100% - 24px);background:#101d47;color:#e8f1ff}.rem-modal article{padding:16px}.rem-modal::backdrop{background:rgba(3,6,18,.65)}
+    .rem-stack{display:flex;flex-direction:column;gap:8px}
+    @media (max-width:760px){.rem-hero h2{font-size:28px}.rem-hero{grid-template-columns:1fr}.rem-main img{height:132px}.rem-short strong{font-size:17px}}
+  `;
+  document.head.appendChild(style);
 }
 // END PATCH: REMISE PAGE
 

@@ -1,0 +1,45 @@
+<section class="remise-page" aria-label="Générer une remise">
+  <article class="rem-card">
+    <h2>📋 Générer une remise</h2>
+    <p class="muted">Scannez les SKU. 1 scan = 1 pièce.</p>
+    <form id="remiseGenerateForm" class="rem-ai-form">
+      <input id="remiseGenerateScan" type="text" placeholder="Scanner item..." autocomplete="off" data-autofocus />
+      <button class="rem-send" type="submit">＋</button>
+    </form>
+    <div class="rem-row" style="margin-top:10px;">
+      <button class="rem-btn" id="remiseCompleteBtn" type="button">Compléter la remise</button>
+      <button class="rem-btn" type="button" data-route="remise">Retour</button>
+    </div>
+    <div id="remiseGenerateList" class="rem-list" style="margin-top:12px;"></div>
+  </article>
+
+  <dialog id="remiseItemActionModal" class="rem-modal">
+    <article>
+      <h3 id="remiseItemActionTitle">Actions item</h3>
+      <div class="rem-list">
+        <button type="button" class="rem-btn" id="remiseActionBreak">Briser</button>
+        <button type="button" class="rem-btn" id="remiseActionRebox">Rebox</button>
+        <button type="button" class="rem-btn" id="remiseActionDelete">Supprimer</button>
+        <button type="button" class="rem-btn" data-close-modal>Annuler</button>
+      </div>
+    </article>
+  </dialog>
+
+  <dialog id="remiseBreakModal" class="rem-modal">
+    <article>
+      <h3>Briser un item</h3>
+      <form id="remiseBreakForm" class="rem-stack">
+        <input id="remiseBreakItem" class="rem-input" placeholder="Scan item" required />
+        <input id="remiseBreakBin" class="rem-input" placeholder="Scan bac Scrap (ex: SCRAPBOX1)" required />
+        <button class="rem-btn" type="submit">Confirmer Briser</button>
+      </form>
+    </article>
+  </dialog>
+
+  <nav class="rem-mini-nav" aria-label="Navigation remise">
+    <button class="rem-mini is-active" type="button" data-route="remise"><span>🛒</span><b>Remise</b></button>
+    <button class="rem-mini" type="button" data-route="remise/suivant"><span>✅</span><b>Suivant</b></button>
+    <button class="rem-mini" type="button" data-route="remise/verifier"><span>🕘</span><b>Vérifier</b></button>
+    <button class="rem-mini" type="button" data-route="remise/bins"><span>🧰</span><b>Bins</b></button>
+  </nav>
+</section>

@@ -1,4 +1,4 @@
-const CACHE = 'dlwms-ia-v5';
+const CACHE = 'dlwms-ia-v6';
 const ASSETS = [
   './',
   './index.html',
@@ -37,6 +37,10 @@ const ASSETS = [
   './pages/inventaire.html',
   './pages/monitoring.html',
   './pages/remise.html',
+  './pages/remise/generer.html',
+  './pages/remise/suivant.html',
+  './pages/remise/verifier.html',
+  './pages/remise/bins.html',
   './pages/reception-conteneur.html',
   './pages/reception-preuve.html',
   './pages/reception-faq.html',
