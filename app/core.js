@@ -34,7 +34,7 @@ const MODULE_ROUTES = {
   'reception-preuve': 'reception-preuve',
   receptionpreuve: 'reception-preuve',
   receptionConteneur: 'reception-conteneur',
-  reception: 'reception-conteneur',
+  reception: 'reception',
   consolidation: 'consolidation',
   inventaire: 'inventaire',
   'suivi-expedition': 'monitoring',
