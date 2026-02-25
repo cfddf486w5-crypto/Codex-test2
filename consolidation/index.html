@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>DL.WMS · Consolidation</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main id="app" class="app-shell">
+    <header class="topbar">
+      <a href="../index.html" class="back-link">← Retour Modules</a>
+      <span class="chip">CONSOLIDATION</span>
+    </header>
+
+    <section id="homeView" class="view"></section>
+    <section id="subView" class="view hidden"></section>
+  </main>
+
+  <div id="whyModal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <h3>Pourquoi ces recommandations ?</h3>
+      <p>Le moteur offline applique des règles locales: regroupement SKU, libération de bin, minimisation de déplacement et priorité aux palettes les plus remplies.</p>
+      <ul>
+        <li>Regrouper les mêmes SKU dans une même zone.</li>
+        <li>Réduire les allers-retours opérateur.</li>
+        <li>Conserver la traçabilité dans l'historique local.</li>
+      </ul>
+      <button data-close-modal class="btn-secondary">Fermer</button>
+    </div>
+  </div>
+
+  <div id="kbModal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <h3>Notes KB (offline)</h3>
+      <textarea id="kbNotesInput" rows="7" placeholder="Ajouter des notes opérationnelles..."></textarea>
+      <div class="modal-actions">
+        <button id="saveKbBtn" class="btn-primary">Enregistrer</button>
+        <button data-close-modal class="btn-secondary">Fermer</button>
+      </div>
+    </div>
+  </div>
+
+  <template id="homeTemplate">
+    <article class="hero card">
+      <div class="hero-visual" aria-hidden="true"></div>
+      <div class="hero-content">
+        <h1>Flux complet consolidation</h1>
+        <p>Scannez les items pour consolider dans un voisinage rapproché. Offline first.</p>
+        <div class="stats-ribbon" id="statsRibbon"></div>
+      </div>
+    </article>
+
+    <section class="tile-grid">
+      <a href="#charger" class="tile card">
+        <div class="tile-art art-charger"></div>
+        <div class="tile-label"><img src="assets/icons/scan.svg" alt=""/>Charger</div>
+      </a>
+      <a href="#optimiser" class="tile card">
+        <div class="tile-art art-optimiser"></div>
+        <div class="tile-label"><img src="assets/icons/search.svg" alt=""/>Optimiser</div>
+      </a>
+      <a href="#historique" class="tile card">
+        <div class="tile-art art-historique"></div>
+        <div class="tile-label"><img src="assets/icons/history.svg" alt=""/>Historique</div>
+      </a>
+      <a href="#stats" class="tile card">
+        <div class="tile-art art-stats"></div>
+        <div class="tile-label"><img src="assets/icons/stats.svg" alt=""/>Statistiques</div>
+      </a>
+    </section>
+
+    <section class="assistant card">
+      <div class="assistant-top">
+        <h2><img src="assets/icons/robot.svg" alt=""/>Assistant IA</h2>
+        <div class="assistant-actions">
+          <button id="whyBtn" class="btn-pill">Pourquoi ?</button>
+          <button id="kbBtn" class="btn-pill btn-gear">⚙️</button>
+        </div>
+      </div>
+      <form id="aiForm" class="assistant-form">
+        <input id="aiInput" type="text" placeholder="Posez une question..." autocomplete="off" />
+        <button type="submit" class="send-btn" aria-label="Envoyer">➤</button>
+      </form>
+      <article id="aiAnswer" class="ai-answer hidden"></article>
+    </section>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
