@@ -1,7 +1,13 @@
 # Fiche de règles — `main.js`
 
 ## Portée
-Cette fiche formalise les règles métier détectées dans `main.js`, **sans modification UI**.
+Cette fiche formalise et externalise les règles métier détectées dans `main.js`, **sans modification UI**.
+
+## Fichiers intégrés
+- `data/rules/main.rules.json` : source de vérité des règles.
+- `scripts/validate-rules.mjs` : validation structurelle et métier.
+- `scripts/audit-rules.mjs` : génération d'un audit lisible.
+- `tests/rules_validation.test.mjs` : test automatisé de validation.
 
 ## Règles intégrées
 
@@ -19,7 +25,7 @@ Cette fiche formalise les règles métier détectées dans `main.js`, **sans mod
 
 ### 4) Référentiel types d'emplacement
 - `LOCATION_TYPE_MAP` mappe `LOCATION -> TYPE` (ex: `P1..P7`, `MAGASIN`, `RACKING`, `Temporaire`).
-- Ce mapping est utilisé comme règle de classification métier (sans impact visuel direct).
+- Ce mapping est conservé dans le JSON de règles pour éviter la dérive métier.
 
 ### 5) Règles de capacité palettes
 - P1: min 1 / max 3
@@ -30,17 +36,18 @@ Cette fiche formalise les règles métier détectées dans `main.js`, **sans mod
 - P6: min 16 / max 18
 - P7: min 19 / max 21
 
-### 6) Modes de travail
-- Mode édition et navigation sont exclusifs.
-- Undo/Redo passent par le moteur d'opérations (`UNDO`, `REDO`, `SNAPSHOT`).
+### 6) Offline iPhone (contrainte ajoutée)
+- `platformConstraints.offline = true`
+- `platformConstraints.target = iPhone`
+- Validation et audit exécutables en local, sans dépendance réseau.
 
-## Vérification effectuée
+## Vérifications effectuées
 - Vérification syntaxique JS: `node --check main.js` ✅
+- Validation règles: `node scripts/validate-rules.mjs` ✅
+- Test dédié: `node tests/rules_validation.test.mjs` ✅
+- Audit généré: `node scripts/audit-rules.mjs` ✅
 
-## Ce que l'on peut ajouter ensuite (sans toucher l'UI)
-- Extraire les règles (`LOCATION_TYPE_MAP`, `P_CAPACITY`, limites BIN) dans un fichier de configuration versionné (`data/rules/*.json`).
-- Ajouter un validateur automatique des règles (schéma JSON + test Node).
-- Ajouter des tests unitaires métier (capacités P1..P7, limites de BIN, cohérence de mapping).
-- Ajouter un rapport d'audit des règles (incohérences, clés dupliquées, types non reconnus).
-
-> Toute évolution ci-dessus peut être faite **sans modifier l'interface**, uniquement la couche règles/données.
+## Ce que l'on peut ajouter ensuite (toujours sans toucher l'UI)
+- Brancher `main.js` sur `data/rules/main.rules.json` au runtime pour supprimer les constantes dupliquées.
+- Ajouter un contrôle CI pour bloquer toute règle invalide.
+- Ajouter des seuils métier spécifiques par zone (A/B/C/D) dans le même fichier de règles.
