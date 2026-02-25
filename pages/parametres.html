@@ -63,11 +63,40 @@
 
   <div id="settingsStorageRulesPanel" data-settings-storage-panel="rules">
     <p class="muted">Informations de règles sauvegardées dans le storage local.</p>
+    <div class="row" style="justify-content:space-between;align-items:center;gap:8px;">
+      <div id="settingsStorageReadMeta" class="muted">Dernière lecture du storage: —</div>
+      <div class="row" style="gap:8px;">
+        <button type="button" id="settingsStorageRefreshBtn" class="btn">Rafraîchir</button>
+        <button type="button" id="settingsStorageCopyBtn" class="btn">Copier diagnostic storage</button>
+      </div>
+    </div>
+    <div id="settingsRulebookValidation" class="input" style="margin-top:8px;"></div>
+    <div id="settingsRulebookDiff" class="input" style="margin-top:8px;"></div>
+    <div class="row" style="margin-top:8px;gap:8px;">
+      <span class="muted">Filtres clés localStorage:</span>
+      <button type="button" id="settingsStorageFilterAll" class="btn btn-primary">Toutes</button>
+      <button type="button" id="settingsStorageFilterDlwms" class="btn">DLWMS_</button>
+      <button type="button" id="settingsStorageFilterRule" class="btn">rule</button>
+      <button type="button" id="settingsStorageFilterFaq" class="btn">faq</button>
+    </div>
+    <div id="settingsStorageKeysList" class="input" style="margin-top:8px;max-height:160px;overflow:auto;"></div>
+    <div class="row" style="margin-top:8px;gap:8px;">
+      <button type="button" id="settingsAdminToggleBtn" class="btn">Activer mode admin</button>
+      <span id="settingsAdminStatus" class="muted">Mode admin désactivé</span>
+    </div>
     <pre id="settingsRulesStorageDump" class="input" style="white-space:pre-wrap;max-height:280px;overflow:auto;">Chargement...</pre>
   </div>
 
   <div id="settingsStorageFaqPanel" data-settings-storage-panel="faq" hidden>
     <p class="muted">FAQ disponibles dans l'application (sources locale + référentiel).</p>
+    <div id="settingsFaqCounters" class="row" style="gap:6px;flex-wrap:wrap;margin-bottom:8px;"></div>
+    <div class="row" style="gap:8px;align-items:center;">
+      <input id="settingsFaqSearchInput" class="input" style="flex:1;" placeholder="Recherche texte FAQ" />
+      <select id="settingsFaqCategoryFilter" class="input" style="max-width:220px;"></select>
+      <button type="button" id="settingsFaqExportJson" class="btn">Export JSON</button>
+      <button type="button" id="settingsFaqExportCsv" class="btn">Export CSV</button>
+    </div>
+    <div id="settingsFaqPagination" class="row" style="justify-content:space-between;align-items:center;margin:8px 0;"></div>
     <div id="settingsFaqInventory" class="input" style="max-height:280px;overflow:auto;"></div>
   </div>
 </section>
