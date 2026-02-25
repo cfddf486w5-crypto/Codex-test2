@@ -885,9 +885,12 @@ function bindConsolidationPage(route) {
   };
 
   const bindHub = () => {
-    document.getElementById('consoStatPending')?.textContent = String(pendingSessions().length);
-    document.getElementById('consoStatPieces')?.textContent = String(pendingPieces());
-    document.getElementById('consoStatAvg')?.textContent = `${avgDuration()} min`;
+    const pendingNode = document.getElementById('consoStatPending');
+    const piecesNode = document.getElementById('consoStatPieces');
+    const avgNode = document.getElementById('consoStatAvg');
+    if (pendingNode) pendingNode.textContent = String(pendingSessions().length);
+    if (piecesNode) piecesNode.textContent = String(pendingPieces());
+    if (avgNode) avgNode.textContent = `${avgDuration()} min`;
     const zoneInput = document.getElementById('consoZoneInput');
     const zoneLabel = document.getElementById('consoZoneLabel');
     if (zoneLabel) zoneLabel.textContent = settings.zone || 'ZD18';
@@ -950,7 +953,8 @@ function bindConsolidationPage(route) {
 
     const renderDraft = () => {
       const entries = Object.entries(draft);
-      document.getElementById('consoDraftCount')?.textContent = String(entries.reduce((acc, [, qty]) => acc + Number(qty), 0));
+      const draftCountNode = document.getElementById('consoDraftCount');
+      if (draftCountNode) draftCountNode.textContent = String(entries.reduce((acc, [, qty]) => acc + Number(qty), 0));
       if (!list) return;
       if (!entries.length) {
         list.innerHTML = '<p class="muted">Aucun SKU scanné.</p>';
@@ -1137,9 +1141,12 @@ function bindConsolidationPage(route) {
     sessions.forEach((session) => session.items.forEach((item) => skuMap.set(item.sku, Number(skuMap.get(item.sku) || 0) + Number(item.qty || 0))));
     const sorted = [...skuMap.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5);
 
-    document.getElementById('consoKpiSessions')?.textContent = String(sessions.length);
-    document.getElementById('consoKpiPieces')?.textContent = String(sessions.reduce((acc, s) => acc + sumItems(s.items), 0));
-    document.getElementById('consoKpiAvg')?.textContent = `${avgDuration()} min`;
+    const kpiSessions = document.getElementById('consoKpiSessions');
+    const kpiPieces = document.getElementById('consoKpiPieces');
+    const kpiAvg = document.getElementById('consoKpiAvg');
+    if (kpiSessions) kpiSessions.textContent = String(sessions.length);
+    if (kpiPieces) kpiPieces.textContent = String(sessions.reduce((acc, s) => acc + sumItems(s.items), 0));
+    if (kpiAvg) kpiAvg.textContent = `${avgDuration()} min`;
 
     if (topList) {
       if (!sorted.length) topList.innerHTML = '<li class="muted">Aucun SKU</li>';
@@ -1204,8 +1211,8 @@ function answerConsoQuestion(question, notes) {
     title: `Assistant consolidation — ${bestIntent}`,
     steps: [
       `Action recommandée: ${best.a}`,
-      'Vérifiez les données dans l'historique local.',
-      'Relancez l'étape suivante depuis la grille principale.',
+      "Vérifiez les données dans l'historique local.",
+      "Relancez l'étape suivante depuis la grille principale.",
     ],
     why: `${best.a} Cette réponse est produite localement via FAQ + mots-clés. ${notes ? 'Les notes opérateur sont aussi prises en compte.' : ''}`.trim(),
     where: where[bestIntent],
