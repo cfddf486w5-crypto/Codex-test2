@@ -9,6 +9,13 @@ import { apply1000Improvements, auditImprovements } from './improvements.js';
 import { attachScanController } from './scan_ui.js';
 import { bindReceptionFaqPage, bindReceptionEntryPoints, installReceptionFaqGlobals } from './reception-faq.js';
 import { icon } from '../ui/icons.js';
+import {
+  getActiveRulebook,
+  explainMove,
+  restoreRulebookToBackup,
+  restoreRulebookToCanonical,
+  maybeRunRulebookSelfCheck,
+} from './rulebook.js';
 
 const appNode = document.getElementById('app');
 const nav = document.querySelector('.bottom-nav');
@@ -50,6 +57,7 @@ let lastDecisionId;
 let continuousTrainingTimer;
 let continuousTrainingIndex = 0;
 let navigationLocked = false;
+let currentRoute = 'modules';
 
 const WAREHOUSE_PROMPT_PRESETS = [
   { label: 'Lecture Excel', category: 'excel', prompt: 'Lis le fichier Excel et résume les colonnes clés.' },
@@ -131,6 +139,7 @@ async function boot() {
   bindNetworkBadge();
   bindNav();
   bindGlobalAiAssistant();
+  bindGlobalBackButton();
   installReceptionFaqGlobals(navigate);
   // BEGIN PATCH: NAV
   window.DLWMS_navTo = async (route) => navigate(route);
@@ -152,6 +161,13 @@ async function boot() {
     await navigate('settings');
   };
   window.DLWMS_openReceptionConteneur = async () => navigate('module/reception-conteneur');
+  window.DLWMS_getActiveRulebook = getActiveRulebook;
+  window.DLWMS_explainMove = explainMove;
+  window.DLWMS_restoreRulebookToBackup = restoreRulebookToBackup;
+  window.DLWMS_restoreRulebookToCanonical = restoreRulebookToCanonical;
+  window.DLWMS_goBack = goBack;
+  getActiveRulebook();
+  maybeRunRulebookSelfCheck();
   setupBottomNavIcons();
   runOnboarding();
   bindHashRouting();
@@ -257,6 +273,7 @@ function bindNav() {
 
 async function navigate(route, options = {}) {
   const normalizedRoute = normalizeRoute(route);
+  currentRoute = normalizedRoute;
   const { syncHash = true } = options;
   await loadRoute(normalizedRoute, appNode);
   const rootRoute = ROOT_ROUTES.includes(normalizedRoute) ? normalizedRoute : 'modules';
@@ -283,6 +300,40 @@ async function navigate(route, options = {}) {
   if (normalizedRoute === 'parametres') await hydrateSettingsMetrics();
   if (normalizedRoute === 'monitoring') hydrateMonitoring();
   if (normalizedRoute === 'ui-self-test') bindUiSelfTest();
+  refreshBackButton();
+}
+
+function goBack() {
+  if (window.history.length > 1) {
+    window.history.back();
+    return;
+  }
+  navigate('modules');
+}
+
+function bindGlobalBackButton() {
+  if (document.getElementById('dlwmsGlobalBackButton')) return;
+  const button = document.createElement('button');
+  button.id = 'dlwmsGlobalBackButton';
+  button.type = 'button';
+  button.className = 'btn btn-ghost';
+  button.setAttribute('aria-label', 'Retour');
+  button.textContent = '← Retour';
+  button.style.position = 'fixed';
+  button.style.top = 'calc(env(safe-area-inset-top, 0px) + 8px)';
+  button.style.left = '8px';
+  button.style.height = '34px';
+  button.style.padding = '4px 10px';
+  button.style.zIndex = '55';
+  button.style.display = 'none';
+  button.addEventListener('click', () => goBack());
+  document.body.appendChild(button);
+}
+
+function refreshBackButton() {
+  const button = document.getElementById('dlwmsGlobalBackButton');
+  if (!button) return;
+  button.style.display = currentRoute === 'modules' ? 'none' : 'inline-flex';
 }
 
 
@@ -420,6 +471,25 @@ function bindConsolidationPage() {
     throw new Error('Format non supporté en mode offline (CSV requis, XLSX optionnel).');
   };
 
+  const normalizeConsolidationRows = (rows, type) => {
+    const aggregated = new Map();
+    (rows || []).forEach((row) => {
+      const sku = String(row.item || row.sku || row.SKU || row.ITEM || '').trim();
+      const sourceBin = String(row.bin || row.BIN || row.location || row.LOCATION || '').trim();
+      const bin = sourceBin || (type === 'reception' ? 'RECEPTION_STAGING' : '');
+      const qtyRaw = Number(row.qty ?? row.quantity ?? row.QTY ?? row.QUANTITY ?? 0);
+      const qty = Number.isFinite(qtyRaw) ? qtyRaw : 0;
+      const key = `${sku}__${bin}`;
+      if (!aggregated.has(key)) aggregated.set(key, { ...row, item: sku, bin, qty: 0 });
+      const current = aggregated.get(key);
+      current.qty += qty;
+      current.QTY = current.qty;
+      current.quantity = current.qty;
+      current._occupiedBin = current.qty !== 0;
+    });
+    return [...aggregated.values()];
+  };
+
   const updateKpi = () => {
     const all = [...(dataset.inventory || []), ...(dataset.reception || [])];
     const skuSet = new Set();
@@ -459,7 +529,7 @@ function bindConsolidationPage() {
       }
       try {
         const rows = await parseRows(file);
-        dataset[type] = Array.isArray(rows) ? rows : [];
+        dataset[type] = normalizeConsolidationRows(Array.isArray(rows) ? rows : [], type);
         imports[type] = { fileName: file.name, at: Date.now() };
         writeJsonStorage(CONS_DATA_KEY, dataset);
         writeJsonStorage(CONS_LAST_IMPORT_KEY, imports);
