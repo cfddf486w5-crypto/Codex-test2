@@ -1,0 +1,18 @@
+<section class="conso-page" aria-label="Consolidation charger">
+  <article class="conso-card">
+    <h3>Charger · Scan items</h3>
+    <p class="muted">Scanner en continu (Entrée pour valider chaque SKU).</p>
+    <div class="conso-input-row">
+      <input id="consoScanInput" class="conso-input" type="text" placeholder="Scanner SKU" autocomplete="off" data-autofocus />
+    </div>
+    <p class="muted">Pièces scannées: <strong id="consoDraftCount">0</strong></p>
+  </article>
+  <article class="conso-card">
+    <h3>Session en cours</h3>
+    <div id="consoScanList" class="conso-list"></div>
+    <div class="conso-actions" style="margin-top:10px;">
+      <button type="button" class="conso-btn" id="consoFinishSession">Terminer session</button>
+      <button type="button" class="conso-btn" data-route="consolidation">Retour</button>
+    </div>
+  </article>
+</section>

@@ -806,9 +806,50 @@ function writeJsonStorage(key, value) {
   localStorage.setItem(key, JSON.stringify(value));
 }
 
+const CONSO_KEYS = {
+  sessions: 'dlwms_conso_sessions',
+  moves: 'dlwms_conso_moves',
+  settings: 'dlwms_conso_settings',
+  aiNotes: 'dlwms_conso_ai_notes',
+  aiChat: 'dlwms_conso_ai_chat',
+};
+
+const CONSO_FAQ = [
+  ["Comment scanner ?", "Ouvrez Charger, scannez votre SKU puis validez avec Entrée."],
+  ["Comment annuler un item ?", "Dans Charger, utilisez le bouton – pour décrémenter ou la corbeille pour supprimer."],
+  ["C'est quoi Optimiser ?", "Optimiser propose des moves de consolidation simples basés sur les sessions en attente."],
+  ["Pourquoi un move est suggéré ?", "Le moteur privilégie les SKU les plus fréquents et des bins cibles proches de la zone active."],
+  ["Où voir l'historique ?", "Ouvrez Historique pour consulter sessions et moves appliqués ou en attente."],
+  ["Comment changer la zone ZD18 ?", "Depuis l'écran principal consolidation, modifiez le champ zone dans les réglages rapides."],
+  ["Comment terminer une session ?", "Dans Charger, cliquez Terminer session pour enregistrer localement la session."],
+  ["Mes données restent-elles hors ligne ?", "Oui, la consolidation stocke les données en localStorage sans API externe."],
+  ["Comment générer les recommandations ?", "Dans Optimiser, appuyez sur Générer recommandations."],
+  ["Comment appliquer un move ?", "Dans Optimiser, cliquez Appliquer sur la ligne du move."],
+  ["Comment lire les statistiques ?", "La page Statistiques affiche KPI, top SKU, bar chart et pie chart."],
+  ["Que signifie Remises en attente ?", "Ce nombre correspond aux sessions non clôturées."],
+  ["Que signifie Pièces ?", "Pièces est la somme des quantités des sessions non clôturées."],
+  ["Que signifie Temps moyen ?", "Temps moyen est la moyenne des durées de sessions enregistrées."],
+  ["Comment clôturer une session ?", "Dans Historique, ouvrez le détail d'une session puis basculez en clôturée."],
+  ["Comment effacer l'historique ?", "Utilisez le bouton Effacer historique puis confirmez."],
+  ["Comment fonctionne la recherche IA ?", "Le moteur local compare mots-clés et intention pour trouver la meilleure réponse."],
+  ["Puis-je ajouter mes notes IA ?", "Oui, bouton Notes IA pour éditer vos consignes locales."],
+  ["Que fait le bouton Pourquoi ?", "Il ouvre les règles consolidation V1 utilisées par le moteur de recommandation."],
+  ["Puis-je travailler sans réseau ?", "Oui, le module est conçu offline-first."],
+  ["Le scan accepte quel format ?", "Tout texte est accepté puis normalisé en trim + uppercase."],
+  ["Comment incrémenter un SKU ?", "Scannez le même SKU plusieurs fois: la quantité augmente automatiquement."],
+  ["Que voit-on dans un move ?", "SKU, quantité, bin cible suggéré, tag de priorité et justification."],
+  ["Comment exporter ?", "V1 ne gère pas l'export, utilisez l'historique local pour suivi."],
+  ["Comment revenir à l'accueil consolidation ?", "Touchez le bouton Flux principal ou utilisez le retour."],
+  ["Pourquoi une recommandation manque ?", "Aucune recommandation est créée si aucune session en attente n'existe."],
+  ["Comment calculer le top SKU ?", "Le top SKU agrège les quantités de toutes les sessions."],
+  ["Comment savoir si un move est fini ?", "Un badge Complété apparaît dans Historique et Statistiques."],
+  ["Comment vider uniquement les moves ?", "Effacer historique supprime sessions et moves, pas les notes IA."],
+  ["Comment relancer une session ?", "Créez une nouvelle session depuis Charger."],
+];
+
 function bindModulePages(route) {
   if (route === 'modules') bindModulesPageStatusDot();
-  if (route === 'consolidation') bindConsolidationPage();
+  if (route === 'consolidation' || route.startsWith('consolidation/')) bindConsolidationPage(route);
   if (route === 'remise') bindRemisePage();
   if (route === 'reception-preuve') bindReceptionPreuvePage();
 }
@@ -821,133 +862,438 @@ function bindModulesPageStatusDot() {
   dot.classList.toggle('is-offline', !isOnline);
 }
 
-function bindConsolidationPage() {
-  const invInput = document.getElementById('consInventoryFile');
-  const recInput = document.getElementById('consReceptionFile');
-  const metaNode = document.getElementById('consImportMeta');
-  const dataset = readJsonStorage(CONS_DATA_KEY, { inventory: [], reception: [] });
-  const imports = readJsonStorage(CONS_LAST_IMPORT_KEY, { inventory: null, reception: null });
+function bindConsolidationPage(route) {
+  ensureConsolidationStyles();
+  const sessions = readJsonStorage(CONSO_KEYS.sessions, []);
+  const moves = readJsonStorage(CONSO_KEYS.moves, []);
+  const settings = { zone: 'ZD18', ...(readJsonStorage(CONSO_KEYS.settings, {})) };
+  const notes = readJsonStorage(CONSO_KEYS.aiNotes, '');
 
-  const renderMeta = () => {
-    if (!metaNode) return;
-    const fmt = (x) => (x ? `${x.fileName} · ${new Date(x.at).toLocaleString('fr-FR')}` : 'Aucun import');
-    metaNode.innerHTML = `<p class="muted">Inventaire: ${fmt(imports.inventory)}</p><p class="muted">Réception: ${fmt(imports.reception)}</p>`;
+  const saveAll = () => {
+    writeJsonStorage(CONSO_KEYS.sessions, sessions);
+    writeJsonStorage(CONSO_KEYS.moves, moves);
+    writeJsonStorage(CONSO_KEYS.settings, settings);
   };
 
-  const parseRows = async (file) => {
-    const lower = file.name.toLowerCase();
-    if (lower.endsWith('.csv')) return parseCsv(await file.text());
-    if ((lower.endsWith('.xlsx') || lower.endsWith('.xls')) && window.XLSX) {
-      const wb = XLSX.read(await file.arrayBuffer(), { type: 'array' });
-      const ws = wb.Sheets[wb.SheetNames[0]];
-      return XLSX.utils.sheet_to_json(ws, { defval: '' });
+  const sumItems = (items = []) => items.reduce((acc, item) => acc + Number(item.qty || 0), 0);
+  const pendingSessions = () => sessions.filter((session) => !session.closed);
+  const pendingPieces = () => pendingSessions().reduce((acc, session) => acc + sumItems(session.items), 0);
+  const avgDuration = () => {
+    const values = sessions.map((s) => Number(s.durationMin || 0)).filter((n) => Number.isFinite(n) && n > 0);
+    if (!values.length) return 0;
+    return Math.round(values.reduce((a, b) => a + b, 0) / values.length);
+  };
+
+  const bindHub = () => {
+    document.getElementById('consoStatPending')?.textContent = String(pendingSessions().length);
+    document.getElementById('consoStatPieces')?.textContent = String(pendingPieces());
+    document.getElementById('consoStatAvg')?.textContent = `${avgDuration()} min`;
+    const zoneInput = document.getElementById('consoZoneInput');
+    const zoneLabel = document.getElementById('consoZoneLabel');
+    if (zoneLabel) zoneLabel.textContent = settings.zone || 'ZD18';
+    if (zoneInput) {
+      zoneInput.value = settings.zone || 'ZD18';
+      zoneInput.addEventListener('change', () => {
+        settings.zone = String(zoneInput.value || 'ZD18').trim().toUpperCase();
+        writeJsonStorage(CONSO_KEYS.settings, settings);
+        if (zoneLabel) zoneLabel.textContent = settings.zone;
+      });
     }
-    throw new Error('Format non supporté en mode offline (CSV requis, XLSX optionnel).');
-  };
 
-  const normalizeConsolidationRows = (rows, type) => {
-    const aggregated = new Map();
-    (rows || []).forEach((row) => {
-      const sku = String(row.item || row.sku || row.SKU || row.ITEM || '').trim();
-      const sourceBin = String(row.bin || row.BIN || row.location || row.LOCATION || '').trim();
-      const bin = sourceBin || (type === 'reception' ? 'RECEPTION_STAGING' : '');
-      const qtyRaw = Number(row.qty ?? row.quantity ?? row.QTY ?? row.QUANTITY ?? 0);
-      const qty = Number.isFinite(qtyRaw) ? qtyRaw : 0;
-      const key = `${sku}__${bin}`;
-      if (!aggregated.has(key)) aggregated.set(key, { ...row, item: sku, bin, qty: 0 });
-      const current = aggregated.get(key);
-      current.qty += qty;
-      current.QTY = current.qty;
-      current.quantity = current.qty;
-      current._occupiedBin = current.qty !== 0;
+    document.querySelectorAll('[data-conso-route]').forEach((tile) => {
+      tile.addEventListener('click', () => navigate(tile.dataset.consoRoute));
     });
-    return [...aggregated.values()];
-  };
 
-  const updateKpi = () => {
-    const all = [...(dataset.inventory || []), ...(dataset.reception || [])];
-    const skuSet = new Set();
-    const bins = new Set();
-    let totalUnits = 0;
-    let anomalies = 0;
-    all.forEach((row) => {
-      const sku = String(row.item || row.sku || row.SKU || '').trim();
-      const qty = Number(row.qty ?? row.quantity ?? row.QTY ?? 0);
-      const bin = String(row.bin || row.location || '').trim();
-      if (!sku) anomalies += 1;
-      if (sku) skuSet.add(sku);
-      if (bin) bins.add(bin);
-      if (Number.isFinite(qty)) totalUnits += qty;
-      else anomalies += 1;
+    const chatList = readJsonStorage(CONSO_KEYS.aiChat, []);
+    const aiOutput = document.getElementById('consoAiOutput');
+    if (aiOutput && chatList.length) {
+      aiOutput.innerHTML = chatList.slice(-3).map((entry) => `<article><strong>${escapeHtml(entry.title)}</strong><p>${escapeHtml(entry.answer)}</p></article>`).join('');
+    }
+
+    const askForm = document.getElementById('consoAiForm');
+    askForm?.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const input = document.getElementById('consoAiInput');
+      const q = String(input?.value || '').trim();
+      if (!q) return;
+      const answer = answerConsoQuestion(q, notes);
+      const payload = [...chatList, { q, ...answer, at: Date.now() }].slice(-25);
+      writeJsonStorage(CONSO_KEYS.aiChat, payload);
+      if (aiOutput) {
+        aiOutput.innerHTML = `<article><strong>${escapeHtml(answer.title)}</strong><ul>${answer.steps.map((step) => `<li>${escapeHtml(step)}</li>`).join('')}</ul><p>${escapeHtml(answer.why)}</p><small>${escapeHtml(answer.where)}</small></article>`;
+      }
+      if (input) input.value = '';
     });
-    const map = {
-      sku: skuSet.size,
-      bins: bins.size,
-      units: totalUnits,
-      low: Math.round(skuSet.size * 0.12),
-      anomalies,
-    };
-    Object.entries(map).forEach(([key, value]) => {
-      const node = document.getElementById(`consKpi-${key}`);
-      if (node) node.textContent = String(value);
+
+    document.getElementById('consoRulesBtn')?.addEventListener('click', () => {
+      document.getElementById('consoRulesModal')?.showModal();
+    });
+    document.getElementById('consoNotesBtn')?.addEventListener('click', () => {
+      const textarea = document.getElementById('consoAiNotes');
+      if (textarea) textarea.value = notes;
+      document.getElementById('consoNotesModal')?.showModal();
+    });
+    document.querySelectorAll('[data-close-modal]').forEach((btn) => btn.addEventListener('click', () => btn.closest('dialog')?.close()));
+    document.getElementById('consoSaveNotes')?.addEventListener('click', () => {
+      const textarea = document.getElementById('consoAiNotes');
+      writeJsonStorage(CONSO_KEYS.aiNotes, String(textarea?.value || ''));
+      textarea?.closest('dialog')?.close();
+      showToast('Notes IA enregistrées en local.', 'success');
     });
   };
 
-  const bindImport = (type, input) => {
-    if (!input) return;
-    input.addEventListener('change', async () => {
-      const file = input.files?.[0];
-      if (!file) {
-        showToast('Aucun fichier sélectionné.', 'warning');
+  const bindCharger = () => {
+    const input = document.getElementById('consoScanInput');
+    const list = document.getElementById('consoScanList');
+    const startedAt = Date.now();
+    const draft = readJsonStorage('dlwms_conso_scan_draft', {});
+
+    const renderDraft = () => {
+      const entries = Object.entries(draft);
+      document.getElementById('consoDraftCount')?.textContent = String(entries.reduce((acc, [, qty]) => acc + Number(qty), 0));
+      if (!list) return;
+      if (!entries.length) {
+        list.innerHTML = '<p class="muted">Aucun SKU scanné.</p>';
         return;
       }
-      try {
-        const rows = await parseRows(file);
-        dataset[type] = normalizeConsolidationRows(Array.isArray(rows) ? rows : [], type);
-        imports[type] = { fileName: file.name, at: Date.now() };
-        writeJsonStorage(CONS_DATA_KEY, dataset);
-        writeJsonStorage(CONS_LAST_IMPORT_KEY, imports);
-        renderMeta();
-        updateKpi();
-        showToast(`Import ${type} réussi (${dataset[type].length} lignes).`, 'success');
-      } catch (error) {
-        showToast(error.message || 'Import impossible.', 'error');
-      } finally {
-        input.value = '';
-      }
+      list.innerHTML = entries.map(([sku, qty]) => `<article class="conso-row"><strong>${escapeHtml(sku)}</strong><span>x${qty}</span><div><button type="button" data-minus="${escapeHtml(sku)}">−</button><button type="button" data-remove="${escapeHtml(sku)}">🗑</button></div></article>`).join('');
+    };
+
+    input?.addEventListener('keydown', (event) => {
+      if (event.key !== 'Enter') return;
+      event.preventDefault();
+      const sku = String(input.value || '').trim().toUpperCase();
+      if (!sku) return;
+      draft[sku] = Number(draft[sku] || 0) + 1;
+      writeJsonStorage('dlwms_conso_scan_draft', draft);
+      input.value = '';
+      renderDraft();
     });
+    input?.addEventListener('blur', () => setTimeout(() => input.focus(), 80));
+    setTimeout(() => input?.focus(), 20);
+
+    list?.addEventListener('click', (event) => {
+      const minusBtn = event.target.closest('[data-minus]');
+      const removeBtn = event.target.closest('[data-remove]');
+      if (!minusBtn && !removeBtn) return;
+      const sku = minusBtn?.dataset.minus || removeBtn?.dataset.remove;
+      if (!sku) return;
+      if (minusBtn) draft[sku] = Math.max(0, Number(draft[sku] || 0) - 1);
+      if (removeBtn || draft[sku] === 0) delete draft[sku];
+      writeJsonStorage('dlwms_conso_scan_draft', draft);
+      renderDraft();
+    });
+
+    document.getElementById('consoFinishSession')?.addEventListener('click', () => {
+      const items = Object.entries(draft).map(([sku, qty]) => ({ sku, qty: Number(qty || 0) })).filter((item) => item.qty > 0);
+      if (!items.length) {
+        showToast('Aucun item à enregistrer.', 'warning');
+        return;
+      }
+      sessions.unshift({
+        id: `SES-${Date.now()}`,
+        createdAt: Date.now(),
+        closed: false,
+        zone: settings.zone,
+        durationMin: Math.max(1, Math.round((Date.now() - startedAt) / 60000)),
+        items,
+      });
+      writeJsonStorage(CONSO_KEYS.sessions, sessions);
+      localStorage.removeItem('dlwms_conso_scan_draft');
+      showToast('Session enregistrée.', 'success');
+      navigate('consolidation');
+    });
+
+    renderDraft();
   };
 
-  bindImport('inventory', invInput);
-  bindImport('reception', recInput);
-  document.getElementById('consImportInventory')?.addEventListener('click', () => invInput?.click());
-  document.getElementById('consImportReception')?.addEventListener('click', () => recInput?.click());
-  document.getElementById('consRecompute')?.addEventListener('click', () => {
-    updateKpi();
-    showToast('KPI recalculés.', 'success');
-  });
-  document.getElementById('consGenerate')?.addEventListener('click', () => showToast('Génération à venir.', 'info'));
-  document.getElementById('consExportCsv')?.addEventListener('click', () => {
-    const rows = [...(dataset.inventory || []), ...(dataset.reception || [])];
-    if (!rows.length) {
-      showToast('Aucune donnée à exporter.', 'warning');
-      return;
+  const bindOptimiser = () => {
+    const list = document.getElementById('consoMoveList');
+    const explainMap = {
+      near: 'Le SKU est regroupé vers un bin proche de la zone active pour réduire les déplacements.',
+      free: 'Le déplacement libère un bin source et simplifie le picking suivant.',
+      flow: 'Le SKU apparaît dans plusieurs sessions, consolidation recommandée pour fluidifier le flux.',
+    };
+
+    const render = () => {
+      if (!list) return;
+      if (!moves.length) {
+        list.innerHTML = '<p class="muted">Aucun move généré.</p>';
+        return;
+      }
+      list.innerHTML = moves.map((move) => `<article class="conso-move ${move.status === 'completed' ? 'is-done' : ''}">
+        <header><strong>${escapeHtml(move.sku)}</strong><span>${move.qty} pcs</span></header>
+        <p>Cible: <b>${escapeHtml(move.target)}</b> · <span class="tag">${escapeHtml(move.tag)}</span></p>
+        <footer>
+          <button type="button" data-why="${move.id}">Pourquoi ?</button>
+          <button type="button" data-apply="${move.id}" ${move.status === 'completed' ? 'disabled' : ''}>${move.status === 'completed' ? 'Complété' : 'Appliquer'}</button>
+        </footer>
+        <small id="moveWhy-${move.id}" class="muted"></small>
+      </article>`).join('');
+    };
+
+    document.getElementById('consoGenerateMoves')?.addEventListener('click', () => {
+      const skuMap = new Map();
+      pendingSessions().forEach((session) => {
+        session.items.forEach((item) => {
+          skuMap.set(item.sku, Number(skuMap.get(item.sku) || 0) + Number(item.qty || 0));
+        });
+      });
+      if (!skuMap.size) {
+        showToast('Aucune session en attente à optimiser.', 'warning');
+        return;
+      }
+      const created = [];
+      [...skuMap.entries()].slice(0, 12).forEach(([sku, qty], index) => {
+        const existingPending = moves.find((move) => move.sku === sku && move.status === 'pending');
+        if (existingPending) return;
+        const tag = index % 3 === 0 ? 'Proche' : index % 3 === 1 ? 'Libère bin' : 'Flux';
+        const whyKey = index % 3 === 0 ? 'near' : index % 3 === 1 ? 'free' : 'flow';
+        created.push({
+          id: `MOV-${Date.now()}-${index}`,
+          sku,
+          qty,
+          target: `${settings.zone || 'ZD18'}-BIN-${String(index + 1).padStart(2, '0')}`,
+          tag,
+          why: explainMap[whyKey],
+          status: 'pending',
+          createdAt: Date.now(),
+        });
+      });
+      moves.unshift(...created);
+      saveAll();
+      render();
+      showToast(`${created.length} recommandations générées.`, 'success');
+    });
+
+    list?.addEventListener('click', (event) => {
+      const whyBtn = event.target.closest('[data-why]');
+      const applyBtn = event.target.closest('[data-apply]');
+      if (whyBtn) {
+        const move = moves.find((entry) => entry.id === whyBtn.dataset.why);
+        const target = document.getElementById(`moveWhy-${move?.id}`);
+        if (move && target) target.textContent = move.why;
+      }
+      if (applyBtn) {
+        const move = moves.find((entry) => entry.id === applyBtn.dataset.apply);
+        if (!move || move.status === 'completed') return;
+        move.status = 'completed';
+        move.completedAt = Date.now();
+        saveAll();
+        render();
+      }
+    });
+
+    document.getElementById('consoClosePending')?.addEventListener('click', () => {
+      pendingSessions().forEach((session) => { session.closed = true; });
+      saveAll();
+      showToast('Sessions en attente clôturées.', 'success');
+    });
+
+    render();
+  };
+
+  const bindHistorique = () => {
+    const sessionList = document.getElementById('consoSessionHistory');
+    const moveList = document.getElementById('consoMoveHistory');
+    const render = () => {
+      if (sessionList) {
+        if (!sessions.length) sessionList.innerHTML = '<p class="muted">Aucune session.</p>';
+        else {
+          sessionList.innerHTML = sessions.map((session) => `<details class="conso-history-item"><summary>${new Date(session.createdAt).toLocaleString('fr-FR')} · ${session.items.length} SKU · ${sumItems(session.items)} pièces</summary><div><p>Zone ${escapeHtml(session.zone || 'ZD18')} · ${session.closed ? 'Clôturée' : 'En attente'}</p><ul>${session.items.map((item) => `<li>${escapeHtml(item.sku)} × ${item.qty}</li>`).join('')}</ul><button type="button" data-toggle-session="${session.id}">${session.closed ? 'Réouvrir' : 'Clôturer'}</button></div></details>`).join('');
+        }
+      }
+      if (moveList) {
+        if (!moves.length) moveList.innerHTML = '<p class="muted">Aucun move.</p>';
+        else moveList.innerHTML = moves.map((move) => `<article class="conso-row"><strong>${escapeHtml(move.sku)}</strong><span>${move.qty} → ${escapeHtml(move.target)}</span><em>${move.status === 'completed' ? 'Complété' : 'En attente'}</em></article>`).join('');
+      }
+    };
+
+    sessionList?.addEventListener('click', (event) => {
+      const toggle = event.target.closest('[data-toggle-session]');
+      if (!toggle) return;
+      const session = sessions.find((entry) => entry.id === toggle.dataset.toggleSession);
+      if (!session) return;
+      session.closed = !session.closed;
+      saveAll();
+      render();
+    });
+
+    document.getElementById('consoClearHistory')?.addEventListener('click', () => {
+      if (!window.confirm('Effacer sessions et moves ?')) return;
+      sessions.splice(0, sessions.length);
+      moves.splice(0, moves.length);
+      saveAll();
+      render();
+      showToast('Historique effacé.', 'success');
+    });
+
+    render();
+  };
+
+  const bindStats = () => {
+    const topList = document.getElementById('consoTopSku');
+    const skuMap = new Map();
+    sessions.forEach((session) => session.items.forEach((item) => skuMap.set(item.sku, Number(skuMap.get(item.sku) || 0) + Number(item.qty || 0))));
+    const sorted = [...skuMap.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5);
+
+    document.getElementById('consoKpiSessions')?.textContent = String(sessions.length);
+    document.getElementById('consoKpiPieces')?.textContent = String(sessions.reduce((acc, s) => acc + sumItems(s.items), 0));
+    document.getElementById('consoKpiAvg')?.textContent = `${avgDuration()} min`;
+
+    if (topList) {
+      if (!sorted.length) topList.innerHTML = '<li class="muted">Aucun SKU</li>';
+      else topList.innerHTML = sorted.map(([sku, qty]) => `<li>${escapeHtml(sku)} <span>${qty}</span></li>`).join('');
     }
-    const headers = Object.keys(rows[0]);
-    const csv = [headers.join(','), ...rows.map((row) => headers.map((h) => `"${String(row[h] ?? '').replaceAll('"', '""')}"`).join(','))].join('\n');
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
-    a.download = `consolidation-moves-${Date.now()}.csv`;
-    a.click();
-    URL.revokeObjectURL(a.href);
-    showToast('Export CSV prêt.', 'success');
+
+    drawBarChart(document.getElementById('consoBarChart'), sorted);
+    const done = moves.filter((move) => move.status === 'completed').length;
+    const pending = moves.length - done;
+    drawPieChart(document.getElementById('consoPieChart'), [['Complétés', done], ['En attente', pending]]);
+  };
+
+  if (route === 'consolidation') bindHub();
+  if (route === 'consolidation/charger') bindCharger();
+  if (route === 'consolidation/optimiser') bindOptimiser();
+  if (route === 'consolidation/historique') bindHistorique();
+  if (route === 'consolidation/statistiques') bindStats();
+}
+
+function answerConsoQuestion(question, notes) {
+  const normalized = normalize(question || '');
+  const intents = {
+    scan: ['scan', 'scanner', 'sku', 'charger'],
+    optimiser: ['optimiser', 'move', 'recommandation'],
+    historique: ['historique', 'archive', 'session'],
+    stats: ['stat', 'kpi', 'graph'],
+    zone: ['zone', 'zd18', 'emplacement'],
+    erreurs: ['erreur', 'bloque', 'impossible'],
+  };
+  let bestIntent = 'scan';
+  let bestScore = 0;
+  Object.entries(intents).forEach(([intent, words]) => {
+    const score = words.reduce((acc, word) => acc + (normalized.includes(word) ? 2 : 0), 0);
+    if (score > bestScore) {
+      bestIntent = intent;
+      bestScore = score;
+    }
   });
-  document.getElementById('consExportPdf')?.addEventListener('click', () => {
-    window.print();
-    showToast('Export PDF: impression système lancée.', 'info');
+
+  const bank = CONSO_FAQ.map(([q, a]) => ({ q: normalize(q), rawQ: q, a }));
+  let best = bank[0];
+  let score = -1;
+  bank.forEach((entry) => {
+    const parts = entry.q.split(/\s+/);
+    const localScore = parts.reduce((acc, token) => acc + (normalized.includes(token) ? 1 : 0), 0);
+    if (localScore > score) {
+      best = entry;
+      score = localScore;
+    }
   });
-  renderMeta();
-  updateKpi();
+
+  const where = {
+    scan: 'Où cliquer: tuile Charger → champ scan → Terminer session.',
+    optimiser: 'Où cliquer: tuile Optimiser → Générer recommandations → Appliquer.',
+    historique: 'Où cliquer: tuile Historique → ouvrir session pour détail.',
+    stats: 'Où cliquer: tuile Statistiques pour KPI et graphiques.',
+    zone: 'Où cliquer: écran principal consolidation → champ Zone.',
+    erreurs: 'Où cliquer: Historique pour vérifier les sessions puis relancer Charger.',
+  };
+
+  return {
+    title: `Assistant consolidation — ${bestIntent}`,
+    steps: [
+      `Action recommandée: ${best.a}`,
+      'Vérifiez les données dans l'historique local.',
+      'Relancez l'étape suivante depuis la grille principale.',
+    ],
+    why: `${best.a} Cette réponse est produite localement via FAQ + mots-clés. ${notes ? 'Les notes opérateur sont aussi prises en compte.' : ''}`.trim(),
+    where: where[bestIntent],
+    answer: best.a,
+  };
+}
+
+function drawBarChart(canvas, rows) {
+  if (!(canvas instanceof HTMLCanvasElement)) return;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+  const width = canvas.width;
+  const height = canvas.height;
+  ctx.clearRect(0, 0, width, height);
+  const max = Math.max(1, ...rows.map(([, qty]) => qty));
+  const gap = 14;
+  const barW = rows.length ? Math.max(22, Math.floor((width - gap * (rows.length + 1)) / rows.length)) : 0;
+  rows.forEach(([sku, qty], index) => {
+    const x = gap + index * (barW + gap);
+    const h = Math.round((qty / max) * (height - 36));
+    const y = height - h - 18;
+    ctx.fillStyle = '#4da3ff';
+    ctx.fillRect(x, y, barW, h);
+    ctx.fillStyle = '#d8e6ff';
+    ctx.font = '11px sans-serif';
+    ctx.fillText(String(sku).slice(0, 6), x, height - 4);
+  });
+}
+
+function drawPieChart(canvas, rows) {
+  if (!(canvas instanceof HTMLCanvasElement)) return;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+  const width = canvas.width;
+  const height = canvas.height;
+  const total = rows.reduce((acc, [, value]) => acc + value, 0) || 1;
+  let start = -Math.PI / 2;
+  const palette = ['#5dd9a1', '#5b8cff', '#ffc857'];
+  ctx.clearRect(0, 0, width, height);
+  rows.forEach(([label, value], index) => {
+    const angle = (value / total) * Math.PI * 2;
+    ctx.beginPath();
+    ctx.moveTo(width / 2, height / 2);
+    ctx.arc(width / 2, height / 2, Math.min(width, height) / 2 - 16, start, start + angle);
+    ctx.closePath();
+    ctx.fillStyle = palette[index % palette.length];
+    ctx.fill();
+    start += angle;
+    ctx.fillStyle = '#d8e6ff';
+    ctx.font = '12px sans-serif';
+    ctx.fillText(`${label}: ${value}`, 10, 20 + index * 16);
+  });
+}
+
+function ensureConsolidationStyles() {
+  if (document.getElementById('consoStyles')) return;
+  const style = document.createElement('style');
+  style.id = 'consoStyles';
+  style.textContent = `
+    .conso-page{padding:calc(env(safe-area-inset-top,0px) + 10px) 10px calc(env(safe-area-inset-bottom,0px) + 24px);color:#eaf2ff;background:linear-gradient(180deg,#132760 0%,#050b28 100%);border-radius:24px;position:relative;overflow:hidden;}
+    .conso-page::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 20% 20%,rgba(170,208,255,.2) 1px,transparent 1px),radial-gradient(circle at 70% 60%,rgba(162,196,255,.18) 1px,transparent 1px);background-size:24px 24px,32px 32px;opacity:.2;pointer-events:none;}
+    .conso-page > *{position:relative;z-index:1;}
+    .conso-card{background:linear-gradient(180deg,rgba(18,32,70,.75),rgba(10,18,42,.78));border:1px solid rgba(160,190,255,.18);border-radius:30px;box-shadow:0 18px 50px rgba(0,0,0,.45);padding:14px;margin-bottom:14px;}
+    .conso-hero{display:flex;gap:12px;align-items:center}.conso-hero img{width:43%;max-width:180px}.conso-hero h2{font-size:30px;line-height:1.1;margin:0 0 8px}.conso-hero p{margin:0;color:#afc2e8;font-size:16px}
+    .conso-stats{margin-top:14px;background:rgba(12,23,56,.72);border:1px solid rgba(144,178,241,.25);border-radius:22px;display:grid;grid-template-columns:repeat(3,1fr)}
+    .conso-stats article{padding:10px 8px}.conso-stats article + article{border-left:1px solid rgba(144,178,241,.22)}
+    .conso-stats b{font-size:13px;color:#b7c9ea;display:block}.conso-stats strong{font-size:30px}.conso-stats small{font-size:15px;color:#c9dcff}
+    .conso-zone{display:flex;gap:8px;align-items:center;margin-top:8px}.conso-zone input{width:88px}
+    .conso-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .conso-tile{background:linear-gradient(180deg,rgba(15,29,68,.84),rgba(11,19,46,.9));border:1px solid rgba(143,177,241,.28);border-radius:24px;padding:0;overflow:hidden;transition:transform .14s ease, box-shadow .14s ease;box-shadow:0 12px 30px rgba(4,8,24,.45)}
+    .conso-tile:active{transform:scale(.985);box-shadow:0 18px 35px rgba(69,136,255,.35)}.conso-tile img{width:100%;height:140px;object-fit:cover;display:block}
+    .conso-tile span{display:flex;align-items:center;gap:8px;padding:12px;font-weight:700;font-size:19px;background:rgba(10,20,46,.8)}
+    .conso-ai header{display:flex;align-items:center;justify-content:space-between;gap:8px}.conso-ai-title{display:flex;align-items:center;gap:8px;font-size:20px;font-weight:700}
+    .conso-pill{border-radius:999px;padding:8px 14px;background:rgba(73,96,159,.35);border:1px solid rgba(146,177,237,.35);color:#d4e1ff}
+    .conso-input-row{display:flex;gap:8px;margin-top:10px}.conso-input-row input,.conso-input{background:rgba(16,30,67,.82);border:1px solid rgba(146,178,240,.34);border-radius:20px;color:#e9f1ff;padding:12px;width:100%}
+    .conso-send{width:52px;height:52px;border-radius:50%;border:1px solid rgba(146,177,238,.38);background:linear-gradient(180deg,#55a6ff,#2c5bc8);color:white}
+    .conso-ai-output article{margin-top:10px;background:rgba(8,14,38,.6);padding:10px;border-radius:14px}
+    .conso-page h3{margin:4px 0 12px}.conso-list{display:flex;flex-direction:column;gap:8px}
+    .conso-row,.conso-move{display:flex;align-items:center;justify-content:space-between;gap:8px;background:rgba(10,20,48,.75);padding:10px;border-radius:14px;border:1px solid rgba(140,174,237,.22)}
+    .conso-row button,.conso-move button,.conso-btn{background:rgba(77,106,176,.35);color:#d8e6ff;border:1px solid rgba(146,177,237,.35);border-radius:12px;padding:6px 10px}
+    .conso-actions{display:flex;gap:8px;flex-wrap:wrap}.conso-move{display:block}.conso-move header,.conso-move footer{display:flex;justify-content:space-between;align-items:center}.conso-move .tag{color:#89d0ff}
+    .conso-move.is-done{opacity:.7}.conso-history-item{background:rgba(10,18,43,.7);border:1px solid rgba(142,175,236,.24);border-radius:14px;padding:10px}
+    .conso-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.conso-kpis article{padding:10px;border-radius:14px;background:rgba(10,18,43,.7);border:1px solid rgba(142,175,236,.24)}
+    .conso-charts{display:grid;grid-template-columns:1fr;gap:10px}.conso-top{list-style:none;padding:0;margin:0}.conso-top li{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(142,175,236,.2)}
+    dialog.conso-modal{border:none;border-radius:20px;padding:0;max-width:520px;width:calc(100% - 24px);background:#101d47;color:#e8f1ff}
+    .conso-modal article{padding:16px}.conso-modal::backdrop{background:rgba(3,6,18,.65)}
+  `;
+  document.head.appendChild(style);
 }
 // END PATCH: CONSOLIDATION PAGE
 
