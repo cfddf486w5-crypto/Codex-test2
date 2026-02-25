@@ -17,6 +17,7 @@ import {
   maybeRunRulebookSelfCheck,
   RULEBOOK_CANONICAL,
 } from './rulebook.js';
+import { loadWmsKb, searchWmsKb, explainWhyFromKb, KB_STORAGE_KEY } from './wms_kb.js';
 
 const appNode = document.getElementById('app');
 const nav = document.querySelector('.bottom-nav');
@@ -59,6 +60,7 @@ let continuousTrainingTimer;
 let continuousTrainingIndex = 0;
 let navigationLocked = false;
 let currentRoute = 'modules';
+let wmsKbPromise;
 
 const WAREHOUSE_PROMPT_PRESETS = [
   { label: 'Lecture Excel', category: 'excel', prompt: 'Lis le fichier Excel et résume les colonnes clés.' },
@@ -169,6 +171,7 @@ async function boot() {
   window.DLWMS_goBack = goBack;
   getActiveRulebook();
   maybeRunRulebookSelfCheck();
+  await getWmsKb();
   setupBottomNavIcons();
   runOnboarding();
   bindHashRouting();
@@ -291,6 +294,7 @@ async function navigate(route, options = {}) {
   await bindSharedActions();
   bindAccordions(appNode);
   bindScanInputs();
+  await hydrateWmsKnowledge(normalizedRoute);
   bindHistoryPage(normalizedRoute);
   bindSettingsJumps(normalizedRoute);
   bindSettingsAiMemory(normalizedRoute);
@@ -353,6 +357,11 @@ function writeAiMemory(payload) {
   localStorage.setItem(AI_MEMORY_KEY, JSON.stringify(payload));
 }
 
+async function getWmsKb() {
+  if (!wmsKbPromise) wmsKbPromise = loadWmsKb();
+  return wmsKbPromise;
+}
+
 function bindGlobalAiAssistant() {
   const toggle = document.getElementById('globalAiToggle');
   const popup = document.getElementById('globalAiPopup');
@@ -386,13 +395,24 @@ function bindGlobalAiAssistant() {
     }
   });
 
-  form.addEventListener('submit', (event) => {
+  form.addEventListener('submit', async (event) => {
     event.preventDefault();
     const question = input.value.trim();
     if (!question) return;
     const lower = question.toLowerCase();
     const found = canned.find((item) => lower.includes(item.key));
-    const reply = found?.answer || 'Je peux guider vers Consolidation, Remise, Réception preuve, Inventaire et Paramètres.';
+    let reply = found?.answer || 'Je peux guider vers Consolidation, Remise, Réception preuve, Inventaire et Paramètres.';
+
+    const kb = await getWmsKb();
+    const hits = searchWmsKb(kb, lower, 1);
+    if (hits.length) {
+      const best = hits[0];
+      const snippet = best.snippets[0] || `Section ${best.section} trouvée dans la KB.`;
+      const why = explainWhyFromKb(kb, best.section);
+      reply = `${snippet}
+Pourquoi ? ${why}`;
+    }
+
     const memory = readAiMemory();
     memory.history.push({ role: 'user', text: question, at: Date.now() });
     memory.history.push({ role: 'assistant', text: reply, at: Date.now() });
@@ -1151,23 +1171,66 @@ async function bindHistoryPage(route) {
   const list = document.getElementById('historyEvents');
   const filter = document.getElementById('historyModuleFilter');
   if (!list || !filter) return;
+
+  const kb = await getWmsKb();
+  const kbRows = (kb?.history?.entries || []).map((entry) => ({
+    module: entry.module || 'historique',
+    label: `${entry.titre} · impact ${entry.impact}`,
+    at: Date.parse(entry.date) || Date.now(),
+  }));
+
   const [stats, requests] = await Promise.all([getAll('stats'), getAll('requests')]);
-  const rows = [...stats, ...requests].map((item) => ({
+  const dynamicRows = [...stats, ...requests].map((item) => ({
     module: item.scope || item.module || 'ai-center',
     label: item.prompt || item.status || item.type || 'événement',
     at: item.updatedAt || Date.now(),
-  })).sort((a, b) => b.at - a.at);
+  }));
+
+  const rows = [...kbRows, ...dynamicRows].sort((a, b) => b.at - a.at);
 
   const render = () => {
     const module = filter.value;
     const filtered = module === 'all' ? rows : rows.filter((row) => row.module.includes(module));
     list.textContent = filtered.length
-      ? filtered.slice(0, 80).map((row) => `${new Date(row.at).toLocaleString('fr-FR')} · ${row.module} · ${row.label}`).join('\n')
+      ? filtered.slice(0, 120).map((row) => `${new Date(row.at).toLocaleString('fr-FR')} · ${row.module} · ${row.label}`).join('\n')
       : 'Aucun événement.';
   };
 
   filter.addEventListener('change', render);
   render();
+}
+
+async function hydrateWmsKnowledge(route) {
+  const kb = await getWmsKb();
+  window.DLWMS_WMS_KB = kb;
+  window.DLWMS_getWmsKnowledge = async (section = '') => {
+    const data = await getWmsKb();
+    return section ? data?.[section] : data;
+  };
+  window.DLWMS_searchWmsKnowledge = async (query = '', limit = 3) => {
+    const data = await getWmsKb();
+    return searchWmsKb(data, query, limit);
+  };
+
+  if (route !== 'parametres') return;
+  const receptionHint = document.querySelector('#settings-reception .muted');
+  const consolidationHint = document.querySelector('#settings-consolidation .muted');
+  const remiseHint = document.querySelector('#settings-remise .muted');
+
+  if (receptionHint) {
+    const inv = kb?.parameters?.inventaire?.map((row) => `${row.parametre}: ${row.valeur}`).join(' · ');
+    if (inv) receptionHint.textContent = `${receptionHint.textContent} ${inv}`;
+  }
+  if (consolidationHint) {
+    const cons = kb?.parameters?.consolidation?.map((row) => `${row.parametre}: ${row.valeur}`).join(' · ');
+    if (cons) consolidationHint.textContent = `${consolidationHint.textContent} ${cons}`;
+  }
+  if (remiseHint) {
+    const top = kb?.about?.pillars?.join(', ');
+    if (top) remiseHint.textContent = `${remiseHint.textContent} Piliers Complément: ${top}.`;
+  }
+
+  localStorage.setItem(KB_STORAGE_KEY, JSON.stringify(kb));
 }
 
 

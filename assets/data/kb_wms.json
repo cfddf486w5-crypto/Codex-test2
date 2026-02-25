@@ -1,0 +1,233 @@
+{
+  "kb_version": "1.0.0",
+  "last_updated": "2026-02-25",
+  "sources": [
+    "about.html — Complément WMS – À propos & Vision",
+    "taches.html — Complément WMS – Tâches terrain",
+    "bins.html — Complément WMS – Bins & Capacités",
+    "parametres.html — Paramètres Complément WMS",
+    "historique.html — Complément WMS – Historique & décisions",
+    "regles.html — Complément WMS – Règles opérationnelles"
+  ],
+  "about": {
+    "title": "Complément WMS – À propos & Vision",
+    "tagline": "Donner aux équipes terrain les outils qui manquent au WMS officiel",
+    "why": [
+      "Difficultés à suivre les emplacements réels de l’inventaire.",
+      "Peu de support pour la consolidation intelligente multi-bins.",
+      "Manque d’outils simples pour planifier les déplacements.",
+      "Suivi des palettes par transporteur limité ou dispersé.",
+      "Complément ne remplace pas Indago: il le complète avec des outils légers et rapides pour le plancher."
+    ],
+    "vision": {
+      "equipes_terrain": [
+        "Écrans simples, lisibles, utilisables une main sur iPhone.",
+        "Tâches claires: quoi faire, où aller, avec quel SKU.",
+        "Moins de surprises et moins de zero-pick."
+      ],
+      "superviseurs": [
+        "Meilleure lecture du layout réel.",
+        "Décisions de consolidation basées sur des règles stables.",
+        "Trace des décisions importantes (historique & tests)."
+      ],
+      "direction": [
+        "Levier d’amélioration continue sans toucher au WMS.",
+        "Approche progressive testée en réel avant extension.",
+        "Base pour futurs KPI service, productivité, fiabilité inventaire."
+      ]
+    },
+    "pillars": [
+      "Inventaire",
+      "Consolidation",
+      "Expéditions",
+      "Règles métier",
+      "Tâches terrain"
+    ],
+    "evolution_phases": [
+      {
+        "phase": "Phase 1 – Outils locaux (actuel)",
+        "items": [
+          "Applications HTML autonomes (GitHub / iPhone / PC).",
+          "Imports CSV manuels depuis Indago.",
+          "Stockage local (localStorage) pour le suivi terrain."
+        ]
+      },
+      {
+        "phase": "Phase 2 – Connexion légère",
+        "items": [
+          "Point central pour les tâches terrain.",
+          "Historique partagé des décisions.",
+          "Possibilité de connecter un petit backend (API/table Azure/autre)."
+        ]
+      },
+      {
+        "phase": "Phase 3 – Suite d’entreprise",
+        "items": [
+          "Multi-entrepôts (Langelier, Laval2, autres sites).",
+          "Règles métiers centralisées et configurables.",
+          "Tableau de bord KPI direction (service, inventaire, productivité)."
+        ]
+      }
+    ],
+    "design_principles": [
+      "Terrain-first",
+      "Lisibilité",
+      "Progressif",
+      "Respect du WMS",
+      "Transparence"
+    ],
+    "next": [
+      "Chaque retour terrain peut devenir un ajustement de règle.",
+      "Chaque idée peut devenir un nouveau rapport.",
+      "Un nouvel écran dédié peut être ajouté si utile au plancher.",
+      "Objectif final: simplifier le travail des guerriers du WMS et améliorer le service client sans alourdir le système."
+    ],
+    "footer": "© 2026 – Complément WMS – Version v1.0 · Phase 4"
+  },
+  "tasks": {
+    "title": "Complément WMS – Tâches terrain",
+    "description": "Vue globale des déplacements à exécuter sur le plancher.",
+    "filters": {
+      "source": ["toutes", "consolidation", "inventaire"],
+      "priorite": ["toutes", "haute", "moyenne", "basse"]
+    },
+    "notes": [
+      "Cette page est une vue terrain unique regroupant consolidation + inventaire.",
+      "Dans une future version connectée, la liste sera alimentée automatiquement par les autres modules.",
+      "Pour l’instant, les tâches servent de base visuelle et de modèle opérationnel."
+    ],
+    "examples": [
+      {
+        "source": "Consolidation",
+        "priorite": "Haute",
+        "titre": "L3A15 → L3A11 | SKU direction/suspension",
+        "details": "Zone: L3A • Qty: 42 • Bin principal: L3A11 • P1/P2 priorité"
+      },
+      {
+        "source": "Consolidation",
+        "priorite": "Moyenne",
+        "titre": "L2A21 → L2A17 | SKU freins",
+        "details": "Zone: L2 • Qty: 18 • Regrouper le stock avant prochain conteneur."
+      },
+      {
+        "source": "Inventaire",
+        "priorite": "Basse",
+        "titre": "Vérifier bins vides L3B (spotage)",
+        "details": "Zone: L3B • Contrôle rapide des bins déclarés vides par V25."
+      },
+      {
+        "source": "Inventaire",
+        "priorite": "Moyenne",
+        "titre": "Contrôle ciblé – L3D P1/P3",
+        "details": "Zone: L3D • Vérifier cohérence qty VS rapport Indago sur bacs P1/P3 critiques."
+      }
+    ],
+    "footer": "© 2026 – Complément WMS – Version v1.0 · Phase 4"
+  },
+  "bins": {
+    "title": "Complément WMS – Bins & Capacités",
+    "role": "Référence layout (types de bins P1→P7, zones principales, capacités cibles).",
+    "types": [
+      {"type":"P1","role":"Picking prioritaire, petit format, haute rotation","capacity":"Faible à moyenne","comment":"Zone la plus sensible pour les zero-pick."},
+      {"type":"P2","role":"Picking régulier, format moyen","capacity":"Moyenne","comment":"Doit rester logique pour limiter les déplacements inutiles."},
+      {"type":"P3","role":"Produits plus lourds / volumineux","capacity":"Moyenne / supérieure","comment":"Complément des P1/P2 quand le volume augmente."},
+      {"type":"P4","role":"Volumineux, rotation plus faible","capacity":"Élevée","comment":"Maintenir un layout logique par famille produit."},
+      {"type":"P5/P6","role":"Backstock structuré","capacity":"Élevée / très élevée","comment":"Ne pas utiliser en premier pour le picking."},
+      {"type":"P7","role":"Très volumineux / palettes complètes","capacity":"Très élevée","comment":"Consolidation parfois partielle et multi-bins voisins."}
+    ],
+    "zones": [
+      {"zone":"L2","description":"Stockage volumineux/P7 (palettes, pneus)."},
+      {"zone":"L3A","description":"Mix P2/P3/P4/P6/P7, zone critique pour consolidation."},
+      {"zone":"L3B","description":"Majoritairement P2, picking classique rotation soutenue."},
+      {"zone":"L3C","description":"Alternance P1 et P4, petit picking + volumineux proche."},
+      {"zone":"L3D","description":"Mix P1/P2/P3/P7, zone à suivre de près en inventaire."}
+    ],
+    "links": [
+      "Inventaire V25 utilise mapping bin→type pour anomalies et bins vides compatibles.",
+      "Consolidation Ultra Focus utilise priorités P1→P7 + capacités par zone.",
+      "Tâches terrain peut regrouper mouvements par zone pour organiser le plancher."
+    ],
+    "footer": "© 2026 – Complément WMS – Version v1.0 · Phase 4"
+  },
+  "parameters": {
+    "title": "Paramètres Complément WMS",
+    "objective": "Vue lecture seule des paramètres globaux utilisés par les outils.",
+    "capacites_cibles": [
+      {"type":"P1","usage":"Picking prioritaire, petits items","capacity":"Faible / moyenne"},
+      {"type":"P2","usage":"Picking régulier","capacity":"Moyenne"},
+      {"type":"P3","usage":"Items plus lourds / moyens","capacity":"Moyenne / élevée"},
+      {"type":"P4","usage":"Volumineux, rotation plus faible","capacity":"Élevée"},
+      {"type":"P5–P6","usage":"Backstock structuré","capacity":"Élevée / très élevée"},
+      {"type":"P7","usage":"Très volumineux / palettes","capacity":"Très élevée"}
+    ],
+    "inventaire": [
+      {"parametre":"Afficher les SKU à plusieurs bins","valeur":"Activé","impact":"Identifier les candidats prioritaires à la consolidation."},
+      {"parametre":"Afficher les bins vides connus","valeur":"Activé","impact":"Aider le spotage et la préparation de conteneurs."},
+      {"parametre":"Inclure les lignes qty = 0","valeur":"Désactivé (par défaut)","impact":"Activable pour audits spécifiques."}
+    ],
+    "consolidation": [
+      {"parametre":"Top N déplacements visibles","valeur":"5","impact":"Éviter surcharge terrain, focus meilleurs mouvements."},
+      {"parametre":"Priorité type de bin","valeur":"P1 > P2 > P3 > P4 > P5 > P6 > P7","impact":"Guide le choix du bin principal multi-emplacements."},
+      {"parametre":"Respect des capacités","valeur":"Obligatoire","impact":"Aucun déplacement si capacité cible dépassée."}
+    ],
+    "expeditions": [
+      {"parametre":"Filtre PDF par date","valeur":"Activé","impact":"PDF limité à la date sélectionnée."},
+      {"parametre":"Numéro de palette en majuscules","valeur":"Activé","impact":"Uniformisation transporteurs et rapports."}
+    ],
+    "future": [
+      "Modifier capacités cibles par type et zone.",
+      "Régler le Top N consolidation par défaut.",
+      "Choisir sections visibles dans outils terrain.",
+      "Activer/désactiver certains modules (expéditions, tâches...)."
+    ],
+    "footer": "© 2026 – Complément WMS – Version v1.0 · Phase 6"
+  },
+  "history": {
+    "title": "Complément WMS – Historique & décisions",
+    "objective": "Tracer les grandes décisions inventaire, consolidation, expéditions.",
+    "filters": {
+      "module": ["tous", "consolidation", "inventaire", "expéditions"],
+      "impact": ["tous", "haute", "moyenne", "basse"]
+    },
+    "entries": [
+      {"date":"2026-01-26","titre":"Priorité P1 → P7 pour la consolidation","module":"consolidation","impact":"haute","description":"Ordre P1>P2>P3>P4>P5>P6>P7 pour choisir le bin principal lors de la consolidation.","tags":["Règle consolidation","SKU multi-bins","Zone L3A"]},
+      {"date":"2026-01-26","titre":"Introduction de la liste de bins vides","module":"inventaire","impact":"moyenne","description":"Vue globale des bins layout non utilisés dans l’inventaire importé pour spotage et préparation.","tags":["V25 Inventaire","Bins vides","Zone L3B"]},
+      {"date":"2026-02-04","titre":"Export PDF par date pour le suivi des palettes","module":"expeditions","impact":"haute","description":"Rapport PDF limité aux commandes de la journée sélectionnée.","tags":["Suivi expé Langelier","Rapport PDF","Zone expédition"]},
+      {"date":"2026-02-06","titre":"Limitation du nombre de déplacements affichés","module":"consolidation","impact":"moyenne","description":"Top N déplacements pour réduire surcharge plancher et prioriser les mouvements rentables.","tags":["Ultra Focus","Top N","Lisibilité terrain"]},
+      {"date":"2026-02-08","titre":"Structuration Complément WMS (portail & nav)","module":"inventaire","impact":"moyenne","description":"Portail unique avec cartes modules, navigation standard et titres harmonisés.","tags":["Portail","Navigation","Version v1.0"]},
+      {"date":"2026-02-08","titre":"Thème CSS partagé & liens rapides","module":"consolidation","impact":"moyenne","description":"Thème commun et liens rapides inter-modules pour réduire maintenance.","tags":["CSS partagé","Liens rapides","Expérience utilisateur"]},
+      {"date":"2026-02-08","titre":"Introduction de la page Paramètres Complément","module":"expeditions","impact":"basse","description":"Page paramètres centralisant capacités cibles, options inventaire, règles consolidation et suivi palettes.","tags":["Paramètres","Documentation","Base futur backend"]}
+    ],
+    "note": "Dans une prochaine version, chaque décision importante pourra être ajoutée à la main, via formulaire ou backend léger.",
+    "footer": "© 2026 – Complément WMS – Version v1.0 · Phase 4"
+  },
+  "rules": {
+    "title": "Complément WMS – Règles opérationnelles",
+    "objective": "Référence logique métier pour consolidation et décisions terrain.",
+    "general_inventory": [
+      "Un SKU doit idéalement être présent dans un seul bin principal.",
+      "Les SKU multi-bins sont prioritaires à analyser.",
+      "Éviter de mélanger plusieurs SKU dans un bin si un bin vide compatible est disponible."
+    ],
+    "bin_type_rules": [
+      "P1: priorité maximale – petits items à rotation élevée.",
+      "P2: items moyens – picking régulier.",
+      "P3: items moyens/lourds – rotation modérée.",
+      "P4: items volumineux – picking occasionnel.",
+      "P5–P6: backstock structuré.",
+      "P7: volumineux; consolidation possiblement partielle avec bins voisins."
+    ],
+    "consolidation_rules": [
+      "Le bin principal est celui avec la plus grande quantité dans le type prioritaire disponible.",
+      "Les autres bins deviennent des sources de déplacement vers le bin principal.",
+      "En P7, la consolidation peut être partielle selon l’espace disponible.",
+      "Ne jamais consolider si la capacité du bin cible est dépassée."
+    ],
+    "exclusions": [
+      "Aucun déplacement forcé sans option valide.",
+      "SKU spéciaux / exceptions terrain peuvent être ignorés volontairement.",
+      "Complément WMS complète le WMS officiel sans le remplacer."
+    ],
+    "footer": "© 2026 – Complément WMS – Version v1.0 · Phase 4"
+  }
+}
