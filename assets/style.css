@@ -1,23 +1,23 @@
 :root {
-  color-scheme: dark;
-  --bg: #0b1020;
-  --bg-elevated: #111a31;
-  --panel: #151c33;
-  --panel-2: #1f2947;
-  --text: #e8ecff;
-  --muted: #9dacd6;
-  --accent: #4ea8ff;
-  --accent-strong: #2f8fff;
-  --danger: #ff5f7d;
-  --ok: #26d39b;
-  --warning: #ffba55;
+  color-scheme: light;
+  --bg: #eef2ff;
+  --bg-elevated: #f9fbff;
+  --panel: #ffffff;
+  --panel-2: #f2f5ff;
+  --text: #1b2444;
+  --muted: #5c6688;
+  --accent: #2f72ff;
+  --accent-strong: #1558df;
+  --danger: #dc325b;
+  --ok: #1e9f74;
+  --warning: #c9811a;
   --radius-xs: 10px;
   --radius-sm: 12px;
   --radius: 14px;
   --radius-lg: 20px;
   --stroke: color-mix(in oklab, var(--muted) 28%, transparent);
-  --card-shadow: 0 8px 22px rgba(0, 0, 0, 0.2);
-  --lift-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
+  --card-shadow: 0 10px 20px rgba(19, 38, 84, 0.08);
+  --lift-shadow: 0 16px 28px rgba(19, 38, 84, 0.12);
   --content-width: 430px;
   --focus-ring: 0 0 0 2px color-mix(in oklab, var(--accent) 30%, transparent), 0 0 0 4px color-mix(in oklab, var(--accent) 55%, transparent);
   --dur-fast: 140ms;
@@ -25,20 +25,23 @@
   --ease: cubic-bezier(.2, .8, .2, 1);
 }
 
-@media (prefers-color-scheme: light) {
+@media (prefers-color-scheme: dark) {
   :root {
-    color-scheme: light;
-    --bg: #eef2ff;
-    --bg-elevated: #f9fbff;
-    --panel: #ffffff;
-    --panel-2: #f2f5ff;
-    --text: #1b2444;
-    --muted: #5c6688;
-    --accent: #2f72ff;
-    --accent-strong: #1558df;
-    --stroke: color-mix(in oklab, var(--muted) 22%, transparent);
-    --card-shadow: 0 10px 20px rgba(19, 38, 84, 0.08);
-    --lift-shadow: 0 16px 28px rgba(19, 38, 84, 0.12);
+    color-scheme: dark;
+    --bg: #0b1020;
+    --bg-elevated: #111a31;
+    --panel: #151c33;
+    --panel-2: #1f2947;
+    --text: #e8ecff;
+    --muted: #9dacd6;
+    --accent: #4ea8ff;
+    --accent-strong: #2f8fff;
+    --danger: #ff5f7d;
+    --ok: #26d39b;
+    --warning: #ffba55;
+    --stroke: color-mix(in oklab, var(--muted) 28%, transparent);
+    --card-shadow: 0 8px 22px rgba(0, 0, 0, 0.2);
+    --lift-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
   }
 }
 
@@ -187,7 +190,7 @@ button {
   position: relative;
   isolation: isolate;
   cursor: pointer;
-  background: linear-gradient(180deg, color-mix(in oklab, var(--panel-2) 95%, white 5%), color-mix(in oklab, var(--panel-2) 88%, black 12%));
+  background: linear-gradient(180deg, color-mix(in oklab, var(--panel) 96%, white 4%), color-mix(in oklab, var(--panel-2) 92%, #d8e4ff));
   color: var(--text);
   padding: 10px 13px;
   border-color: var(--stroke);
