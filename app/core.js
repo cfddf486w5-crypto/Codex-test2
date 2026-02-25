@@ -293,6 +293,7 @@ async function navigate(route, options = {}) {
   bindHistoryPage(normalizedRoute);
   bindSettingsJumps(normalizedRoute);
   bindSettingsAiMemory(normalizedRoute);
+  await bindSettingsStorageFaq(normalizedRoute);
   bindHomePage(normalizedRoute);
   bindLayoutPage(normalizedRoute);
   bindModulePages(normalizedRoute);
@@ -422,6 +423,89 @@ function bindSettingsAiMemory(route) {
     textarea.value = JSON.stringify({ history: [] }, null, 2);
     showToast('Mémoire IA réinitialisée.', 'success');
   });
+}
+
+function safeParseJson(raw, fallback) {
+  try {
+    const parsed = JSON.parse(raw);
+    return parsed ?? fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+async function bindSettingsStorageFaq(route) {
+  if (route !== 'parametres') return;
+  const rulesTab = document.getElementById('settingsStorageTab');
+  const faqTab = document.getElementById('settingsFaqTab');
+  const rulesPanel = document.getElementById('settingsStorageRulesPanel');
+  const faqPanel = document.getElementById('settingsStorageFaqPanel');
+  const rulesDump = document.getElementById('settingsRulesStorageDump');
+  const faqInventory = document.getElementById('settingsFaqInventory');
+  if (!rulesTab || !faqTab || !rulesPanel || !faqPanel || !rulesDump || !faqInventory) return;
+
+  const activateTab = (tabName) => {
+    const showRules = tabName === 'rules';
+    rulesPanel.hidden = !showRules;
+    faqPanel.hidden = showRules;
+    rulesTab.setAttribute('aria-selected', String(showRules));
+    faqTab.setAttribute('aria-selected', String(!showRules));
+    rulesTab.classList.toggle('btn-primary', showRules);
+    faqTab.classList.toggle('btn-primary', !showRules);
+  };
+
+  rulesTab.addEventListener('click', () => activateTab('rules'));
+  faqTab.addEventListener('click', () => activateTab('faq'));
+  activateTab('rules');
+
+  const rulebookRaw = localStorage.getItem('rulebook_active') || '';
+  const rulebookStored = safeParseJson(rulebookRaw, null);
+  const rulebookText = typeof rulebookStored?.text === 'string' ? rulebookStored.text : getActiveRulebook();
+  const localRuleKeys = Object.keys(localStorage).filter((key) => /rule|regle|règle/i.test(key));
+  const storageRulesSnapshot = {
+    extractedAt: new Date().toISOString(),
+    rulebookStorageKey: 'rulebook_active',
+    activeRulebookLength: rulebookText.length,
+    activeRulebookPreview: rulebookText.slice(0, 600),
+    knownRuleStorageKeys: localRuleKeys,
+  };
+  rulesDump.textContent = JSON.stringify(storageRulesSnapshot, null, 2);
+
+  const localFaq = safeParseJson(localStorage.getItem('DLWMS_RECEPTION_FAQ_V1') || '', { entries: [] });
+  const localFaqEntries = Array.isArray(localFaq?.entries) ? localFaq.entries : [];
+
+  let catalogFaq = [];
+  try {
+    const response = await fetch('./data/indago_faq_200.json');
+    if (response.ok) {
+      const payload = await response.json();
+      catalogFaq = Array.isArray(payload) ? payload : [];
+    }
+  } catch {
+    catalogFaq = [];
+  }
+
+  const lines = [];
+  lines.push(`<p><strong>FAQ locale Réception:</strong> ${localFaqEntries.length}</p>`);
+  lines.push(`<p><strong>FAQ référentiel Indago:</strong> ${catalogFaq.length}</p>`);
+  lines.push('<hr>');
+
+  if (localFaqEntries.length) {
+    lines.push('<p><strong>Entrées FAQ locales</strong></p>');
+    lines.push('<ul>');
+    lines.push(...localFaqEntries.map((entry) => `<li>${entry.id || 'n/a'} — ${entry.question || 'Question non définie'}</li>`));
+    lines.push('</ul>');
+  }
+
+  if (catalogFaq.length) {
+    lines.push('<p><strong>Entrées FAQ référentiel</strong> (premières 80)</p>');
+    lines.push('<ul>');
+    lines.push(...catalogFaq.slice(0, 80).map((entry) => `<li>#${entry.id} [${entry.categorie}] — ${entry.question}</li>`));
+    lines.push('</ul>');
+    if (catalogFaq.length > 80) lines.push(`<p class="muted">${catalogFaq.length - 80} autres FAQ sont aussi disponibles dans le fichier référentiel.</p>`);
+  }
+
+  faqInventory.innerHTML = lines.join('');
 }
 
 
@@ -1197,12 +1281,6 @@ function bindHomePage(route) {
   bindQuick('CARD_QUICK_INVENTORY', async () => { await navigate('inventaire'); showActionToast('Module Inventaire ouvert.'); });
   bindQuick('CARD_QUICK_SHIPPING_TRACK', async () => { await navigate('monitoring'); showActionToast('Module Suivi expédition ouvert.'); });
   bindQuick('CARD_QUICK_RESTOCK', async () => { await navigate('remise'); showActionToast('Module Remise en stock ouvert.'); });
-
-  document.getElementById('BTN_HOME_HELP_FAQ')?.addEventListener('click', async () => {
-    await navigate('reception-faq');
-    showActionToast('Aide FAQ ouverte.');
-  });
-
   document.getElementById('BTN_HOME_EXPORT_BACKUP')?.addEventListener('click', async () => {
     const data = await exportAllData();
     const payload = {

@@ -54,4 +54,22 @@
   </div>
 </section>
 
+<section class="card" id="settings-storage-faq">
+  <h2>Storage · Règles & FAQ</h2>
+  <div class="row" role="tablist" aria-label="Onglets stockage">
+    <button type="button" id="settingsStorageTab" class="btn" data-settings-storage-tab="rules" aria-selected="true">Storage règles</button>
+    <button type="button" id="settingsFaqTab" class="btn" data-settings-storage-tab="faq" aria-selected="false">FAQ</button>
+  </div>
+
+  <div id="settingsStorageRulesPanel" data-settings-storage-panel="rules">
+    <p class="muted">Informations de règles sauvegardées dans le storage local.</p>
+    <pre id="settingsRulesStorageDump" class="input" style="white-space:pre-wrap;max-height:280px;overflow:auto;">Chargement...</pre>
+  </div>
+
+  <div id="settingsStorageFaqPanel" data-settings-storage-panel="faq" hidden>
+    <p class="muted">FAQ disponibles dans l'application (sources locale + référentiel).</p>
+    <div id="settingsFaqInventory" class="input" style="max-height:280px;overflow:auto;"></div>
+  </div>
+</section>
+
 <!-- END PATCH: settings global centralisés -->
