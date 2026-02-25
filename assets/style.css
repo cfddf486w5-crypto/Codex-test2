@@ -295,6 +295,30 @@ textarea::placeholder { color: color-mix(in oklab, var(--muted) 80%, transparent
 
 
 
+
+.modules-status-corner {
+  display: flex;
+  justify-content: flex-start;
+  margin: 2px 0 10px;
+}
+
+.modules-status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #e34b4b;
+  border: 1px solid color-mix(in oklab, #ffffff 45%, transparent);
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--panel) 82%, transparent);
+}
+
+.modules-status-dot.is-online {
+  background: #20c997;
+}
+
+.modules-status-dot.is-offline {
+  background: #e34b4b;
+}
+
 .module-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

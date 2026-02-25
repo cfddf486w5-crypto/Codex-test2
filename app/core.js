@@ -442,9 +442,18 @@ function writeJsonStorage(key, value) {
 }
 
 function bindModulePages(route) {
+  if (route === 'modules') bindModulesPageStatusDot();
   if (route === 'consolidation') bindConsolidationPage();
   if (route === 'remise') bindRemisePage();
   if (route === 'reception-preuve') bindReceptionPreuvePage();
+}
+
+function bindModulesPageStatusDot() {
+  const dot = document.getElementById('modulesStatusDot');
+  if (!dot) return;
+  const isOnline = navigator.onLine;
+  dot.classList.toggle('is-online', isOnline);
+  dot.classList.toggle('is-offline', !isOnline);
 }
 
 function bindConsolidationPage() {
