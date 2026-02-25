@@ -77,10 +77,12 @@ function renderHome() {
     <div class="stat-block">
       <div class="stat-title"><img src="assets/icons/clock.svg" alt=""/>Temps moyen</div>
       <div class="stat-main">${stats.avgText}</div>
+      <div class="stat-sub">${stats.zone}</div>
     </div>
     <div class="stat-block">
-      <div class="stat-title"><img src="assets/icons/zone.svg" alt=""/>Zone</div>
+      <div class="stat-title"><img src="assets/icons/zone.svg" alt=""/>Objectif zone</div>
       <div class="stat-main">${stats.zone}</div>
+      <div class="stat-sub">Consolider</div>
     </div>`;
 
   document.getElementById('whyBtn').addEventListener('click', () => openModal('whyModal'));
@@ -110,8 +112,8 @@ function route() {
   else location.hash = '#home';
 }
 
-function subPageFrame(title, inner) {
-  subView.innerHTML = `<article class="card subpage"><div class="row-between"><h2>${title}</h2><a href="#home" class="back-link">← Accueil</a></div>${inner}</article>`;
+function subPageFrame(title, mission, inner) {
+  subView.innerHTML = `<article class="card subpage"><div class="row-between"><h2>${title}</h2><a href="#home" class="back-link">← Accueil</a></div><p class="mission"><b>Tâche :</b> ${mission}</p>${inner}</article>`;
 }
 
 function renderCharger() {
@@ -119,7 +121,7 @@ function renderCharger() {
     <div class="item row-between"><span>${sku} · <b>${qty}</b></span><button data-delete="${sku}" class="btn-secondary">Supprimer</button></div>
   `).join('') || '<p class="muted">Aucun scan.</p>';
 
-  subPageFrame('Charger une palette', `
+  subPageFrame('Charger une palette', 'Scanner chaque SKU de la palette en cours puis terminer la palette pour l’ajouter à l’historique.', `
     <label>Scan item (focus auto)</label>
     <input id="scanInput" class="input-large" placeholder="Scannez SKU..." />
     <div class="list" id="scanList">${rows}</div>
@@ -199,7 +201,7 @@ function renderOptimiser() {
       <p id="why-${move.id}" class="hidden">${move.why}</p>
     </div>`).join('') || '<p>Aucune recommandation.</p>';
 
-  subPageFrame('Optimiser', `
+  subPageFrame('Optimiser', 'Générer puis appliquer les recommandations de déplacement pour réduire les trajets en zone de consolidation.', `
     <p>Générer des mouvements basés sur les règles locales.</p>
     <button id="genMoves" class="btn-primary">Générer recommandations (offline)</button>
     <div class="list">${movesHtml}</div>
@@ -226,7 +228,7 @@ function renderHistorique() {
     }
     return `<div class="history-card"><b>Move ${entry.sku}</b> · ${entry.from_bin}→${entry.to_bin} · ${entry.qty}<br/><small>${formatDate(entry.completedAt)} · ${entry.user}</small></div>`;
   }).join('') || '<p>Historique vide.</p>';
-  subPageFrame('Historique consolidations', `<div class="list">${html}</div>`);
+  subPageFrame('Historique consolidations', 'Consulter les palettes et mouvements déjà exécutés pour garder une traçabilité locale complète.', `<div class="list">${html}</div>`);
 }
 
 function renderStats() {
@@ -236,7 +238,7 @@ function renderStats() {
   palettes.forEach(p => Object.entries(p.items).forEach(([k, v]) => skuCount[k] = (skuCount[k] || 0) + v));
   const top = Object.entries(skuCount).sort((a,b) => b[1]-a[1]).slice(0,4);
   const max = top[0]?.[1] || 1;
-  subPageFrame('Statistiques', `
+  subPageFrame('Statistiques', 'Suivre les indicateurs clés de la consolidation (palettes, moves, temps moyen et SKU les plus traités).', `
     <div class="kpi-grid">
       <div class="kpi"><small>Nb palettes</small><div>${palettes.length}</div></div>
       <div class="kpi"><small>Nb moves</small><div>${movesDone.length}</div></div>
@@ -250,7 +252,7 @@ function renderStats() {
 }
 
 function renderIaNotesPage() {
-  subPageFrame('Notes KB', `
+  subPageFrame('Notes KB', 'Documenter les consignes locales qui serviront de source pour les réponses de l’assistant IA.', `
     <textarea id="kbPageInput" rows="8" class="input-large">${db.ai_kb_notes || ''}</textarea>
     <div class="form-row"><button id="saveKbPage" class="btn-primary">Sauvegarder</button></div>
   `);
