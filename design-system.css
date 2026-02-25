@@ -1,14 +1,14 @@
 /* BEGIN PATCH: product-grade UI refresh */
 :root {
-  --ds-bg: #0b1020;
-  --ds-panel: #131b31;
-  --ds-card: #1a2440;
-  --ds-accent: #3c9dff;
+  --ds-bg: #eef2ff;
+  --ds-panel: #ffffff;
+  --ds-card: #f2f5ff;
+  --ds-accent: #2f72ff;
   --ds-warning: #ffbf47;
-  --ds-danger: #ff5d74;
-  --ds-success: #2ad39f;
-  --ds-text: #ecf1ff;
-  --ds-muted: #9eabcb;
+  --ds-danger: #dc325b;
+  --ds-success: #1e9f74;
+  --ds-text: #1b2444;
+  --ds-muted: #5c6688;
   --ds-space-4: 4px;
   --ds-space-8: 8px;
   --ds-space-12: 12px;
@@ -18,8 +18,8 @@
   --ds-radius-12: 12px;
   --ds-radius-16: 16px;
   --ds-radius-20: 20px;
-  --ds-shadow-soft: 0 6px 16px rgba(7, 11, 22, 0.22);
-  --ds-shadow-medium: 0 14px 30px rgba(7, 11, 22, 0.3);
+  --ds-shadow-soft: 0 10px 20px rgba(19, 38, 84, 0.08);
+  --ds-shadow-medium: 0 16px 28px rgba(19, 38, 84, 0.12);
   --ds-font-12: 12px;
   --ds-font-14: 14px;
   --ds-font-16: 16px;
@@ -33,6 +33,21 @@
   --safe-right: env(safe-area-inset-right);
   --safe-bottom: env(safe-area-inset-bottom);
   --safe-left: env(safe-area-inset-left);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ds-bg: #0b1020;
+    --ds-panel: #131b31;
+    --ds-card: #1a2440;
+    --ds-accent: #3c9dff;
+    --ds-danger: #ff5d74;
+    --ds-success: #2ad39f;
+    --ds-text: #ecf1ff;
+    --ds-muted: #9eabcb;
+    --ds-shadow-soft: 0 6px 16px rgba(7, 11, 22, 0.22);
+    --ds-shadow-medium: 0 14px 30px rgba(7, 11, 22, 0.3);
+  }
 }
 
 .ds-topbar-title { font-size: var(--ds-font-18); font-weight: var(--ds-weight-bold); }
