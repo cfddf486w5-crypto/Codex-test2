@@ -96,3 +96,23 @@ zip -r dl-wms-offline-ai.zip index.html assets ai debug_ai.html tests samples RE
 - Fonction globale: `window.DLWMS_openReceptionFAQ()`.
 - Export/Import JSON: fusion robuste avec restauration fallback si dataset manquant/corrompu.
 - Notes équipe persistées localement, catégorie par catégorie.
+
+
+## Pack 50 améliorations (Azure + offline-first, sans sécurisation)
+- Détails du lot courant: `docs/CHANGELOG_PACK50.md`.
+- Notes de migration stockage: `docs/STORAGE_MIGRATION_v4.md`.
+- Configuration runtime via variables (injectables côté client):
+  - `API_BASE_URL`
+  - `APP_VERSION`
+  - `BUILD_DATE`
+  - `FEATURE_FLAGS` (JSON)
+- UI Paramètres: section **Pack 50 · Runtime / Santé système** pour:
+  - consulter version/build/backend/queue,
+  - déclencher **Sync maintenant**,
+  - exporter un diagnostic,
+  - activer/désactiver les feature flags.
+- Backend optionnel (Express): endpoints `/api/health`, `/api/time`, `/api/log`.
+
+### Tests minimum (lot courant)
+- `node tests/run_tests.mjs`
+- `node tests/pack50_services.test.mjs`

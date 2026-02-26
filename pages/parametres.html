@@ -101,6 +101,26 @@
   </div>
 </section>
 
+
+<section class="card" id="settings-runtime-pack50">
+  <h2>Pack 50 · Runtime / Santé système</h2>
+  <p class="muted">Configuration runtime multi-environnements, feature flags, queue offline et diagnostics rapides.</p>
+  <div class="row" style="gap:10px;flex-wrap:wrap;">
+    <span class="btn">Version: <strong id="settingsAppVersion">—</strong></span>
+    <span class="btn">Build: <strong id="settingsBuildDate">—</strong></span>
+    <span class="btn">Backend: <strong id="settingsBackendStatus">—</strong></span>
+    <span class="btn">Queue: <strong id="settingsQueueDepth">0</strong></span>
+  </div>
+  <p class="muted">Heure source: <span id="settingsServerTime">—</span></p>
+  <div id="settingsFeatureFlags" class="row" style="gap:10px;flex-wrap:wrap;"></div>
+  <div class="row" style="gap:8px;flex-wrap:wrap;">
+    <button type="button" id="settingsRuntimeRefresh" class="btn">Rafraîchir santé</button>
+    <button type="button" id="settingsSyncNow" class="btn btn-primary">Sync maintenant</button>
+    <button type="button" id="settingsExportDiagnostics" class="btn">Exporter diagnostic</button>
+    <button type="button" id="settingsClearQueue" class="btn">Nettoyage sécurisé (queue)</button>
+  </div>
+</section>
+
 <section class="card" id="settings-diagnostics">
   <h2>Diagnostics runtime (mode debug)</h2>
   <p class="muted">Désactivé par défaut. Affiche version app, build, taille storage, dernier import et erreurs récentes.</p>
