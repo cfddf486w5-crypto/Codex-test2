@@ -333,3 +333,135 @@ button.is-pressed { transform: scale(var(--ui-press-scale)); }
 .preuve-item { display: grid; gap: 10px; }
 .preuve-thumb { width: 100%; max-height: 180px; object-fit: cover; border-radius: 12px; border: 1px solid var(--stroke); }
 /* END PATCH: RECEPTION PREUVE PAGE */
+
+/* BEGIN PATCH: secondary layout system (scoped, non-home) */
+.page-secondary {
+  --space-1: 8px;
+  --space-2: 12px;
+  --space-3: 16px;
+  --space-4: 20px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+  --shadow-sm: 0 8px 24px rgba(6, 10, 20, .18);
+  --shadow-md: 0 12px 30px rgba(6, 10, 20, .24);
+  --border-soft: 1px solid color-mix(in oklab, var(--stroke) 90%, transparent);
+  display: grid;
+  gap: var(--space-3);
+  min-height: 100%;
+}
+
+.page-secondary .secondary-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 6;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: var(--space-2);
+  align-items: center;
+  padding: max(env(safe-area-inset-top), var(--space-2)) var(--space-2) var(--space-2);
+  border-bottom: var(--border-soft);
+  background: color-mix(in oklab, var(--panel) 88%, transparent);
+  backdrop-filter: blur(14px);
+}
+
+.page-secondary .secondary-back {
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 12px;
+}
+
+.page-secondary .secondary-heading { min-width: 0; }
+.page-secondary .secondary-title {
+  margin: 0;
+  font-size: clamp(1rem, 4.2vw, 1.2rem);
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.page-secondary .secondary-subtitle {
+  margin: 2px 0 0;
+  font-size: .8rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.page-secondary .secondary-status {
+  font-size: .72rem;
+  padding: 6px 8px;
+  border-radius: 999px;
+  border: var(--border-soft);
+  background: color-mix(in oklab, var(--panel) 90%, black);
+}
+
+.page-secondary .secondary-content {
+  display: grid;
+  align-content: start;
+  gap: var(--space-3);
+  padding: 0 var(--space-2) calc(var(--space-6) + env(safe-area-inset-bottom));
+  overflow-x: clip;
+}
+
+.page-secondary .secondary-toolbar {
+  position: sticky;
+  top: calc(env(safe-area-inset-top) + 76px);
+  z-index: 5;
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+  border: var(--border-soft);
+  background: color-mix(in oklab, var(--panel) 90%, black);
+  box-shadow: var(--shadow-sm);
+}
+
+.page-secondary .secondary-search-group {
+  display: grid;
+  gap: var(--space-1);
+  font-size: .78rem;
+}
+
+.page-secondary .layout-card-standard {
+  border-radius: var(--radius-md);
+  border: var(--border-soft);
+  box-shadow: var(--shadow-sm);
+}
+
+.page-secondary .secondary-scroll-top {
+  position: fixed;
+  right: 14px;
+  bottom: calc(74px + env(safe-area-inset-bottom));
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+  transition: opacity .2s ease, transform .2s ease;
+}
+
+.page-secondary .secondary-scroll-top.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.page-secondary dialog {
+  width: min(92vw, 560px);
+  max-height: 82dvh;
+  border-radius: var(--radius-lg);
+  border: var(--border-soft);
+  padding: var(--space-3);
+  overflow: auto;
+}
+
+.page-secondary dialog::backdrop {
+  background: rgba(6, 10, 22, .56);
+  backdrop-filter: blur(2px);
+}
+
+@media (min-width: 768px) {
+  .page-secondary .secondary-content { padding-inline: var(--space-4); }
+  .page-secondary .secondary-topbar { padding-inline: var(--space-4); }
+}
+/* END PATCH: secondary layout system */
