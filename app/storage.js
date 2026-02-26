@@ -7,10 +7,39 @@ const STORES = [
 ];
 
 let dbPromise;
+const STORAGE_SCHEMA_KEY = 'DLWMS_STORAGE_SCHEMA_VERSION';
+const STORAGE_SCHEMA_VERSION = 3;
+
+function runStorageMigrations() {
+  const current = Number(localStorage.getItem(STORAGE_SCHEMA_KEY) || 1);
+  if (current >= STORAGE_SCHEMA_VERSION) return;
+
+  if (current < 2) {
+    for (let i = 0; i < localStorage.length; i += 1) {
+      const key = localStorage.key(i);
+      if (!key || key === STORAGE_SCHEMA_KEY) continue;
+      const raw = localStorage.getItem(key);
+      const parsed = safeJSONParse(raw, undefined);
+      if (parsed === undefined) continue;
+      if (!parsed || typeof parsed !== 'object' || !("version" in parsed && "value" in parsed)) {
+        localStorage.setItem(key, JSON.stringify({ version: LOCAL_VERSION, value: parsed }));
+      }
+    }
+  }
+
+  if (current < 3) {
+    if (!localStorage.getItem('DLWMS_DIAGNOSTICS_ENABLED_V1')) localStorage.setItem('DLWMS_DIAGNOSTICS_ENABLED_V1', '0');
+    if (!localStorage.getItem('DLWMS_RUNTIME_LOG_BUFFER_V1')) localStorage.setItem('DLWMS_RUNTIME_LOG_BUFFER_V1', '[]');
+  }
+
+  localStorage.setItem(STORAGE_SCHEMA_KEY, String(STORAGE_SCHEMA_VERSION));
+}
+
 const localWriteQueue = new Map();
 let flushTimer;
 
 export function initDB() {
+  runStorageMigrations();
   if (dbPromise) return dbPromise;
   dbPromise = new Promise((resolve, reject) => {
     const req = indexedDB.open(DB_NAME, DB_VERSION);

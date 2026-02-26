@@ -18,6 +18,7 @@ import {
   RULEBOOK_CANONICAL,
 } from './rulebook.js';
 import { loadWmsKb, searchWmsKb, explainWhyFromKb, KB_STORAGE_KEY } from './wms_kb.js';
+import { initRuntimeCore, bindDiagnosticsPanel, runtimeLogger, markLastImport, setSyncState } from '../core/runtime.js';
 
 const appNode = document.getElementById('app');
 const nav = document.querySelector('.bottom-nav');
@@ -141,6 +142,7 @@ const AUTOMOTIVE_TRAINING_RULES = [
 
 async function boot() {
   document.body.dataset.uiVersion = UI_VERSION;
+  initRuntimeCore();
   await initDB();
   bindInstall();
   bindNetworkBadge();
@@ -238,9 +240,11 @@ function bindNetworkBadge() {
 
   const updateBadge = () => {
     const online = navigator.onLine;
-    badge.textContent = online ? 'En ligne' : 'Mode hors ligne';
+    const errors = runtimeLogger.getErrors().length;
+    badge.textContent = `${online ? 'En ligne' : 'Mode hors ligne'} · Sync ${online ? 'ok' : 'pause'}${errors ? ` · ⚠️ ${errors}` : ''}`;
     badge.classList.toggle('is-offline', !online);
     badge.classList.toggle('is-online', online);
+    setSyncState(online);
   };
 
   updateBadge();
@@ -303,6 +307,7 @@ async function navigate(route, options = {}) {
   bindSettingsJumps(normalizedRoute);
   bindSettingsAiMemory(normalizedRoute);
   await bindSettingsStorageFaq(normalizedRoute);
+  if (normalizedRoute === 'parametres') bindDiagnosticsPanel();
   bindHomePage(normalizedRoute);
   bindLayoutPage(normalizedRoute);
   bindModulePages(normalizedRoute);
@@ -2734,10 +2739,19 @@ function bindImportInput(inputId, sourceLabel) {
 
 async function parseImportFile(file) {
   const lowerName = file.name.toLowerCase();
-  if (lowerName.endsWith('.json')) return JSON.parse(await file.text());
-  if (lowerName.endsWith('.pdf')) return [{ source: file.name, content: await file.text() }];
-  if (lowerName.endsWith('.xlsx')) return parseCsv(await file.text());
-  return parseCsv(await file.text());
+  if (lowerName.endsWith('.json')) {
+    const json = JSON.parse(await file.text());
+    markLastImport({ fileName: file.name, rows: Array.isArray(json) ? json.length : 1 });
+    return json;
+  }
+  if (lowerName.endsWith('.pdf')) {
+    const rows = [{ source: file.name, content: await file.text() }];
+    markLastImport({ fileName: file.name, rows: rows.length });
+    return rows;
+  }
+  const rows = parseCsv(await file.text());
+  markLastImport({ fileName: file.name, rows: rows.length });
+  return rows;
 }
 
 function downloadJSON(data, filename) {
