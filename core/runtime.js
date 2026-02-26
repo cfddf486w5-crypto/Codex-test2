@@ -22,6 +22,12 @@ function safeJsonParse(raw, fallback) {
   }
 }
 
+function normalizeLogBuffer(payload) {
+  if (Array.isArray(payload)) return payload;
+  if (payload && typeof payload === 'object' && Array.isArray(payload.value)) return payload.value;
+  return [];
+}
+
 function persistLogs() {
   try {
     localStorage.setItem(RUNTIME_LOG_KEY, JSON.stringify(state.logs.slice(0, MAX_LOGS)));
@@ -143,7 +149,8 @@ export function bindDiagnosticsPanel() {
 }
 
 export function initRuntimeCore() {
-  state.logs = safeJsonParse(localStorage.getItem(RUNTIME_LOG_KEY), []);
+  state.logs = normalizeLogBuffer(safeJsonParse(localStorage.getItem(RUNTIME_LOG_KEY), []));
+  state.errors = state.logs.filter((row) => row?.level === 'error').slice(0, 30);
   installGlobalErrorHandlers();
   runtimeLogger.info('runtime.init');
 }
