@@ -336,10 +336,10 @@ button.is-pressed { transform: scale(var(--ui-press-scale)); }
 
 /* BEGIN PATCH: secondary layout system (scoped, non-home) */
 .page-secondary {
-  --space-1: 8px;
-  --space-2: 12px;
-  --space-3: 16px;
-  --space-4: 20px;
+  --space-1: 6px;
+  --space-2: 10px;
+  --space-3: 12px;
+  --space-4: 16px;
   --space-5: 24px;
   --space-6: 32px;
   --radius-sm: 10px;
@@ -358,19 +358,20 @@ button.is-pressed { transform: scale(var(--ui-press-scale)); }
   top: 0;
   z-index: 6;
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: 36px 1fr;
   gap: var(--space-2);
   align-items: center;
-  padding: max(env(safe-area-inset-top), var(--space-2)) var(--space-2) var(--space-2);
+  padding: 6px var(--space-2);
   border-bottom: var(--border-soft);
   background: color-mix(in oklab, var(--panel) 88%, transparent);
   backdrop-filter: blur(14px);
 }
 
 .page-secondary .secondary-back {
-  min-width: 44px;
-  min-height: 44px;
-  border-radius: 12px;
+  min-width: 34px;
+  min-height: 34px;
+  border-radius: 10px;
+  padding: 0;
 }
 
 .page-secondary .secondary-heading { min-width: 0; }
@@ -384,20 +385,13 @@ button.is-pressed { transform: scale(var(--ui-press-scale)); }
 }
 
 .page-secondary .secondary-subtitle {
-  margin: 2px 0 0;
-  font-size: .8rem;
+  margin: 0;
+  font-size: .72rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.page-secondary .secondary-status {
-  font-size: .72rem;
-  padding: 6px 8px;
-  border-radius: 999px;
-  border: var(--border-soft);
-  background: color-mix(in oklab, var(--panel) 90%, black);
-}
 
 .page-secondary .secondary-content {
   display: grid;
@@ -409,7 +403,7 @@ button.is-pressed { transform: scale(var(--ui-press-scale)); }
 
 .page-secondary .secondary-toolbar {
   position: sticky;
-  top: calc(env(safe-area-inset-top) + 76px);
+  top: calc(env(safe-area-inset-top) + 52px);
   z-index: 5;
   padding: var(--space-2);
   border-radius: var(--radius-md);
