@@ -59,6 +59,13 @@ Application HTML/CSS/JS offline-first avec assistant IA local pour usage WMS (iP
 - Compatible Windows/macOS/Linux (commande identique en terminal ou PowerShell).
 - Dashboard: `debug_ai.html` affiche score, erreurs, tests, prompts et logs de décision.
 
+
+## Intégration Azure Static Web Apps
+- Workflow GitHub Actions: `.github/workflows/azure-static-web-apps-brave-hill-08ca54b1e.yml`.
+- Le job **Validate Application** exécute `node tests/run_tests.mjs` avant tout déploiement.
+- Le job **Build and Deploy Job** publie la racine du projet (`app_location: "/"`) pour déployer l'application complète.
+- Secret requis côté GitHub: `AZURE_STATIC_WEB_APPS_API_TOKEN_BRAVE_HILL_08CA54B1E`.
+
 ## ZIP final
 Pour générer l'archive livrable:
 ```bash
