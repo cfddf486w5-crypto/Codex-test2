@@ -19,6 +19,9 @@ import {
 } from './rulebook.js';
 import { loadWmsKb, searchWmsKb, explainWhyFromKb, KB_STORAGE_KEY } from './wms_kb.js';
 import { initRuntimeCore, bindDiagnosticsPanel, runtimeLogger, markLastImport, setSyncState } from '../core/runtime.js';
+import { loadRuntimeConfig, getFeatureFlags, saveFeatureFlags } from './services/runtime-config.js';
+import { enqueueOperation, listOperations, flushQueue } from './services/offline-queue.js';
+import { getHealthStatus, getServerTime } from './services/health.js';
 
 const appNode = document.getElementById('app');
 const nav = document.querySelector('.bottom-nav');
@@ -309,6 +312,7 @@ async function navigate(route, options = {}) {
   bindSettingsJumps(normalizedRoute);
   bindSettingsAiMemory(normalizedRoute);
   await bindSettingsStorageFaq(normalizedRoute);
+  await bindRuntimeOps(normalizedRoute);
   if (normalizedRoute === 'parametres') bindDiagnosticsPanel();
   bindHomePage(normalizedRoute);
   bindLayoutPage(normalizedRoute);
@@ -486,6 +490,90 @@ function bindSettingsAiMemory(route) {
     textarea.value = JSON.stringify({ history: [] }, null, 2);
     showToast('Mémoire IA réinitialisée.', 'success');
   });
+}
+
+async function bindRuntimeOps(route) {
+  if (route !== 'parametres') return;
+
+  const appVersion = document.getElementById('settingsAppVersion');
+  const buildDate = document.getElementById('settingsBuildDate');
+  const backendStatus = document.getElementById('settingsBackendStatus');
+  const queueDepth = document.getElementById('settingsQueueDepth');
+  const serverTime = document.getElementById('settingsServerTime');
+  const refreshBtn = document.getElementById('settingsRuntimeRefresh');
+  const syncBtn = document.getElementById('settingsSyncNow');
+  const exportDiagBtn = document.getElementById('settingsExportDiagnostics');
+  const clearQueueBtn = document.getElementById('settingsClearQueue');
+
+  const featureContainer = document.getElementById('settingsFeatureFlags');
+
+  const runtime = loadRuntimeConfig();
+  const flags = getFeatureFlags();
+
+  if (featureContainer) {
+    featureContainer.innerHTML = Object.entries(flags).map(([key, value]) => {
+      const checked = Boolean(value) ? 'checked' : '';
+      return `<label><input type="checkbox" data-ff="${key}" ${checked}/> ${key}</label>`;
+    }).join('');
+
+    featureContainer.querySelectorAll('[data-ff]').forEach((node) => {
+      node.addEventListener('change', () => {
+        const key = node.getAttribute('data-ff');
+        saveFeatureFlags({ [key]: node.checked });
+        showToast(`Feature flag ${key} = ${node.checked ? 'ON' : 'OFF'}`, 'success');
+      });
+    });
+  }
+
+  const renderRuntime = async () => {
+    const health = await getHealthStatus();
+    const time = await getServerTime();
+    if (appVersion) appVersion.textContent = runtime.APP_VERSION;
+    if (buildDate) buildDate.textContent = runtime.BUILD_DATE;
+    if (backendStatus) backendStatus.textContent = health.mode === 'backend' ? 'Backend connecté' : 'Fallback local';
+    if (queueDepth) queueDepth.textContent = String(listOperations().filter((item) => item.status !== 'sent').length);
+    if (serverTime) serverTime.textContent = `${time.iso || 'n/a'} (${time.source})`;
+  };
+
+  refreshBtn?.addEventListener('click', renderRuntime);
+  clearQueueBtn?.addEventListener('click', () => {
+    localStorage.setItem('DLWMS_OPLOG_V1', '[]');
+    renderRuntime();
+    showToast('Queue vidée localement.', 'success');
+  });
+  exportDiagBtn?.addEventListener('click', async () => {
+    const health = await getHealthStatus();
+    const blob = new Blob([JSON.stringify(health, null, 2)], { type: 'application/json' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'dlwms-diagnostic.json';
+    link.click();
+    URL.revokeObjectURL(link.href);
+  });
+
+  syncBtn?.addEventListener('click', async () => {
+    const runtimeCfg = loadRuntimeConfig();
+    const sender = async (item) => {
+      if (!runtimeCfg.BACKEND_ENABLED) return;
+      const response = await fetch(`${runtimeCfg.API_BASE_URL}/api/log`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(item),
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    };
+
+    const result = await flushQueue({ sender });
+    localStorage.setItem('DLWMS_LAST_SYNC_AT', new Date().toISOString());
+    showToast(`Sync terminée: ${result.sent} envoyés, ${result.errors} erreurs.`, result.errors ? 'error' : 'success');
+    renderRuntime();
+  });
+
+  if (!navigator.onLine) {
+    enqueueOperation('runtime.offline_boot', { route, at: Date.now() });
+  }
+
+  await renderRuntime();
 }
 
 function safeParseJson(raw, fallback) {
