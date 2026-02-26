@@ -26,6 +26,7 @@ import { getHealthStatus, getServerTime } from './services/health.js';
 const appNode = document.getElementById('app');
 const nav = document.querySelector('.bottom-nav');
 const ROOT_ROUTES = ['modules', 'history', 'parametres'];
+const PRIMARY_IMMUTABLE_ROUTES = new Set(['modules', 'home', 'dashboard']);
 // BEGIN PATCH: NAV
 const ROUTE_ALIASES = {
   settings: 'parametres',
@@ -292,6 +293,7 @@ async function navigate(route, options = {}) {
   document.body.dataset.route = normalizedRoute;
   const { syncHash = true } = options;
   await loadRoute(normalizedRoute, appNode);
+  applySecondaryLayoutShell(normalizedRoute);
   const rootRoute = ROOT_ROUTES.includes(normalizedRoute) ? normalizedRoute : 'modules';
   setNavActive(rootRoute);
   localStorage.setItem('lastRoute', normalizedRoute);
@@ -322,6 +324,115 @@ async function navigate(route, options = {}) {
   if (normalizedRoute === 'monitoring') hydrateMonitoring();
   if (normalizedRoute === 'ui-self-test') bindUiSelfTest();
   refreshBackButton();
+}
+
+function applySecondaryLayoutShell(route) {
+  appNode.classList.toggle('route-secondary', !PRIMARY_IMMUTABLE_ROUTES.has(route));
+  if (PRIMARY_IMMUTABLE_ROUTES.has(route)) return;
+
+  let shell = appNode.querySelector(':scope > .page-secondary');
+  if (!shell) {
+    shell = document.createElement('section');
+    shell.className = 'page-secondary';
+    shell.dataset.route = route;
+
+    const topbar = document.createElement('header');
+    topbar.className = 'secondary-topbar';
+    topbar.innerHTML = `
+      <button type="button" class="btn btn-ghost secondary-back" aria-label="Retour">←</button>
+      <div class="secondary-heading">
+        <h2 class="secondary-title"></h2>
+        <p class="muted secondary-subtitle">Mise en page harmonisée</p>
+      </div>
+      <span class="secondary-status" role="status" aria-live="polite"></span>
+    `;
+
+    const content = document.createElement('div');
+    content.className = 'secondary-content';
+    while (appNode.firstChild) content.appendChild(appNode.firstChild);
+
+    const scrollTopBtn = document.createElement('button');
+    scrollTopBtn.type = 'button';
+    scrollTopBtn.className = 'secondary-scroll-top btn btn-ghost';
+    scrollTopBtn.textContent = '↑ Haut';
+    scrollTopBtn.setAttribute('aria-label', 'Revenir en haut de page');
+
+    shell.append(topbar, content, scrollTopBtn);
+    appNode.appendChild(shell);
+
+    topbar.querySelector('.secondary-back')?.addEventListener('click', () => goBack());
+    content.addEventListener('scroll', () => {
+      scrollTopBtn.classList.toggle('is-visible', content.scrollTop > 420);
+    }, { passive: true });
+    scrollTopBtn.addEventListener('click', () => content.scrollTo({ top: 0, behavior: 'smooth' }));
+  }
+
+  const content = shell.querySelector(':scope > .secondary-content');
+  if (!(content instanceof HTMLElement)) return;
+
+  while (appNode.firstChild && appNode.firstChild !== shell) {
+    content.appendChild(appNode.firstChild);
+  }
+
+  shell.dataset.route = route;
+  shell.querySelector('.secondary-title').textContent = resolveSecondaryTitle(route, content);
+  shell.querySelector('.secondary-subtitle').textContent = resolveSecondarySubtitle(content);
+
+  const networkBadge = document.getElementById('networkBadge');
+  const statusNode = shell.querySelector('.secondary-status');
+  if (statusNode) {
+    statusNode.textContent = networkBadge?.textContent?.trim() || (navigator.onLine ? 'En ligne' : 'Hors ligne');
+    statusNode.classList.toggle('is-offline', !navigator.onLine);
+  }
+
+  content.querySelectorAll('section.card, article.card, .conso-card, .rem-card').forEach((card) => {
+    card.classList.add('layout-card-standard');
+  });
+
+  installSecondarySearchFilter(content);
+}
+
+function resolveSecondaryTitle(route, content) {
+  const explicitTitle = content.querySelector('h1, h2, .ds-page-title')?.textContent?.trim();
+  if (explicitTitle) return explicitTitle;
+  return route
+    .split('/')
+    .map((chunk) => chunk.charAt(0).toUpperCase() + chunk.slice(1))
+    .join(' · ');
+}
+
+function resolveSecondarySubtitle(content) {
+  const subtitle = content.querySelector('.muted')?.textContent?.trim();
+  return subtitle || 'Navigation secondaire';
+}
+
+function installSecondarySearchFilter(content) {
+  if (content.querySelector(':scope > .secondary-toolbar')) return;
+  const listContainer = content.querySelector('table tbody, .faq-list, .virtual-list, ul, ol');
+  if (!listContainer) return;
+
+  const entries = () => Array.from(listContainer.children || []).filter((node) => node.nodeType === Node.ELEMENT_NODE);
+  if (entries().length < 8) return;
+
+  const toolbar = document.createElement('div');
+  toolbar.className = 'secondary-toolbar';
+  toolbar.innerHTML = `
+    <label class="secondary-search-group" for="secondarySearchInput">
+      <span>Recherche rapide</span>
+      <input id="secondarySearchInput" type="search" class="input" placeholder="Filtrer la liste…" />
+    </label>
+  `;
+
+  const input = toolbar.querySelector('input');
+  input?.addEventListener('input', () => {
+    const needle = normalize(input.value || '');
+    entries().forEach((item) => {
+      const visible = !needle || normalize(item.textContent || '').includes(needle);
+      item.toggleAttribute('hidden', !visible);
+    });
+  });
+
+  content.prepend(toolbar);
 }
 
 function bindCompactHeaderAccordions(root) {
