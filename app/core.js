@@ -2338,6 +2338,26 @@ function showActionToast(message, tone = 'success') {
   showToast(message, tone);
 }
 
+function collectRuntimeSnapshot() {
+  const runtimeKeys = [
+    'DLWMS_RUNTIME_LOG_BUFFER_V1',
+    'DLWMS_DIAGNOSTICS_ENABLED_V1',
+    'DLWMS_RUNTIME_LAST_IMPORT_V1',
+    'DLWMS_RUNTIME_SYNC_STATE_V1',
+  ];
+  return Object.fromEntries(runtimeKeys.map((key) => [key, getConfig(key, null)]));
+}
+
+function applyRuntimeSnapshot(snapshot = {}) {
+  Object.entries(snapshot || {}).forEach(([key, value]) => {
+    if (value !== null && value !== undefined) setConfig(key, value);
+  });
+}
+
+function countIndexedDbEntries(indexedDb = {}) {
+  return Object.values(indexedDb || {}).reduce((sum, value) => sum + (Array.isArray(value) ? value.length : 0), 0);
+}
+
 function bindHomePage(route) {
   if (route !== 'home') return;
   const hasBinMap = !!getConfig('DLWMS_BINMAP', null);
@@ -2363,16 +2383,26 @@ function bindHomePage(route) {
   bindQuick('CARD_QUICK_RESTOCK', async () => { await navigate('remise'); showActionToast('Module Remise en stock ouvert.'); });
   document.getElementById('BTN_HOME_EXPORT_BACKUP')?.addEventListener('click', async () => {
     const data = await exportAllData();
+    const includeRuntime = !!document.getElementById('homeBackupIncludeRuntime')?.checked;
     const payload = {
-      meta: { exportedAt: Date.now(), source: 'home-tools' },
+      meta: {
+        exportedAt: Date.now(),
+        source: 'home-tools',
+        format: 'dlwms_backup_v3_2',
+        indexedDbEntries: countIndexedDbEntries(data),
+      },
       indexedDb: data,
       settings: getConfig('DLWMS_LAYOUT_PREFS_V1', {}),
       layouts: getConfig('DLWMS_LAYOUTS_V1', []),
       layoutLast: getConfig('DLWMS_LAYOUT_LAST_ID', null),
       tileset: getConfig('DLWMS_LAYOUT_TILESET_V1', []),
       binMap: getConfig('DLWMS_BINMAP', null),
+      importWizardPrefs: getConfig('DLWMS_IMPORT_WIZARD_PREFS_V1', null),
+      runtime: includeRuntime ? collectRuntimeSnapshot() : null,
     };
     downloadJSON(payload, `dlwms_backup_${new Date().toISOString().slice(0, 10)}.json`);
+    const summaryNode = document.getElementById('homeBackupSummary');
+    if (summaryNode) summaryNode.textContent = `Backup exporté (${payload.meta.indexedDbEntries} entrées IndexedDB, runtime ${includeRuntime ? 'inclus' : 'non inclus'}).`;
     showActionToast('Backup exporté.');
   });
 
@@ -2380,15 +2410,32 @@ function bindHomePage(route) {
   document.getElementById('homeBackupFile')?.addEventListener('change', async (event) => {
     const file = event.target.files?.[0];
     if (!file) return;
+    const mode = document.getElementById('homeBackupMode')?.value || 'merge';
     try {
       const json = JSON.parse(await file.text());
-      if (json.indexedDb) await importAllData(json.indexedDb);
+      const sourceIndexedDb = json.indexedDb || json;
+      if (mode === 'replace') {
+        await importAllData(sourceIndexedDb);
+      } else {
+        const currentIndexed = await exportAllData();
+        const merged = { ...currentIndexed };
+        Object.keys(sourceIndexedDb || {}).forEach((store) => {
+          if (!Array.isArray(sourceIndexedDb[store])) return;
+          merged[store] = [...(currentIndexed[store] || []), ...sourceIndexedDb[store]];
+        });
+        await importAllData(merged);
+      }
       if (json.settings) setConfig('DLWMS_LAYOUT_PREFS_V1', json.settings);
       if (json.layouts) setConfig('DLWMS_LAYOUTS_V1', json.layouts);
       if (json.layoutLast) setConfig('DLWMS_LAYOUT_LAST_ID', json.layoutLast);
       if (json.tileset) setConfig('DLWMS_LAYOUT_TILESET_V1', json.tileset);
       if (json.binMap) setConfig('DLWMS_BINMAP', json.binMap);
-      showActionToast('Backup importé avec merge.', 'success');
+      if (json.importWizardPrefs) setConfig('DLWMS_IMPORT_WIZARD_PREFS_V1', json.importWizardPrefs);
+      if (json.runtime) applyRuntimeSnapshot(json.runtime);
+      const summaryNode = document.getElementById('homeBackupSummary');
+      const importedEntries = countIndexedDbEntries(sourceIndexedDb);
+      if (summaryNode) summaryNode.textContent = `Backup importé (${importedEntries} entrées, mode ${mode}).`;
+      showActionToast(`Backup importé (${mode}).`, 'success');
     } catch {
       showActionToast('Import backup invalide.', 'error');
     }

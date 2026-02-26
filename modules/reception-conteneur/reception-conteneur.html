@@ -30,8 +30,40 @@
   </div>
 
   <div class="rc-pane" data-rc-pane="import">
-    <p class="muted">Import CSV/Excel (optionnel XLSX si librairie chargée).</p>
+    <p class="muted">Import Wizard v3.2: encodage, séparateur et mapping persistant.</p>
+    <div class="settings-grid">
+      <label>Encodage
+        <select id="rcImportEncoding">
+          <option value="utf-8">UTF-8</option>
+          <option value="iso-8859-1">ISO-8859-1</option>
+          <option value="windows-1252">Windows-1252</option>
+        </select>
+      </label>
+      <label>Séparateur
+        <select id="rcImportSeparator">
+          <option value="auto">Auto</option>
+          <option value=",">Virgule (,)</option>
+          <option value=";">Point-virgule (;)</option>
+          <option value="\t">Tabulation</option>
+          <option value="|">Pipe (|)</option>
+        </select>
+      </label>
+      <label>Colonne ITEM
+        <input id="rcMapItem" placeholder="item" />
+      </label>
+      <label>Colonne QTY
+        <input id="rcMapQty" placeholder="qty" />
+      </label>
+      <label>Colonne BIN
+        <input id="rcMapBin" placeholder="bin" />
+      </label>
+    </div>
+    <div class="row">
+      <button class="small-btn" id="rcSaveImportPrefs" type="button">Sauver préférences</button>
+      <button class="small-btn" id="rcResetImportPrefs" type="button">Reset</button>
+    </div>
     <label class="small-btn">Importer lignes<input type="file" id="rcImportFile" accept=".csv,.xlsx,.xls" hidden /></label>
+    <div id="rcImportSummary" class="muted"></div>
     <table class="list-table" id="rcImportTable"></table>
   </div>
 

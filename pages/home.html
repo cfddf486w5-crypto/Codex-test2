@@ -26,8 +26,14 @@
     <div class="row">
       <button id="BTN_HOME_EXPORT_BACKUP">Exporter Backup</button>
       <button id="BTN_HOME_IMPORT_BACKUP">Importer Backup</button>
+      <select id="homeBackupMode" aria-label="Mode restauration backup">
+        <option value="merge">Import merge</option>
+        <option value="replace">Import remplacement complet</option>
+      </select>
+      <label><input id="homeBackupIncludeRuntime" type="checkbox" checked /> Inclure diagnostics/runtime</label>
       <input id="homeBackupFile" type="file" accept="application/json" class="hidden" />
     </div>
+    <p id="homeBackupSummary" class="muted"></p>
   </div>
 </section>
 

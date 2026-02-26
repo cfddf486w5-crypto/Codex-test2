@@ -2,6 +2,7 @@
   const DRAFT_KEY = 'DLWMS_CONTAINER_DRAFT_V1';
   const HISTORY_KEY = 'DLWMS_CONTAINER_HISTORY_V1';
   const BINMAP_KEY = 'DLWMS_BINMAP';
+  const IMPORT_PREFS_KEY = 'DLWMS_IMPORT_WIZARD_PREFS_V1';
   const DB_NAME = 'DLWMS_RECEIPTS_DB_V1';
   const STORE = 'photos';
 
@@ -17,6 +18,11 @@
     draft: { container: '', asn: '', dock: '', date: '', notes: '', lines: [], defaultBinPrefix: '' },
     history: [],
     binMap: {},
+    importPrefs: {
+      encoding: 'utf-8',
+      separator: 'auto',
+      mapping: { item: 'item', qty: 'qty', bin: 'bin' },
+    },
   };
 
   const toast = (message) => {
@@ -66,6 +72,69 @@
     try { state.draft = { ...state.draft, ...(JSON.parse(localStorage.getItem(DRAFT_KEY) || '{}')) }; } catch {}
     try { state.history = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'); } catch {}
     try { state.binMap = JSON.parse(localStorage.getItem(BINMAP_KEY) || '{}'); } catch {}
+    try {
+      const savedPrefs = JSON.parse(localStorage.getItem(IMPORT_PREFS_KEY) || '{}');
+      state.importPrefs = {
+        ...state.importPrefs,
+        ...savedPrefs,
+        mapping: { ...state.importPrefs.mapping, ...(savedPrefs.mapping || {}) },
+      };
+    } catch {}
+  }
+
+  function persistImportPrefs() {
+    localStorage.setItem(IMPORT_PREFS_KEY, JSON.stringify(state.importPrefs));
+  }
+
+  function resolveSeparator(lines = [], forced = 'auto') {
+    if (forced && forced !== 'auto') return forced === '\\t' ? '\t' : forced;
+    const header = String(lines[0] || '');
+    const candidates = [',', ';', '\t', '|'];
+    const winner = candidates
+      .map((sep) => ({ sep, score: header.split(sep).length }))
+      .sort((a, b) => b.score - a.score)[0];
+    return winner?.score > 1 ? winner.sep : ',';
+  }
+
+  function splitLine(line = '', separator = ',') {
+    if (separator === ',') return line.split(/,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/).map((chunk) => chunk.replace(/^\"|\"$/g, ''));
+    return line.split(separator);
+  }
+
+  function decodeText(file, encoding = 'utf-8') {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result || ''));
+      reader.onerror = () => reject(reader.error);
+      reader.readAsText(file, encoding);
+    });
+  }
+
+  function parseCsvRows(content = '', separator = 'auto') {
+    const lines = content.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+    if (!lines.length) return { rows: [], headers: [], separator: ',' };
+    const selectedSeparator = resolveSeparator(lines, separator);
+    const headers = splitLine(lines[0], selectedSeparator).map((x) => x.trim());
+    const rows = lines.slice(1).map((line) => {
+      const values = splitLine(line, selectedSeparator);
+      return Object.fromEntries(headers.map((header, index) => [header, String(values[index] || '').trim()]));
+    });
+    return { rows, headers, separator: selectedSeparator };
+  }
+
+  function normalizeImportedRows(rows = []) {
+    const mapping = state.importPrefs.mapping || {};
+    const findValue = (row, target) => {
+      const wanted = String(mapping[target] || target).trim().toLowerCase();
+      if (!wanted) return '';
+      const entry = Object.entries(row).find(([key]) => key.trim().toLowerCase() === wanted);
+      return entry ? entry[1] : '';
+    };
+    return rows.map((row) => ({
+      bin: String(findValue(row, 'bin') || '').trim().toUpperCase(),
+      item: String(findValue(row, 'item') || '').trim().toUpperCase(),
+      qty: Number(findValue(row, 'qty') || 0),
+    }));
   }
 
   function mountNav() {
@@ -108,6 +177,17 @@
     const setVal = (id, key) => { const n = root.querySelector(id); if (n) n.value = state.draft[key] || ''; };
     setVal('#rcContainer', 'container'); setVal('#rcAsn', 'asn'); setVal('#rcDock', 'dock'); setVal('#rcDate', 'date'); setVal('#rcNotes', 'notes'); setVal('#rcDefaultBin', 'defaultBinPrefix');
 
+    const importEncodingNode = root.querySelector('#rcImportEncoding');
+    const importSeparatorNode = root.querySelector('#rcImportSeparator');
+    const mapItemNode = root.querySelector('#rcMapItem');
+    const mapQtyNode = root.querySelector('#rcMapQty');
+    const mapBinNode = root.querySelector('#rcMapBin');
+    if (importEncodingNode) importEncodingNode.value = state.importPrefs.encoding;
+    if (importSeparatorNode) importSeparatorNode.value = state.importPrefs.separator;
+    if (mapItemNode) mapItemNode.value = state.importPrefs.mapping.item;
+    if (mapQtyNode) mapQtyNode.value = state.importPrefs.mapping.qty;
+    if (mapBinNode) mapBinNode.value = state.importPrefs.mapping.bin;
+
     root.querySelectorAll('[data-rc-tab]').forEach((btn) => {
       btn.addEventListener('click', () => {
         const t = btn.dataset.rcTab;
@@ -142,31 +222,57 @@
       renderBins();
     });
 
+    root.querySelector('#rcSaveImportPrefs')?.addEventListener('click', () => {
+      state.importPrefs = {
+        encoding: importEncodingNode?.value || 'utf-8',
+        separator: importSeparatorNode?.value || 'auto',
+        mapping: {
+          item: mapItemNode?.value?.trim() || 'item',
+          qty: mapQtyNode?.value?.trim() || 'qty',
+          bin: mapBinNode?.value?.trim() || 'bin',
+        },
+      };
+      persistImportPrefs();
+      toast('Préférences Import Wizard sauvegardées');
+    });
+
+    root.querySelector('#rcResetImportPrefs')?.addEventListener('click', () => {
+      state.importPrefs = {
+        encoding: 'utf-8',
+        separator: 'auto',
+        mapping: { item: 'item', qty: 'qty', bin: 'bin' },
+      };
+      persistImportPrefs();
+      bindReceptionUi();
+      toast('Préférences Import Wizard réinitialisées');
+    });
+
     root.querySelector('#rcImportFile')?.addEventListener('change', async (e) => {
       const file = e.target.files?.[0];
       if (!file) return;
       let rows = [];
+      let importedSeparator = state.importPrefs.separator;
       if (file.name.toLowerCase().endsWith('.csv')) {
-        const [h, ...rest] = (await file.text()).split(/\r?\n/).filter(Boolean);
-        const headers = h.split(',').map((x) => x.trim());
-        rows = rest.map((line) => {
-          const vals = line.split(',');
-          return Object.fromEntries(headers.map((x, i) => [x, (vals[i] || '').trim()]));
-        });
+        const csvContent = await decodeText(file, state.importPrefs.encoding);
+        const parsed = parseCsvRows(csvContent, state.importPrefs.separator);
+        rows = parsed.rows;
+        importedSeparator = parsed.separator;
       } else if (window.XLSX) {
         const buf = await file.arrayBuffer();
         const wb = window.XLSX.read(buf, { type: 'array' });
         rows = window.XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { defval: '' });
       }
-      rows.forEach((r) => {
-        const bin = String(r.bin || r.BIN || '').trim().toUpperCase();
-        const item = String(r.item || r.ITEM || '').trim().toUpperCase();
-        const qty = Number(r.qty || r.QTY || 0);
-        if (bin && item) state.draft.lines.push({ bin, item, qty });
+      const normalizedRows = normalizeImportedRows(rows);
+      normalizedRows.forEach((r) => {
+        if (r.bin && r.item) state.draft.lines.push(r);
       });
       persistDraft();
       renderBins();
-      root.querySelector('#rcImportTable').innerHTML = `<thead><tr><th>Lignes importées</th></tr></thead><tbody><tr><td>${rows.length}</td></tr></tbody>`;
+      const summaryNode = root.querySelector('#rcImportSummary');
+      if (summaryNode) {
+        summaryNode.textContent = `${rows.length} lignes lues · ${normalizedRows.filter((r) => r.bin && r.item).length} lignes valides · séparateur: ${importedSeparator === '\t' ? 'tab' : importedSeparator} · encodage: ${state.importPrefs.encoding}`;
+      }
+      root.querySelector('#rcImportTable').innerHTML = `<thead><tr><th>ITEM</th><th>QTY</th><th>BIN</th></tr></thead><tbody>${normalizedRows.slice(0, 20).map((r) => `<tr><td>${r.item || ''}</td><td>${Number.isFinite(r.qty) ? r.qty : ''}</td><td>${r.bin || ''}</td></tr>`).join('')}</tbody>`;
     });
 
     root.querySelector('#rcPhotoInput')?.addEventListener('change', async (e) => {
