@@ -286,6 +286,7 @@ function bindNav() {
 async function navigate(route, options = {}) {
   const normalizedRoute = normalizeRoute(route);
   currentRoute = normalizedRoute;
+  document.body.dataset.route = normalizedRoute;
   const { syncHash = true } = options;
   await loadRoute(normalizedRoute, appNode);
   const rootRoute = ROOT_ROUTES.includes(normalizedRoute) ? normalizedRoute : 'modules';
@@ -298,6 +299,7 @@ async function navigate(route, options = {}) {
   }
   appNode.querySelectorAll('[data-route]').forEach((btn) => btn.addEventListener('click', () => navigate(btn.dataset.route)));
   bindReceptionEntryPoints(appNode, navigate);
+  bindCompactHeaderAccordions(appNode);
 
   await bindSharedActions();
   bindAccordions(appNode);
@@ -316,6 +318,37 @@ async function navigate(route, options = {}) {
   if (normalizedRoute === 'monitoring') hydrateMonitoring();
   if (normalizedRoute === 'ui-self-test') bindUiSelfTest();
   refreshBackButton();
+}
+
+function bindCompactHeaderAccordions(root) {
+  if (!window.matchMedia('(max-width: 430px)').matches) return;
+  root.querySelectorAll('.card .card-header').forEach((header, index) => {
+    if (header.dataset.compactMetaBound === '1') return;
+    const copy = header.querySelector(':scope > div');
+    const meta = copy?.querySelector('.muted');
+    if (!(copy instanceof HTMLElement) || !(meta instanceof HTMLElement)) return;
+    const text = meta.textContent?.trim();
+    if (!text) return;
+
+    const panelId = `compactHeaderMeta_${Date.now()}_${index}`;
+    const toggle = document.createElement('button');
+    toggle.type = 'button';
+    toggle.className = 'btn btn-ghost accordion-trigger compact-meta-trigger';
+    toggle.setAttribute('data-accordion-trigger', '');
+    toggle.setAttribute('aria-controls', panelId);
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.textContent = 'Infos';
+
+    const panel = document.createElement('div');
+    panel.id = panelId;
+    panel.className = 'accordion-panel compact-meta-panel';
+    panel.hidden = true;
+
+    copy.appendChild(toggle);
+    panel.appendChild(meta);
+    copy.appendChild(panel);
+    header.dataset.compactMetaBound = '1';
+  });
 }
 
 function goBack() {

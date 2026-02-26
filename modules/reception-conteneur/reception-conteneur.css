@@ -2,6 +2,15 @@
 .rc-subtabs { display: flex; gap: 8px; overflow: auto; padding-bottom: 4px; }
 .rc-subtab { border: 1px solid #b8cae4; border-radius: 999px; background: #eef4ff; color: #184578; padding: 8px 12px; font-weight: 700; white-space: nowrap; }
 .rc-subtab.active { background: #145ca6; color: #fff; border-color: transparent; }
+
+@media (max-width: 430px) {
+  .rc-subtabs { gap: 6px; }
+  .rc-subtab {
+    padding: 6px 10px;
+    font-size: 12px;
+    line-height: 1.2;
+  }
+}
 .rc-pane { display: none; gap: 10px; }
 .rc-pane.active { display: grid; }
 #rcPhotosGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
