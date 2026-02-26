@@ -276,16 +276,16 @@ textarea::placeholder { color: color-mix(in oklab, var(--muted) 80%, transparent
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--space-1);
-  padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
+  padding: 4px 7px calc(4px + env(safe-area-inset-bottom));
   background: color-mix(in oklab, var(--bg) 85%, transparent);
   border-top: 1px solid var(--stroke);
   backdrop-filter: blur(12px) saturate(1.05);
 }
 
 .bottom-nav button {
-  min-height: 44px;
-  padding: 6px;
-  font-size: 0.8rem;
+  min-height: 40px;
+  padding: 4px 6px;
+  font-size: 0.76rem;
   border-radius: 10px;
 }
 
@@ -599,17 +599,18 @@ textarea::placeholder { color: color-mix(in oklab, var(--muted) 80%, transparent
   }
 
   body:not([data-route='modules']) .icon {
-    width: 19px;
-    height: 19px;
+    width: 18px;
+    height: 18px;
   }
 
   body:not([data-route='modules']) .bottom-nav button {
-    min-height: 38px;
-    font-size: 0.74rem;
+    min-height: 34px;
+    font-size: 0.7rem;
+    padding: 3px 5px;
   }
 
   body:not([data-route='modules']) .bottom-nav .label {
-    font-size: 0.7rem;
+    font-size: 0.64rem;
   }
 
   body:not([data-route='modules']) .ai-fab {
@@ -631,5 +632,5 @@ textarea::placeholder { color: color-mix(in oklab, var(--muted) 80%, transparent
   .topbar-subtitle { font-size: 0.7rem; }
   .ai-fab { width: 36px; min-width: 36px; height: 36px; }
   .app-shell { padding-bottom: calc(82px + env(safe-area-inset-bottom)); }
-  .bottom-nav { padding-top: 5px; }
+  .bottom-nav { padding-top: 3px; }
 }
