@@ -1,0 +1,27 @@
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --shadow-sm: 0 6px 18px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 12px 30px rgba(0, 0, 0, 0.3);
+  --text-xs: 0.74rem;
+  --text-sm: 0.82rem;
+  --text-md: 0.92rem;
+  --text-lg: 1.05rem;
+  --card-padding: var(--space-3);
+  --header-row-min: 44px;
+}
+
+@media (max-height: 780px) {
+  :root {
+    --card-padding: 10px;
+    --space-4: 14px;
+    --space-5: 16px;
+  }
+}
