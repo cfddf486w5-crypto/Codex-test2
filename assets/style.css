@@ -90,7 +90,7 @@ body {
   position: sticky;
   top: 0;
   z-index: 20;
-  padding: calc(env(safe-area-inset-top) + var(--space-2)) var(--space-3) var(--space-2);
+  padding: calc(env(safe-area-inset-top) + 6px) var(--space-2) 6px;
   background: color-mix(in oklab, var(--bg) 72%, transparent);
   border-bottom: 1px solid color-mix(in oklab, var(--stroke) 75%, transparent);
   backdrop-filter: blur(14px) saturate(1.1);
@@ -105,12 +105,13 @@ body {
 }
 
 .topbar-row-main {
-  min-height: var(--header-row-min);
-  grid-template-columns: minmax(78px, auto) 1fr auto;
+  min-height: 38px;
+  grid-template-columns: minmax(70px, auto) 1fr auto;
 }
 
 .topbar-row-meta {
   grid-template-columns: 1fr auto;
+  align-items: center;
 }
 
 .topbar h1 {
@@ -121,7 +122,8 @@ body {
 }
 
 .topbar-back {
-  display: none;
+  display: inline-flex;
+  align-items: center;
   min-height: 44px;
   padding: 0 10px;
   font-size: var(--text-sm);
@@ -129,8 +131,8 @@ body {
 
 .topbar-subtitle {
   margin: 0;
-  font-size: var(--text-xs);
-  line-height: 1.2;
+  font-size: 0.72rem;
+  line-height: 1.15;
 }
 
 .topbar-actions {
@@ -145,8 +147,8 @@ body {
   align-items: center;
   justify-self: end;
   gap: 6px;
-  min-height: 32px;
-  padding: 6px 9px;
+  min-height: 26px;
+  padding: 3px 8px;
   border-radius: 999px;
   border: 1px solid var(--stroke);
   background: color-mix(in oklab, var(--panel) 90%, transparent);
@@ -361,15 +363,24 @@ textarea::placeholder { color: color-mix(in oklab, var(--muted) 80%, transparent
 .module-card {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 7px;
   text-align: left;
-  min-height: 180px;
+  min-height: 164px;
   overflow: hidden;
 }
 
-.module-card img {
+.tile-icon-wrap {
   width: 100%;
-  aspect-ratio: 16 / 10;
+  min-height: 78px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+}
+
+.module-card img {
+  width: 88px;
+  height: 62px;
   object-fit: cover;
   border-radius: 12px;
   border: 1px solid var(--stroke);
@@ -382,14 +393,14 @@ textarea::placeholder { color: color-mix(in oklab, var(--muted) 80%, transparent
 
 @media (max-width: 430px) {
   .module-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-  .module-card { min-height: 162px; padding: 10px; }
+  .module-card { min-height: 148px; padding: 8px; }
   .module-card-title { font-size: 0.9rem; }
 }
 
 .ai-fab {
-  width: 42px;
-  min-width: 42px;
-  height: 42px;
+  width: 36px;
+  min-width: 36px;
+  height: 36px;
   border-radius: 999px;
   border: 1px solid color-mix(in oklab, var(--accent) 70%, white);
   background: linear-gradient(180deg, color-mix(in oklab, var(--accent) 95%, white), color-mix(in oklab, var(--accent-strong) 88%, black));
@@ -497,6 +508,27 @@ textarea::placeholder { color: color-mix(in oklab, var(--muted) 80%, transparent
 
 [data-theme='light'] {
   color-scheme: light;
+}
+
+
+.app-header {
+  box-shadow: 0 1px 0 color-mix(in oklab, var(--stroke) 60%, transparent);
+}
+
+.ai-header-btn {
+  margin-left: auto;
+  box-shadow: 0 6px 16px rgba(16, 38, 92, 0.24);
+}
+
+.page-intro {
+  padding-block: 10px;
+}
+
+.page-intro p {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .app-header h1 {
