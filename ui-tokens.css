@@ -16,6 +16,13 @@
   --text-lg: 1.05rem;
   --card-padding: var(--space-3);
   --header-row-min: 44px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --hero-title-lines: 2;
+  --hero-body-lines: 3;
+  --tile-icon-size: 72px;
+  --tile-min-height: 144px;
+  --tabbar-height: 66px;
 }
 
 @media (max-height: 780px) {
@@ -23,5 +30,9 @@
     --card-padding: 10px;
     --space-4: 14px;
     --space-5: 16px;
+    --hero-body-lines: 2;
+    --tile-icon-size: 64px;
+    --tile-min-height: 132px;
+    --tabbar-height: 60px;
   }
 }
