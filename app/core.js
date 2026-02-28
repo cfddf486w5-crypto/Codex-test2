@@ -772,7 +772,7 @@ async function bindSettingsStorageFaq(route) {
 
   const state = {
     currentStorageFilter: 'all',
-    adminEnabled: false,
+    adminEnabled: true,
     faqMerged: [],
     faqSearch: '',
     faqCategory: 'all',
@@ -969,19 +969,11 @@ async function bindSettingsStorageFaq(route) {
     showToast('Export CSV FAQ lancé.', 'success');
   };
 
-  const promptAdminPin = () => {
-    const pin = window.prompt('Entrez le code admin local');
-    if (pin === null) return;
-    if (pin === 'Adamour/////0000') {
-      state.adminEnabled = !state.adminEnabled;
-      if (adminStatus) adminStatus.textContent = state.adminEnabled ? 'Mode admin activé' : 'Mode admin désactivé';
-      if (adminToggleBtn) adminToggleBtn.textContent = state.adminEnabled ? 'Désactiver mode admin' : 'Activer mode admin';
-      showToast(state.adminEnabled ? 'Mode admin activé.' : 'Mode admin désactivé.', 'success');
-      updateStorageView();
-      return;
-    }
-    showToast('Code admin invalide.', 'error');
-  };
+  if (adminStatus) adminStatus.textContent = 'Mode admin activé (permanent)';
+  if (adminToggleBtn) {
+    adminToggleBtn.textContent = 'Mode admin permanent';
+    adminToggleBtn.disabled = true;
+  }
 
   storageRefreshBtn?.addEventListener('click', updateStorageView);
   storageCopyBtn?.addEventListener('click', async () => {
@@ -1008,8 +1000,6 @@ async function bindSettingsStorageFaq(route) {
     state.currentStorageFilter = 'faq';
     updateStorageView();
   });
-  adminToggleBtn?.addEventListener('click', promptAdminPin);
-
   faqSearchInput?.addEventListener('input', () => {
     state.faqSearch = faqSearchInput.value || '';
     state.faqPage = 1;

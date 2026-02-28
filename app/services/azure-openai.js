@@ -1,7 +1,7 @@
 const AZURE_OPENAI_STORAGE_KEY = 'DLWMS_AZURE_OPENAI_V1';
 
 const DEFAULT_AZURE_CFG = {
-  endpoint: '',
+  endpoint: 'https://alexdam28-2806-resource.services.ai.azure.com',
   deployment: '',
   apiVersion: '2024-10-21',
   apiKey: '',
