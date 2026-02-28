@@ -121,6 +121,31 @@
   </div>
 </section>
 
+<section class="card" id="settings-azure-openai-link">
+  <h2>IA Cloud · Azure OpenAI (frontend)</h2>
+  <p class="muted">Liaison optionnelle côté frontend. La clé API reste stockée localement dans ce navigateur.</p>
+  <p class="muted">Pour un mode production sécurisé, passer par un backend proxy au lieu d'exposer la clé côté client.</p>
+  <div class="row" style="gap:8px;flex-wrap:wrap;align-items:center;">
+    <a class="btn" href="https://oai.azure.com/" target="_blank" rel="noopener noreferrer">Ouvrir Azure AI Foundry</a>
+    <a class="btn" href="https://learn.microsoft.com/azure/ai-services/openai/reference" target="_blank" rel="noopener noreferrer">Doc API Azure OpenAI</a>
+  </div>
+  <div class="stack" style="margin-top:10px;gap:8px;">
+    <label for="settingsAzureEndpoint">Endpoint Azure (ex: https://mon-instance.openai.azure.com)</label>
+    <input id="settingsAzureEndpoint" class="input" placeholder="https://mon-instance.openai.azure.com" />
+    <label for="settingsAzureDeployment">Deployment</label>
+    <input id="settingsAzureDeployment" class="input" placeholder="gpt-4o-mini" />
+    <label for="settingsAzureApiVersion">API version</label>
+    <input id="settingsAzureApiVersion" class="input" placeholder="2024-10-21" />
+    <label for="settingsAzureApiKey">API key</label>
+    <input id="settingsAzureApiKey" class="input" type="password" autocomplete="off" placeholder="********" />
+  </div>
+  <div class="row" style="margin-top:10px;gap:8px;flex-wrap:wrap;">
+    <button type="button" id="settingsAzureSave" class="btn btn-primary">Sauvegarder liaison</button>
+    <button type="button" id="settingsAzureTest" class="btn">Tester Azure OpenAI</button>
+  </div>
+  <p class="muted" id="settingsAzureStatus">Statut: non testé</p>
+</section>
+
 <section class="card" id="settings-diagnostics">
   <h2>Diagnostics runtime (mode debug)</h2>
   <p class="muted">Désactivé par défaut. Affiche version app, build, taille storage, dernier import et erreurs récentes.</p>

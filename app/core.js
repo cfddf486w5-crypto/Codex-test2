@@ -22,6 +22,7 @@ import { initRuntimeCore, bindDiagnosticsPanel, runtimeLogger, markLastImport, s
 import { loadRuntimeConfig, getFeatureFlags, saveFeatureFlags } from './services/runtime-config.js';
 import { enqueueOperation, listOperations, flushQueue } from './services/offline-queue.js';
 import { getHealthStatus, getServerTime } from './services/health.js';
+import { loadAzureOpenAiConfig, saveAzureOpenAiConfig, testAzureOpenAiConnection } from './services/azure-openai.js';
 
 const appNode = document.getElementById('app');
 const nav = document.querySelector('.bottom-nav');
@@ -595,6 +596,13 @@ async function bindRuntimeOps(route) {
   const syncBtn = document.getElementById('settingsSyncNow');
   const exportDiagBtn = document.getElementById('settingsExportDiagnostics');
   const clearQueueBtn = document.getElementById('settingsClearQueue');
+  const azureEndpointInput = document.getElementById('settingsAzureEndpoint');
+  const azureDeploymentInput = document.getElementById('settingsAzureDeployment');
+  const azureApiVersionInput = document.getElementById('settingsAzureApiVersion');
+  const azureApiKeyInput = document.getElementById('settingsAzureApiKey');
+  const azureSaveBtn = document.getElementById('settingsAzureSave');
+  const azureTestBtn = document.getElementById('settingsAzureTest');
+  const azureStatus = document.getElementById('settingsAzureStatus');
 
   const featureContainer = document.getElementById('settingsFeatureFlags');
 
@@ -659,6 +667,46 @@ async function bindRuntimeOps(route) {
     showToast(`Sync terminée: ${result.sent} envoyés, ${result.errors} erreurs.`, result.errors ? 'error' : 'success');
     renderRuntime();
   });
+
+  const hydrateAzureConfig = () => {
+    const azureCfg = loadAzureOpenAiConfig();
+    if (azureEndpointInput) azureEndpointInput.value = azureCfg.endpoint || '';
+    if (azureDeploymentInput) azureDeploymentInput.value = azureCfg.deployment || '';
+    if (azureApiVersionInput) azureApiVersionInput.value = azureCfg.apiVersion || '';
+    if (azureApiKeyInput) azureApiKeyInput.value = azureCfg.apiKey || '';
+  };
+
+  azureSaveBtn?.addEventListener('click', () => {
+    saveAzureOpenAiConfig({
+      endpoint: azureEndpointInput?.value || '',
+      deployment: azureDeploymentInput?.value || '',
+      apiVersion: azureApiVersionInput?.value || '',
+      apiKey: azureApiKeyInput?.value || '',
+    });
+    if (azureStatus) azureStatus.textContent = 'Statut: configuration sauvegardée localement.';
+    showToast('Liaison Azure OpenAI sauvegardée.', 'success');
+  });
+
+  azureTestBtn?.addEventListener('click', async () => {
+    try {
+      const saved = saveAzureOpenAiConfig({
+        endpoint: azureEndpointInput?.value || '',
+        deployment: azureDeploymentInput?.value || '',
+        apiVersion: azureApiVersionInput?.value || '',
+        apiKey: azureApiKeyInput?.value || '',
+      });
+      if (azureStatus) azureStatus.textContent = 'Statut: test en cours...';
+      const probe = await testAzureOpenAiConnection(saved);
+      if (azureStatus) azureStatus.textContent = `Statut: connexion OK (${probe.model}).`;
+      showToast('Connexion Azure OpenAI validée.', 'success');
+    } catch (error) {
+      const message = error?.message || 'Erreur inconnue';
+      if (azureStatus) azureStatus.textContent = `Statut: échec (${message}).`;
+      showToast(`Test Azure OpenAI en erreur: ${message}`, 'error');
+    }
+  });
+
+  hydrateAzureConfig();
 
   if (!navigator.onLine) {
     enqueueOperation('runtime.offline_boot', { route, at: Date.now() });

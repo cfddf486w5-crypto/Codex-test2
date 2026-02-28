@@ -66,6 +66,16 @@ Application HTML/CSS/JS offline-first avec assistant IA local pour usage WMS (iP
 - Le job **Build and Deploy Job** publie la racine du projet (`app_location: "/"`) pour déployer l'application complète.
 - Secret requis côté GitHub: `AZURE_STATIC_WEB_APPS_API_TOKEN_BRAVE_HILL_08CA54B1E`.
 
+## Liaison frontend Azure OpenAI (optionnelle)
+- Ouvrir `Paramètres` > **IA Cloud · Azure OpenAI (frontend)**.
+- Renseigner:
+  - endpoint Azure,
+  - deployment,
+  - API version,
+  - API key.
+- Cliquer **Sauvegarder liaison** puis **Tester Azure OpenAI** pour vérifier la connectivité.
+- ⚠️ Cette liaison en frontend est pratique pour test/démo mais expose la clé API au navigateur: privilégier un proxy backend pour la production.
+
 ## ZIP final
 Pour générer l'archive livrable:
 ```bash
