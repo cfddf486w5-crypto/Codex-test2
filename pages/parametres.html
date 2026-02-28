@@ -81,8 +81,8 @@
     </div>
     <div id="settingsStorageKeysList" class="input" style="margin-top:8px;max-height:160px;overflow:auto;"></div>
     <div class="row" style="margin-top:8px;gap:8px;">
-      <button type="button" id="settingsAdminToggleBtn" class="btn">Activer mode admin</button>
-      <span id="settingsAdminStatus" class="muted">Mode admin désactivé</span>
+      <button type="button" id="settingsAdminToggleBtn" class="btn">Mode admin permanent</button>
+      <span id="settingsAdminStatus" class="muted">Mode admin activé (permanent)</span>
     </div>
     <pre id="settingsRulesStorageDump" class="input" style="white-space:pre-wrap;max-height:280px;overflow:auto;">Chargement...</pre>
   </div>
@@ -130,8 +130,8 @@
     <a class="btn" href="https://learn.microsoft.com/azure/ai-services/openai/reference" target="_blank" rel="noopener noreferrer">Doc API Azure OpenAI</a>
   </div>
   <div class="stack" style="margin-top:10px;gap:8px;">
-    <label for="settingsAzureEndpoint">Endpoint Azure (ex: https://mon-instance.openai.azure.com)</label>
-    <input id="settingsAzureEndpoint" class="input" placeholder="https://mon-instance.openai.azure.com" />
+    <label for="settingsAzureEndpoint">Endpoint Azure (défaut: https://alexdam28-2806-resource.services.ai.azure.com)</label>
+    <input id="settingsAzureEndpoint" class="input" placeholder="https://alexdam28-2806-resource.services.ai.azure.com" />
     <label for="settingsAzureDeployment">Deployment</label>
     <input id="settingsAzureDeployment" class="input" placeholder="gpt-4o-mini" />
     <label for="settingsAzureApiVersion">API version</label>
