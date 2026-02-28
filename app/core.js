@@ -258,12 +258,16 @@ function bindNetworkBadge() {
 }
 
 function bindInstall() {
+  const installButton = document.getElementById('installBtn');
+  if (!installButton) return;
+
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
-    document.getElementById('installBtn').classList.remove('hidden');
+    installButton.classList.remove('hidden');
   });
-  document.getElementById('installBtn').addEventListener('click', async () => {
+
+  installButton.addEventListener('click', async () => {
     if (!deferredPrompt) return;
     deferredPrompt.prompt();
     await deferredPrompt.userChoice;
