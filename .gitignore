@@ -1,2 +1,7 @@
 # Build artifacts
 *.zip
+# Local environment files
+.env
+.env.*
+!.env.azd.example
+

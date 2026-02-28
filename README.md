@@ -76,6 +76,21 @@ Application HTML/CSS/JS offline-first avec assistant IA local pour usage WMS (iP
 - Cliquer **Sauvegarder liaison** puis **Tester Azure OpenAI** pour vérifier la connectivité.
 - ⚠️ Cette liaison en frontend est pratique pour test/démo mais expose la clé API au navigateur: privilégier un proxy backend pour la production.
 
+
+## Variables d'environnement Azure AI Foundry (azd)
+- Un exemple prêt à l'emploi est fourni dans `.env.azd.example`.
+- Copier le fichier puis adapter si nécessaire:
+  - `cp .env.azd.example .env`
+- Variables incluses:
+  - `AZURE_EXISTING_AGENT_ID`
+  - `AZURE_ENV_NAME`
+  - `AZURE_LOCATION`
+  - `AZURE_SUBSCRIPTION_ID`
+  - `AZURE_EXISTING_AIPROJECT_ENDPOINT`
+  - `AZURE_EXISTING_AIPROJECT_RESOURCE_ID`
+  - `AZURE_EXISTING_RESOURCE_ID`
+  - `AZD_ALLOW_NON_EMPTY_FOLDER`
+
 ## ZIP final
 Pour générer l'archive livrable:
 ```bash
