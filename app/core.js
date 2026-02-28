@@ -26,11 +26,14 @@ import { loadAzureOpenAiConfig, saveAzureOpenAiConfig, testAzureOpenAiConnection
 
 const appNode = document.getElementById('app');
 const nav = document.querySelector('.bottom-nav');
-const ROOT_ROUTES = ['modules', 'history', 'parametres'];
+const ROOT_ROUTES = ['modules', 'ai-center', 'history', 'parametres'];
 const PRIMARY_IMMUTABLE_ROUTES = new Set(['modules', 'home', 'dashboard']);
 // BEGIN PATCH: NAV
 const ROUTE_ALIASES = {
   settings: 'parametres',
+  chatbot: 'ai-center',
+  assistant: 'ai-center',
+  ia: 'ai-center',
   modules: 'modules',
   history: 'history',
 };
@@ -224,7 +227,7 @@ function bindHashRouting() {
 
 
 function setupBottomNavIcons() {
-  const labels = { modules: 'Modules', history: 'Historique', parametres: 'Paramètres' };
+  const labels = { modules: 'Modules', 'ai-center': 'Chatbot', history: 'Historique', parametres: 'Paramètres' };
   nav?.querySelectorAll('[data-route]').forEach((button) => {
     const route = button.dataset.route;
     button.innerHTML = `${icon(route)}<span class="label">${labels[route] || route}</span>`;
@@ -543,7 +546,13 @@ function bindGlobalAiAssistant() {
     if (!question) return;
     const lower = question.toLowerCase();
     const found = canned.find((item) => lower.includes(item.key));
+    const wantsChatbot = /chatbot|assistant|ia center|ai center/.test(lower);
     let reply = found?.answer || 'Je peux guider vers Consolidation, Remise, Réception preuve, Inventaire et Paramètres.';
+
+    if (wantsChatbot) {
+      await navigate('ai-center');
+      reply = 'Chatbot ouvert ✅ Vous êtes maintenant dans AI Center.';
+    }
 
     const kb = await getWmsKb();
     const hits = searchWmsKb(kb, lower, 1);
