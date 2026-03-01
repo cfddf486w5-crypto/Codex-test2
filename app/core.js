@@ -22,19 +22,20 @@ import { initRuntimeCore, bindDiagnosticsPanel, runtimeLogger, markLastImport, s
 import { loadRuntimeConfig, getFeatureFlags, saveFeatureFlags } from './services/runtime-config.js';
 import { enqueueOperation, listOperations, flushQueue } from './services/offline-queue.js';
 import { getHealthStatus, getServerTime } from './services/health.js';
-import { loadAzureOpenAiConfig, saveAzureOpenAiConfig, testAzureOpenAiConnection } from './services/azure-openai.js';
+import { loadAzureOpenAiConfig, saveAzureOpenAiConfig, testAzureOpenAiConnection, sendAzureOpenAiChat } from './services/azure-openai.js';
 
 const appNode = document.getElementById('app');
 const nav = document.querySelector('.bottom-nav');
-const ROOT_ROUTES = ['modules', 'ai-center', 'history', 'parametres'];
+const ROOT_ROUTES = ['modules', 'ia-foundry', 'history', 'parametres'];
 const PRIMARY_IMMUTABLE_ROUTES = new Set(['modules', 'home', 'dashboard']);
 // BEGIN PATCH: NAV
 const ROUTE_ALIASES = {
   settings: 'parametres',
-  chatbot: 'ai-center',
-  assistant: 'ai-center',
-  ia: 'ai-center',
+  chatbot: 'ia-foundry',
+  assistant: 'ia-foundry',
+  ia: 'ia-foundry',
   modules: 'modules',
+  'ai-center': 'ia-foundry',
   history: 'history',
 };
 
@@ -191,7 +192,7 @@ async function boot() {
   bindHashRouting();
   const initialRoute = parseHashRoute() || localStorage.getItem('lastRoute') || 'modules';
   await navigate(initialRoute);
-  setNavBadge('ai-center', 'IA');
+  setNavBadge('ia-foundry', 'IA');
   if ('serviceWorker' in navigator) await navigator.serviceWorker.register('./sw.js');
   setConfig('app_name', 'DL.WMS IA Ultimate');
   window.addEventListener('keydown', async (event) => {
@@ -227,7 +228,7 @@ function bindHashRouting() {
 
 
 function setupBottomNavIcons() {
-  const labels = { modules: 'Modules', 'ai-center': 'Chatbot', history: 'Historique', parametres: 'Paramètres' };
+  const labels = { modules: 'Modules', 'ia-foundry': 'IA', history: 'Historique', parametres: 'Paramètres' };
   nav?.querySelectorAll('[data-route]').forEach((button) => {
     const route = button.dataset.route;
     button.innerHTML = `${icon(route)}<span class="label">${labels[route] || route}</span>`;
@@ -323,6 +324,7 @@ async function navigate(route, options = {}) {
   bindSettingsAiMemory(normalizedRoute);
   await bindSettingsStorageFaq(normalizedRoute);
   await bindRuntimeOps(normalizedRoute);
+  bindIaFoundryPage(normalizedRoute);
   if (normalizedRoute === 'parametres') bindDiagnosticsPanel();
   bindHomePage(normalizedRoute);
   bindLayoutPage(normalizedRoute);
@@ -726,6 +728,111 @@ async function bindRuntimeOps(route) {
   }
 
   await renderRuntime();
+}
+
+
+const IA_FOUNDRY_CHAT_KEY = 'DLWMS_IA_FOUNDRY_CHAT_V1';
+
+function bindIaFoundryPage(route) {
+  if (route !== 'ia-foundry') return;
+
+  const endpointInput = document.getElementById('iaFoundryEndpoint');
+  const deploymentInput = document.getElementById('iaFoundryDeployment');
+  const versionInput = document.getElementById('iaFoundryApiVersion');
+  const apiKeyInput = document.getElementById('iaFoundryApiKey');
+  const statusNode = document.getElementById('iaFoundryStatus');
+  const sendBtn = document.getElementById('iaFoundrySend');
+  const testBtn = document.getElementById('iaFoundryTest');
+  const saveBtn = document.getElementById('iaFoundrySave');
+  const clearBtn = document.getElementById('iaFoundryClear');
+  const promptNode = document.getElementById('iaFoundryPrompt');
+  const messagesNode = document.getElementById('iaFoundryMessages');
+
+  if (!endpointInput || !deploymentInput || !versionInput || !apiKeyInput || !statusNode || !promptNode || !messagesNode) return;
+
+  const readChat = () => safeParseJson(localStorage.getItem(IA_FOUNDRY_CHAT_KEY), []);
+  const writeChat = (history) => localStorage.setItem(IA_FOUNDRY_CHAT_KEY, JSON.stringify(history.slice(-30)));
+
+  const renderChat = () => {
+    const history = readChat();
+    messagesNode.innerHTML = history.length
+      ? history.map((item) => `<p><strong>${item.role === 'assistant' ? 'IA' : 'Moi'}:</strong> ${item.content}</p>`).join('')
+      : '<p class="muted">Aucun message pour le moment.</p>';
+    messagesNode.scrollTop = messagesNode.scrollHeight;
+  };
+
+  const hydrateConfig = () => {
+    const cfg = loadAzureOpenAiConfig();
+    endpointInput.value = cfg.endpoint || '';
+    deploymentInput.value = cfg.deployment || '';
+    versionInput.value = cfg.apiVersion || '';
+    apiKeyInput.value = cfg.apiKey || '';
+  };
+
+  const persistConfig = () => saveAzureOpenAiConfig({
+    endpoint: endpointInput.value || '',
+    deployment: deploymentInput.value || '',
+    apiVersion: versionInput.value || '',
+    apiKey: apiKeyInput.value || '',
+  });
+
+  saveBtn?.addEventListener('click', () => {
+    persistConfig();
+    statusNode.textContent = 'Statut: configuration sauvegardée.';
+    showToast('Configuration Azure sauvegardée.', 'success');
+  });
+
+  testBtn?.addEventListener('click', async () => {
+    try {
+      const cfg = persistConfig();
+      statusNode.textContent = 'Statut: test en cours...';
+      const probe = await testAzureOpenAiConnection(cfg);
+      statusNode.textContent = `Statut: connexion OK (${probe.model}).`;
+      showToast('Connexion Azure validée.', 'success');
+    } catch (error) {
+      const message = error?.message || 'Erreur inconnue';
+      statusNode.textContent = `Statut: échec (${message}).`;
+      showToast(`Test Azure en erreur: ${message}`, 'error');
+    }
+  });
+
+  clearBtn?.addEventListener('click', () => {
+    localStorage.removeItem(IA_FOUNDRY_CHAT_KEY);
+    renderChat();
+    statusNode.textContent = 'Statut: historique effacé.';
+  });
+
+  sendBtn?.addEventListener('click', async () => {
+    const message = promptNode.value.trim();
+    if (!message) return;
+
+    const history = readChat();
+    history.push({ role: 'user', content: message, at: Date.now() });
+    writeChat(history);
+    renderChat();
+    promptNode.value = '';
+    statusNode.textContent = 'Statut: envoi du message...';
+
+    try {
+      const cfg = persistConfig();
+      const payload = history.map((item) => ({ role: item.role, content: item.content }));
+      const result = await sendAzureOpenAiChat({ config: cfg, messages: payload });
+      history.push({ role: 'assistant', content: result.reply, at: Date.now() });
+      writeChat(history);
+      renderChat();
+      statusNode.textContent = `Statut: réponse reçue (${result.model}).`;
+    } catch (error) {
+      const messageError = error?.message || 'Erreur inconnue';
+      history.push({ role: 'assistant', content: `Erreur: ${messageError}`, at: Date.now() });
+      writeChat(history);
+      renderChat();
+      statusNode.textContent = `Statut: échec (${messageError}).`;
+      showToast(`Envoi Azure en erreur: ${messageError}`, 'error');
+    }
+  });
+
+  hydrateConfig();
+  renderChat();
 }
 
 function safeParseJson(raw, fallback) {
