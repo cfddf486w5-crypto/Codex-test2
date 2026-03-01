@@ -215,6 +215,13 @@ button, input, select, textarea {
   border-radius: var(--radius-sm);
   border: 1px solid transparent;
   min-height: 44px;
+}
+
+/*
+ * iOS Safari can block native <select> opening when touch-action is forced
+ * on form controls. Keep fast-tap behavior on buttons only.
+ */
+button {
   touch-action: manipulation;
 }
 
