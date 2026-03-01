@@ -51,6 +51,34 @@ function assertAzureConfig(config) {
   if (!config.apiKey) throw new Error('API key Azure manquante.');
 }
 
+
+
+function normalizeMessageContent(content = '') {
+  return String(content ?? '').trim();
+}
+
+function buildChatUrl(config) {
+  return `${config.endpoint}/openai/deployments/${encodeURIComponent(config.deployment)}/chat/completions?api-version=${encodeURIComponent(config.apiVersion)}`;
+}
+
+async function callAzureChatCompletions(config, payload) {
+  const response = await fetch(buildChatUrl(config), {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'api-key': config.apiKey,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    const details = await response.text();
+    throw new Error(`Azure OpenAI HTTP ${response.status}: ${details.slice(0, 220)}`);
+  }
+
+  return response.json();
+}
+
 export async function testAzureOpenAiConnection(config = loadAzureOpenAiConfig()) {
   const resolved = {
     endpoint: normalizeEndpoint(config.endpoint),
@@ -61,34 +89,58 @@ export async function testAzureOpenAiConnection(config = loadAzureOpenAiConfig()
 
   assertAzureConfig(resolved);
 
-  const url = `${resolved.endpoint}/openai/deployments/${encodeURIComponent(resolved.deployment)}/chat/completions?api-version=${encodeURIComponent(resolved.apiVersion)}`;
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'api-key': resolved.apiKey,
-    },
-    body: JSON.stringify({
-      messages: [
-        { role: 'system', content: 'You are a connectivity checker.' },
-        { role: 'user', content: 'Reply with: OK' },
-      ],
-      max_tokens: 8,
-      temperature: 0,
-    }),
+  const json = await callAzureChatCompletions(resolved, {
+    messages: [
+      { role: 'system', content: 'You are a connectivity checker.' },
+      { role: 'user', content: 'Reply with: OK' },
+    ],
+    max_tokens: 8,
+    temperature: 0,
   });
-
-  if (!response.ok) {
-    const details = await response.text();
-    throw new Error(`Azure OpenAI HTTP ${response.status}: ${details.slice(0, 180)}`);
-  }
-
-  const json = await response.json();
   return {
     ok: true,
     id: json.id || null,
     model: json.model || resolved.deployment,
     usage: json.usage || null,
     message: json.choices?.[0]?.message?.content || 'Réponse reçue.',
+  };
+}
+
+
+export async function sendAzureOpenAiChat({
+  messages = [],
+  systemPrompt = 'Tu es un assistant IA pour les opérations logistiques.',
+  temperature = 0.3,
+  maxTokens = 600,
+  config = loadAzureOpenAiConfig(),
+} = {}) {
+  const resolved = {
+    endpoint: normalizeEndpoint(config.endpoint),
+    deployment: String(config.deployment || '').trim(),
+    apiVersion: String(config.apiVersion || DEFAULT_AZURE_CFG.apiVersion).trim(),
+    apiKey: String(config.apiKey || ''),
+  };
+
+  assertAzureConfig(resolved);
+
+  const normalizedMessages = Array.isArray(messages)
+    ? messages
+      .map((item) => ({ role: item?.role === 'assistant' ? 'assistant' : 'user', content: normalizeMessageContent(item?.content) }))
+      .filter((item) => item.content)
+    : [];
+
+  if (!normalizedMessages.length) throw new Error('Message utilisateur manquant.');
+
+  const json = await callAzureChatCompletions(resolved, {
+    messages: [{ role: 'system', content: normalizeMessageContent(systemPrompt) || 'Tu es un assistant utile.' }, ...normalizedMessages],
+    temperature: Number.isFinite(Number(temperature)) ? Number(temperature) : 0.3,
+    max_tokens: Number.isFinite(Number(maxTokens)) ? Number(maxTokens) : 600,
+  });
+
+  return {
+    id: json.id || null,
+    model: json.model || resolved.deployment,
+    usage: json.usage || null,
+    reply: normalizeMessageContent(json.choices?.[0]?.message?.content) || 'Réponse vide.',
   };
 }
