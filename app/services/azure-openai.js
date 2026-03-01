@@ -2,7 +2,7 @@ const AZURE_OPENAI_STORAGE_KEY = 'DLWMS_AZURE_OPENAI_V1';
 
 const DEFAULT_AZURE_CFG = {
   endpoint: 'https://alexdam28-2806-resource.services.ai.azure.com',
-  deployment: '',
+  deployment: 'gpt-4.1',
   apiVersion: '2024-10-21',
   apiKey: '',
 };
@@ -18,7 +18,15 @@ function safeParseJson(raw, fallback) {
 }
 
 function normalizeEndpoint(value = '') {
-  return String(value || '').trim().replace(/\/+$/, '');
+  const trimmed = String(value || '').trim().replace(/\/+$/, '');
+  if (!trimmed) return '';
+  try {
+    const parsed = new URL(trimmed);
+    if (parsed.pathname.includes('/api/projects/')) return parsed.origin;
+  } catch {
+    return trimmed;
+  }
+  return trimmed;
 }
 
 export function loadAzureOpenAiConfig(storage = localStorage) {
