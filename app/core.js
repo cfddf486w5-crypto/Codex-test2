@@ -747,6 +747,9 @@ function bindIaFoundryPage(route) {
   const promptNode = document.getElementById('iaFoundryPrompt');
   const messagesNode = document.getElementById('iaFoundryMessages');
 
+  let autoSendTimer = null;
+  let isSending = false;
+
   if (!endpointInput || !deploymentInput || !versionInput || !apiKeyInput || !statusNode || !promptNode || !messagesNode) return;
 
   const readChat = () => safeParseJson(localStorage.getItem(IA_FOUNDRY_CHAT_KEY), []);
@@ -791,10 +794,12 @@ function bindIaFoundryPage(route) {
     statusNode.textContent = 'Statut: historique effacé.';
   });
 
-  sendBtn?.addEventListener('click', async () => {
+  const submitFoundryMessage = async () => {
+    if (isSending) return;
     const message = promptNode.value.trim();
     if (!message) return;
 
+    isSending = true;
     const history = readChat();
     history.push({ role: 'user', content: message, at: Date.now() });
     writeChat(history);
@@ -817,14 +822,25 @@ function bindIaFoundryPage(route) {
       renderChat();
       statusNode.textContent = `Statut: échec (${messageError}).`;
       showToast(`Envoi Azure en erreur: ${messageError}`, 'error');
+    } finally {
+      isSending = false;
+    }
+  };
+
+  sendBtn?.addEventListener('click', submitFoundryMessage);
+
+  promptNode.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      submitFoundryMessage();
     }
   });
 
-  promptNode.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
-      event.preventDefault();
-      sendBtn?.click();
-    }
+  promptNode.addEventListener('input', () => {
+    if (autoSendTimer) clearTimeout(autoSendTimer);
+    autoSendTimer = setTimeout(() => {
+      submitFoundryMessage();
+    }, 1200);
   });
 
   hydrateConfig();
@@ -2394,6 +2410,23 @@ async function bindSharedActions() {
   const draftStatusNode = document.getElementById('promptDraftStatus');
   const presetNode = document.getElementById('promptPreset');
   const categoryNode = document.getElementById('promptCategory');
+  const runAiBtn = document.getElementById('runAi');
+
+  let autoRunTimer = null;
+  let aiBusy = false;
+
+  const refreshPromptPresets = () => {
+    if (!presetNode) return;
+    presetNode.innerHTML = '<option value="">Sélectionner un prompt...</option>';
+    let selected = WAREHOUSE_PROMPT_PRESETS;
+    if (categoryNode?.value) selected = selected.filter((p) => p.category === categoryNode.value);
+    for (const preset of selected) {
+      const option = document.createElement('option');
+      option.value = preset.prompt;
+      option.textContent = preset.label;
+      presetNode.append(option);
+    }
+  };
 
   const updateDraftStatus = (message) => {
     if (!draftStatusNode) return;
@@ -2450,30 +2483,25 @@ async function bindSharedActions() {
     updateDraftStatus('dernier prompt restauré.');
   });
 
-  if (presetNode) {
-    presetNode.innerHTML = '<option value="">Sélectionner un prompt...</option>';
-    let selected = WAREHOUSE_PROMPT_PRESETS;
-    if (categoryNode?.value) selected = selected.filter((p) => p.category === categoryNode.value);
-    for (const preset of selected) {
-      const option = document.createElement('option');
-      option.value = preset.prompt;
-      option.textContent = preset.label;
-      presetNode.append(option);
-    }
-  }
+  refreshPromptPresets();
 
-  categoryNode?.addEventListener('change', debounce(() => bindSharedActions(), 120), { once: true });
+  categoryNode?.addEventListener('change', refreshPromptPresets);
 
-  document.getElementById('usePromptPreset')?.addEventListener('click', () => {
+  const applyPromptPreset = () => {
     if (!presetNode?.value) return;
     localStorage.setItem('selectedPromptPreset', presetNode.value);
     if (promptNode) {
       promptNode.value = presetNode.value;
+      localStorage.setItem(PROMPT_DRAFT_KEY, presetNode.value);
+      updateDraftStatus('prérempli depuis le menu de prompt.');
       updateAiPanels('Prompt pré-enregistré injecté.', 'Prompt prêt à être envoyé.');
       return;
     }
     updateAiPanels('Prompt sélectionné.', 'Ouvrez la page principale pour exécuter le prompt.');
-  });
+  };
+
+  presetNode?.addEventListener('change', applyPromptPreset);
+  document.getElementById('usePromptPreset')?.addEventListener('click', applyPromptPreset);
 
   document.getElementById('sendPromptToMain')?.addEventListener('click', async () => {
     if (!presetNode?.value) return;
@@ -2515,9 +2543,11 @@ async function bindSharedActions() {
   document.getElementById('openLiaGuide')?.addEventListener('click', () => window.open(LIA_GUIDE_PATH, '_blank', 'noopener'));
   document.getElementById('openGlobalHistory')?.addEventListener('click', () => window.DLWMS_openHistory?.({}));
 
-  document.getElementById('runAi')?.addEventListener('click', async () => {
+  const submitAiPrompt = async () => {
+    if (aiBusy) return;
     const prompt = promptNode?.value.trim();
     if (!prompt) return;
+    aiBusy = true;
     localStorage.setItem(LAST_SENT_PROMPT_KEY, prompt);
     localStorage.removeItem(PROMPT_DRAFT_KEY);
     updateDraftStatus('envoyé et archivé localement.');
@@ -2531,7 +2561,24 @@ async function bindSharedActions() {
       const scoreNode = document.getElementById('aiScore');
       if (scoreNode) scoreNode.textContent = `Score décision: ${decision.score}`;
       updateAiPanels(`IA en action: ${prompt}`, decision.reasoning);
+      aiBusy = false;
     };
+  };
+
+  runAiBtn?.addEventListener('click', submitAiPrompt);
+
+  promptNode?.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      submitAiPrompt();
+    }
+  });
+
+  promptNode?.addEventListener('input', () => {
+    if (autoRunTimer) clearTimeout(autoRunTimer);
+    autoRunTimer = setTimeout(() => {
+      submitAiPrompt();
+    }, 1000);
   });
 
   document.getElementById('cancelPrompt')?.addEventListener('click', () => {
