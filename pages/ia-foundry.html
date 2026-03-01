@@ -16,6 +16,12 @@
       <input id="iaFoundryApiVersion" class="input" placeholder="2024-10-21" />
       <label for="iaFoundryApiKey">API key</label>
       <input id="iaFoundryApiKey" class="input" type="password" autocomplete="off" placeholder="********" />
+      <label for="iaFoundryTemperature">Température (0 à 1)</label>
+      <input id="iaFoundryTemperature" class="input" type="number" min="0" max="1" step="0.1" placeholder="0.2" />
+      <label for="iaFoundryMaxTokens">Max tokens (256 à 4000)</label>
+      <input id="iaFoundryMaxTokens" class="input" type="number" min="256" max="4000" step="1" placeholder="1400" />
+      <label for="iaFoundrySystemPrompt">System prompt (optimisé)</label>
+      <textarea id="iaFoundrySystemPrompt" class="input" rows="6" placeholder="Instructions système pour guider l'IA"></textarea>
       <div class="row">
         <button type="button" id="iaFoundrySave" class="btn">Sauvegarder</button>
       </div>

@@ -740,6 +740,9 @@ function bindIaFoundryPage(route) {
   const deploymentInput = document.getElementById('iaFoundryDeployment');
   const versionInput = document.getElementById('iaFoundryApiVersion');
   const apiKeyInput = document.getElementById('iaFoundryApiKey');
+  const temperatureInput = document.getElementById('iaFoundryTemperature');
+  const maxTokensInput = document.getElementById('iaFoundryMaxTokens');
+  const systemPromptInput = document.getElementById('iaFoundrySystemPrompt');
   const statusNode = document.getElementById('iaFoundryStatus');
   const sendBtn = document.getElementById('iaFoundrySend');
   const saveBtn = document.getElementById('iaFoundrySave');
@@ -749,7 +752,7 @@ function bindIaFoundryPage(route) {
 
   let isSending = false;
 
-  if (!endpointInput || !deploymentInput || !versionInput || !apiKeyInput || !statusNode || !promptNode || !messagesNode) return;
+  if (!endpointInput || !deploymentInput || !versionInput || !apiKeyInput || !temperatureInput || !maxTokensInput || !systemPromptInput || !statusNode || !promptNode || !messagesNode) return;
 
   const readChat = () => safeParseJson(localStorage.getItem(IA_FOUNDRY_CHAT_KEY), []);
   const writeChat = (history) => localStorage.setItem(IA_FOUNDRY_CHAT_KEY, JSON.stringify(history.slice(-30)));
@@ -772,6 +775,9 @@ function bindIaFoundryPage(route) {
     deploymentInput.value = cfg.deployment || '';
     versionInput.value = cfg.apiVersion || '';
     apiKeyInput.value = cfg.apiKey || '';
+    temperatureInput.value = Number(cfg.temperature ?? 0.2).toFixed(1);
+    maxTokensInput.value = String(cfg.maxTokens ?? 1400);
+    systemPromptInput.value = cfg.systemPrompt || '';
   };
 
   const persistConfig = () => saveAzureOpenAiConfig({
@@ -779,6 +785,9 @@ function bindIaFoundryPage(route) {
     deployment: deploymentInput.value || '',
     apiVersion: versionInput.value || '',
     apiKey: apiKeyInput.value || '',
+    temperature: temperatureInput.value || '',
+    maxTokens: maxTokensInput.value || '',
+    systemPrompt: systemPromptInput.value || '',
   });
 
   saveBtn?.addEventListener('click', () => {
@@ -809,7 +818,13 @@ function bindIaFoundryPage(route) {
     try {
       const cfg = persistConfig();
       const payload = history.map((item) => ({ role: item.role, content: item.content }));
-      const result = await sendAzureOpenAiChat({ config: cfg, messages: payload });
+      const result = await sendAzureOpenAiChat({
+        config: cfg,
+        messages: payload,
+        temperature: cfg.temperature,
+        maxTokens: cfg.maxTokens,
+        systemPrompt: cfg.systemPrompt,
+      });
       history.push({ role: 'assistant', content: result.reply, at: Date.now() });
       writeChat(history);
       renderChat();
