@@ -1,33 +1,37 @@
-<section class="card">
-  <h2>IA Azure Foundry · Discussion en direct</h2>
-  <p class="muted">Configurez votre endpoint Azure OpenAI puis discutez avec votre déploiement Foundry sans quitter l'application.</p>
+<section class="card ia-foundry-hero">
+  <p class="pill">Assistant IA Foundry</p>
+  <h2>Discussion en direct avec Azure OpenAI</h2>
+  <p class="muted">Envoyez un message et recevez la réponse immédiatement. Les réglages API restent disponibles dans le menu ci-dessous.</p>
 </section>
 
 <section class="card">
-  <h3>Connexion Azure</h3>
-  <div class="stack">
-    <label for="iaFoundryEndpoint">Endpoint Azure</label>
-    <input id="iaFoundryEndpoint" class="input" placeholder="https://votre-ressource.services.ai.azure.com" />
-    <label for="iaFoundryDeployment">Deployment</label>
-    <input id="iaFoundryDeployment" class="input" placeholder="gpt-4.1" />
-    <label for="iaFoundryApiVersion">API version</label>
-    <input id="iaFoundryApiVersion" class="input" placeholder="2024-10-21" />
-    <label for="iaFoundryApiKey">API key</label>
-    <input id="iaFoundryApiKey" class="input" type="password" autocomplete="off" placeholder="********" />
-    <div class="row">
-      <button type="button" id="iaFoundrySave" class="btn btn-primary">Sauvegarder</button>
-      <button type="button" id="iaFoundryTest" class="btn">Tester la connexion</button>
-      <button type="button" id="iaFoundryClear" class="btn btn-ghost">Effacer le chat</button>
+  <details class="ia-foundry-config">
+    <summary>Options API Azure</summary>
+    <div class="stack ia-foundry-config-body">
+      <label for="iaFoundryEndpoint">Endpoint Azure</label>
+      <input id="iaFoundryEndpoint" class="input" placeholder="https://votre-ressource.services.ai.azure.com" />
+      <label for="iaFoundryDeployment">Deployment</label>
+      <input id="iaFoundryDeployment" class="input" placeholder="gpt-4.1" />
+      <label for="iaFoundryApiVersion">API version</label>
+      <input id="iaFoundryApiVersion" class="input" placeholder="2024-10-21" />
+      <label for="iaFoundryApiKey">API key</label>
+      <input id="iaFoundryApiKey" class="input" type="password" autocomplete="off" placeholder="********" />
+      <div class="row">
+        <button type="button" id="iaFoundrySave" class="btn">Sauvegarder</button>
+      </div>
     </div>
-    <p id="iaFoundryStatus" class="muted">Statut: prêt.</p>
-  </div>
+  </details>
+  <p id="iaFoundryStatus" class="muted">Statut: prêt à envoyer.</p>
 </section>
 
-<section class="card">
-  <h3>Conversation</h3>
-  <div id="iaFoundryMessages" class="log" style="min-height:220px;max-height:45vh;overflow:auto;"></div>
+<section class="card ia-foundry-chat-card">
+  <div class="card-header">
+    <h3>Conversation</h3>
+    <button type="button" id="iaFoundryClear" class="btn btn-ghost">Effacer le chat</button>
+  </div>
+  <div id="iaFoundryMessages" class="ia-foundry-messages"></div>
   <label for="iaFoundryPrompt">Message</label>
-  <textarea id="iaFoundryPrompt" placeholder="Écris votre demande pour Azure Foundry..."></textarea>
+  <textarea id="iaFoundryPrompt" class="input ia-foundry-textarea" placeholder="Décrivez votre besoin (stock, réception, analyse, etc.)..."></textarea>
   <div class="row">
     <button type="button" id="iaFoundrySend" class="btn btn-primary">Envoyer</button>
   </div>

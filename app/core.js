@@ -742,7 +742,6 @@ function bindIaFoundryPage(route) {
   const apiKeyInput = document.getElementById('iaFoundryApiKey');
   const statusNode = document.getElementById('iaFoundryStatus');
   const sendBtn = document.getElementById('iaFoundrySend');
-  const testBtn = document.getElementById('iaFoundryTest');
   const saveBtn = document.getElementById('iaFoundrySave');
   const clearBtn = document.getElementById('iaFoundryClear');
   const promptNode = document.getElementById('iaFoundryPrompt');
@@ -756,7 +755,11 @@ function bindIaFoundryPage(route) {
   const renderChat = () => {
     const history = readChat();
     messagesNode.innerHTML = history.length
-      ? history.map((item) => `<p><strong>${item.role === 'assistant' ? 'IA' : 'Moi'}:</strong> ${item.content}</p>`).join('')
+      ? history.map((item) => {
+        const author = item.role === 'assistant' ? 'IA' : 'Moi';
+        const roleClass = item.role === 'assistant' ? 'assistant' : 'user';
+        return `<article class="ia-foundry-message ${roleClass}"><p class="ia-foundry-message-author">${author}</p><p>${item.content}</p></article>`;
+      }).join('')
       : '<p class="muted">Aucun message pour le moment.</p>';
     messagesNode.scrollTop = messagesNode.scrollHeight;
   };
@@ -780,20 +783,6 @@ function bindIaFoundryPage(route) {
     persistConfig();
     statusNode.textContent = 'Statut: configuration sauvegardée.';
     showToast('Configuration Azure sauvegardée.', 'success');
-  });
-
-  testBtn?.addEventListener('click', async () => {
-    try {
-      const cfg = persistConfig();
-      statusNode.textContent = 'Statut: test en cours...';
-      const probe = await testAzureOpenAiConnection(cfg);
-      statusNode.textContent = `Statut: connexion OK (${probe.model}).`;
-      showToast('Connexion Azure validée.', 'success');
-    } catch (error) {
-      const message = error?.message || 'Erreur inconnue';
-      statusNode.textContent = `Statut: échec (${message}).`;
-      showToast(`Test Azure en erreur: ${message}`, 'error');
-    }
   });
 
   clearBtn?.addEventListener('click', () => {
@@ -828,6 +817,13 @@ function bindIaFoundryPage(route) {
       renderChat();
       statusNode.textContent = `Statut: échec (${messageError}).`;
       showToast(`Envoi Azure en erreur: ${messageError}`, 'error');
+    }
+  });
+
+  promptNode.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
+      event.preventDefault();
+      sendBtn?.click();
     }
   });
 
