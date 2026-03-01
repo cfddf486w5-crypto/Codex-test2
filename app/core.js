@@ -747,7 +747,6 @@ function bindIaFoundryPage(route) {
   const promptNode = document.getElementById('iaFoundryPrompt');
   const messagesNode = document.getElementById('iaFoundryMessages');
 
-  let autoSendTimer = null;
   let isSending = false;
 
   if (!endpointInput || !deploymentInput || !versionInput || !apiKeyInput || !statusNode || !promptNode || !messagesNode) return;
@@ -834,13 +833,6 @@ function bindIaFoundryPage(route) {
       event.preventDefault();
       submitFoundryMessage();
     }
-  });
-
-  promptNode.addEventListener('input', () => {
-    if (autoSendTimer) clearTimeout(autoSendTimer);
-    autoSendTimer = setTimeout(() => {
-      submitFoundryMessage();
-    }, 1200);
   });
 
   hydrateConfig();

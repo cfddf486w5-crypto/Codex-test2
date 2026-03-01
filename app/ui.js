@@ -1,6 +1,7 @@
 const navBadges = new Map();
 const busyRegistry = new Map();
 const accordions = new Map();
+let accordionDelegationBound = false;
 let toastTimer;
 let activeModal;
 let lastFocusedBeforeModal;
@@ -129,24 +130,34 @@ export function showToast(message, tone = 'info', timeout = 2200) {
 }
 
 export function bindAccordions(root = document) {
+  if (!accordionDelegationBound) {
+    document.addEventListener('click', (event) => {
+      const trigger = event.target.closest?.('[data-accordion-trigger]');
+      if (!(trigger instanceof HTMLElement)) return;
+      ui.accordion.toggle(trigger);
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      const trigger = event.target.closest?.('[data-accordion-trigger]');
+      if (!(trigger instanceof HTMLElement)) return;
+      event.preventDefault();
+      ui.accordion.toggle(trigger);
+    });
+    accordionDelegationBound = true;
+  }
+
   root.querySelectorAll('[data-accordion-trigger]').forEach((trigger) => {
     if (trigger.dataset.bound) return;
     trigger.dataset.bound = '1';
     const panelId = trigger.getAttribute('aria-controls');
-    const panel = panelId ? document.getElementById(panelId) : null;
-    if (!panel) return;
-    const lockOpen = trigger.hasAttribute('data-accordion-lock-open') || panel.hasAttribute('data-accordion-lock-open');
+    const panel = resolveAccordionPanel(trigger, root, panelId);
+    const lockOpen = trigger.hasAttribute('data-accordion-lock-open') || panel?.hasAttribute('data-accordion-lock-open');
     const expanded = lockOpen || trigger.getAttribute('aria-expanded') === 'true';
     trigger.setAttribute('aria-expanded', String(expanded));
-    panel.hidden = !expanded;
-    panel.setAttribute('data-state', expanded ? 'open' : 'closed');
-
-    trigger.addEventListener('click', () => ui.accordion.toggle(trigger));
-    trigger.addEventListener('keydown', (event) => {
-      if (event.key !== 'Enter' && event.key !== ' ') return;
-      event.preventDefault();
-      ui.accordion.toggle(trigger);
-    });
+    if (panel) {
+      panel.hidden = !expanded;
+      panel.setAttribute('data-state', expanded ? 'open' : 'closed');
+    }
   });
 }
 
@@ -156,7 +167,7 @@ function toggleAccordion(triggerOrId) {
     : triggerOrId;
   if (!trigger) return;
   const panelId = trigger.getAttribute('aria-controls');
-  const panel = panelId ? document.getElementById(panelId) : null;
+  const panel = resolveAccordionPanel(trigger, document, panelId);
   if (!panel) return;
   const lockOpen = trigger.hasAttribute('data-accordion-lock-open') || panel.hasAttribute('data-accordion-lock-open');
   if (lockOpen) {
@@ -171,6 +182,20 @@ function toggleAccordion(triggerOrId) {
   panel.hidden = !next;
   panel.setAttribute('data-state', next ? 'open' : 'closed');
   accordions.set(panelId, next);
+}
+
+function resolveAccordionPanel(trigger, root, panelId) {
+  const escapedId = panelId && typeof CSS?.escape === 'function' ? CSS.escape(panelId) : panelId;
+  if (escapedId) {
+    const sameScopePanel = root.querySelector?.(`#${escapedId}`);
+    if (sameScopePanel) return sameScopePanel;
+    const nearestCardPanel = trigger.closest('.card, [data-ui-component="Card"], section, article')?.querySelector?.(`#${escapedId}`);
+    if (nearestCardPanel) return nearestCardPanel;
+    const globalPanel = document.getElementById(panelId);
+    if (globalPanel) return globalPanel;
+  }
+  if (trigger.nextElementSibling instanceof HTMLElement) return trigger.nextElementSibling;
+  return null;
 }
 
 function closeActiveModal() {
