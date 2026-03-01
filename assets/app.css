@@ -252,6 +252,93 @@ button.is-pressed { transform: scale(var(--ui-press-scale)); }
 .ui-toast[data-tone='error'] { border-color: color-mix(in oklab, var(--danger) 45%, transparent); }
 .ui-toast[data-tone='success'] { border-color: color-mix(in oklab, var(--ok) 45%, transparent); }
 
+.ia-foundry-hero {
+  border: 1px solid color-mix(in oklab, var(--accent) 35%, var(--stroke));
+  background: linear-gradient(145deg, color-mix(in oklab, var(--panel) 88%, var(--accent) 12%), color-mix(in oklab, var(--panel-2) 90%, #081022));
+}
+
+.ia-foundry-hero h2 {
+  margin: 8px 0;
+}
+
+.ia-foundry-config {
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius-2);
+  padding: 8px 12px;
+  background: color-mix(in oklab, var(--panel) 92%, transparent);
+}
+
+.ia-foundry-config summary {
+  cursor: pointer;
+  font-weight: 700;
+  list-style: none;
+}
+
+.ia-foundry-config summary::-webkit-details-marker {
+  display: none;
+}
+
+.ia-foundry-config summary::after {
+  content: '▾';
+  float: right;
+}
+
+.ia-foundry-config[open] summary::after {
+  transform: rotate(180deg);
+}
+
+.ia-foundry-config-body {
+  padding-top: 10px;
+}
+
+.ia-foundry-chat-card .card-header h3 {
+  margin: 0;
+}
+
+.ia-foundry-messages {
+  min-height: 220px;
+  max-height: 45vh;
+  overflow: auto;
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius-2);
+  padding: 12px;
+  background: color-mix(in oklab, var(--panel-2) 80%, #050b18);
+  margin-bottom: 10px;
+}
+
+.ia-foundry-textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+
+.ia-foundry-message {
+  border: 1px solid var(--stroke);
+  border-radius: 12px;
+  padding: 10px;
+  margin: 0 0 8px;
+}
+
+.ia-foundry-message.user {
+  background: color-mix(in oklab, var(--accent) 20%, var(--panel));
+}
+
+.ia-foundry-message.assistant {
+  background: color-mix(in oklab, var(--panel) 86%, #09142b);
+}
+
+.ia-foundry-message-author {
+  margin: 0 0 4px;
+  font-size: var(--font-xs);
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.ia-foundry-message p {
+  margin: 0;
+  white-space: pre-wrap;
+}
+
 [aria-busy='true']::after {
   content: '';
   width: 14px;
