@@ -857,8 +857,6 @@ async function bindSettingsStorageFaq(route) {
   const storageFilterDlwms = document.getElementById('settingsStorageFilterDlwms');
   const storageFilterRule = document.getElementById('settingsStorageFilterRule');
   const storageFilterFaq = document.getElementById('settingsStorageFilterFaq');
-  const adminToggleBtn = document.getElementById('settingsAdminToggleBtn');
-  const adminStatus = document.getElementById('settingsAdminStatus');
   const faqInventory = document.getElementById('settingsFaqInventory');
   const faqCounters = document.getElementById('settingsFaqCounters');
   const faqSearchInput = document.getElementById('settingsFaqSearchInput');
@@ -884,7 +882,6 @@ async function bindSettingsStorageFaq(route) {
 
   const state = {
     currentStorageFilter: 'all',
-    adminEnabled: true,
     faqMerged: [],
     faqSearch: '',
     faqCategory: 'all',
@@ -966,10 +963,6 @@ async function bindSettingsStorageFaq(route) {
       knownRuleStorageKeys: localRuleKeys,
     };
 
-    if (!state.adminEnabled) {
-      storageRulesSnapshot.activeRulebookPreview = '[masqué: mode admin requis]';
-      storageRulesSnapshot.knownRuleStorageKeys = '[masqué: mode admin requis]';
-    }
 
     rulesDump.textContent = JSON.stringify(storageRulesSnapshot, null, 2);
     if (rulebookValidation) {
@@ -1081,11 +1074,6 @@ async function bindSettingsStorageFaq(route) {
     showToast('Export CSV FAQ lancé.', 'success');
   };
 
-  if (adminStatus) adminStatus.textContent = 'Mode admin activé (permanent)';
-  if (adminToggleBtn) {
-    adminToggleBtn.textContent = 'Mode admin permanent';
-    adminToggleBtn.disabled = true;
-  }
 
   storageRefreshBtn?.addEventListener('click', updateStorageView);
   storageCopyBtn?.addEventListener('click', async () => {
