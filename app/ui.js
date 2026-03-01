@@ -132,7 +132,21 @@ export function bindAccordions(root = document) {
   root.querySelectorAll('[data-accordion-trigger]').forEach((trigger) => {
     if (trigger.dataset.bound) return;
     trigger.dataset.bound = '1';
+    const panelId = trigger.getAttribute('aria-controls');
+    const panel = panelId ? document.getElementById(panelId) : null;
+    if (!panel) return;
+    const lockOpen = trigger.hasAttribute('data-accordion-lock-open') || panel.hasAttribute('data-accordion-lock-open');
+    const expanded = lockOpen || trigger.getAttribute('aria-expanded') === 'true';
+    trigger.setAttribute('aria-expanded', String(expanded));
+    panel.hidden = !expanded;
+    panel.setAttribute('data-state', expanded ? 'open' : 'closed');
+
     trigger.addEventListener('click', () => ui.accordion.toggle(trigger));
+    trigger.addEventListener('keydown', (event) => {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      event.preventDefault();
+      ui.accordion.toggle(trigger);
+    });
   });
 }
 
@@ -144,6 +158,13 @@ function toggleAccordion(triggerOrId) {
   const panelId = trigger.getAttribute('aria-controls');
   const panel = panelId ? document.getElementById(panelId) : null;
   if (!panel) return;
+  const lockOpen = trigger.hasAttribute('data-accordion-lock-open') || panel.hasAttribute('data-accordion-lock-open');
+  if (lockOpen) {
+    trigger.setAttribute('aria-expanded', 'true');
+    panel.hidden = false;
+    panel.setAttribute('data-state', 'open');
+    return;
+  }
   const expanded = trigger.getAttribute('aria-expanded') === 'true';
   const next = !expanded;
   trigger.setAttribute('aria-expanded', String(next));
