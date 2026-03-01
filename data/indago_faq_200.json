@@ -124,13 +124,13 @@
     "id": 21,
     "categorie": "Navigation & rôles",
     "question": "Comment savoir quels menus je devrais voir dans Indago?",
-    "reponse": "Cela dépend de ton rôle/profil. Compare avec un utilisateur admin et demande la liste des permissions associées à ton compte."
+    "reponse": "Cela dépend de ton rôle/profil. Compare avec un profil superviseur et demande la liste des permissions associées à ton compte."
   },
   {
     "id": 22,
     "categorie": "Navigation & rôles",
     "question": "Pourquoi je ne vois pas le menu “Packing” ou “Consolidate”?",
-    "reponse": "Souvent désactivé par permissions ou non utilisé dans votre flux. Demande à l’admin Indago de vérifier le rôle."
+    "reponse": "Souvent désactivé par permissions ou non utilisé dans votre flux. Demande au référent Indago de vérifier le rôle."
   },
   {
     "id": 23,
@@ -184,7 +184,7 @@
     "id": 31,
     "categorie": "Navigation & rôles",
     "question": "Comment créer un profil RF “terrain” vs “superviseur”?",
-    "reponse": "Deux rôles: terrain avec flux standard, superviseur avec menus admin/rapports et actions d’exception."
+    "reponse": "Deux rôles: terrain avec flux standard, superviseur avec menus avancés/rapports et actions d’exception."
   },
   {
     "id": 32,

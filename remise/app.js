@@ -441,7 +441,7 @@
   },
   { id: 72,
     q: "Je veux une description courte pour chaque item, comment l’obtenir ?",
-    a: "Importe un mapping CSV item->shortDesc. Sinon, tu peux laisser vide ou saisir manuellement en mode admin si l’app l’offre.",
+    a: "Importe un mapping CSV item->shortDesc. Sinon, tu peux laisser vide ou saisir manuellement dans les paramètres avancés si l’app l’offre.",
     tags: ["description","shortdesc","mapping"],
     sources: ["Schéma: shortDesc optionnel; mapping CSV"]
   },
