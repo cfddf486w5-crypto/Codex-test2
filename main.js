@@ -509,7 +509,8 @@ if(bgDefaultBtn){
 
 // Menus: close others
 const menus = ['menuTools','menuView','menuSearch','menuBins','menuAudit','menuActions','menuData','menuInfo']
-  .map(id => document.getElementById(id));
+  .map(id => document.getElementById(id))
+  .filter(Boolean);
 menus.forEach(m => m.addEventListener('toggle', () => {
   if(m.open) menus.forEach(o => { if(o!==m) o.removeAttribute('open'); });
 }));
@@ -1807,4 +1808,3 @@ try{
     }
   }
 }catch{}
-
