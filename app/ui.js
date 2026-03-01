@@ -284,6 +284,13 @@ export const ui = {
       activeModal = dialog;
       document.body.classList.add('modal-open');
       dialog.addEventListener('keydown', trapFocus);
+      dialog.addEventListener('click', (event) => {
+        if (event.target === dialog) closeActiveModal();
+      });
+      dialog.addEventListener('cancel', (event) => {
+        event.preventDefault();
+        closeActiveModal();
+      });
       dialog.querySelector('[data-close]')?.addEventListener('click', closeActiveModal);
       dialog.querySelectorAll('[data-modal-action]').forEach((btn) => {
         btn.addEventListener('click', () => {
