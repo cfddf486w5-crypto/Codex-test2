@@ -156,6 +156,7 @@ async function boot() {
   bindInstall();
   bindNetworkBadge();
   bindNav();
+  bindAppRouteDelegation();
   bindGlobalAiAssistant();
   bindGlobalBackButton();
   installReceptionFaqGlobals(navigate);
@@ -296,6 +297,17 @@ function bindNav() {
   });
 }
 
+function bindAppRouteDelegation() {
+  appNode?.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-route]');
+    if (!(button instanceof HTMLElement)) return;
+    if (!appNode.contains(button)) return;
+    const route = button.dataset.route;
+    if (!route) return;
+    navigate(route);
+  });
+}
+
 async function navigate(route, options = {}) {
   const normalizedRoute = normalizeRoute(route);
   currentRoute = normalizedRoute;
@@ -311,7 +323,6 @@ async function navigate(route, options = {}) {
     const targetHash = `#/${hashRoute}`;
     if (window.location.hash !== targetHash) history.replaceState(null, '', targetHash);
   }
-  appNode.querySelectorAll('[data-route]').forEach((btn) => btn.addEventListener('click', () => navigate(btn.dataset.route)));
   bindReceptionEntryPoints(appNode, navigate);
   bindCompactHeaderAccordions(appNode);
 
