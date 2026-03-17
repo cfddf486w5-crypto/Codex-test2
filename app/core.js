@@ -76,6 +76,15 @@ let navigationLocked = false;
 let currentRoute = 'modules';
 let wmsKbPromise;
 
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
+
 const WAREHOUSE_PROMPT_PRESETS = [
   { label: 'Lecture Excel', category: 'excel', prompt: 'Lis le fichier Excel et résume les colonnes clés.' },
   { label: 'Validation CSV', category: 'csv', prompt: 'Contrôle la structure du CSV et signale les anomalies.' },
@@ -922,13 +931,6 @@ async function bindSettingsStorageFaq(route) {
     faqPage: 1,
     faqPageSize: 20,
   };
-
-  const escapeHtml = (value) => String(value || '')
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#39;');
 
   const highlightText = (value, query) => {
     const safe = escapeHtml(value);
