@@ -874,6 +874,15 @@ function safeParseJson(raw, fallback) {
   }
 }
 
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
+
 async function bindSettingsStorageFaq(route) {
   if (route !== 'parametres') return;
   const rulesTab = document.getElementById('settingsStorageTab');
@@ -922,13 +931,6 @@ async function bindSettingsStorageFaq(route) {
     faqPage: 1,
     faqPageSize: 20,
   };
-
-  const escapeHtml = (value) => String(value || '')
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#39;');
 
   const highlightText = (value, query) => {
     const safe = escapeHtml(value);
